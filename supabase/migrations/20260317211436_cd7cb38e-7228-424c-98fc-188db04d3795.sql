@@ -1,0 +1,3 @@
+INSERT INTO public.pipeline_block_templates (name, category, block_type, description, icon, default_config, is_system) VALUES
+  ('LLM', 'ai', 'ai', 'Large Language Model for text generation, summarization, and classification', 'MessageSquare', '{"provider": "openai", "model": "gpt-4", "temperature": 0.7, "max_tokens": 1024, "prompt": ""}'::jsonb, true),
+  ('Agentic AI', 'ai', 'ai', 'Autonomous AI agent that can reason, plan, and execute multi-step tasks', 'Bot', '{"provider": "openai", "model": "gpt-4", "tools": [], "max_iterations": 10, "goal": ""}'::jsonb, true);

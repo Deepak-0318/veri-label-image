@@ -1,0 +1,1 @@
+COMMENT ON COLUMN public.annotations.type IS 'Annotation type: boundingBox, polygon, textHighlight, rowAnnotation, audioRegion, mcapFrame';

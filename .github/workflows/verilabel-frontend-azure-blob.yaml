@@ -1,0 +1,119 @@
+name: Build and upload frontend to Azure Blob static site
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: '20'
+  BUILD_DIR: dist
+  STORAGE_ACCOUNT_NAME: ${{ vars.AZURE_STORAGE_ACCOUNT_NAME }}
+  SAS_URL: ${{ secrets.AZURE_STORAGE_SAS_URL }}
+  SAS_TOKEN: ${{ secrets.AZURE_STORAGE_SAS_TOKEN }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build frontend
+        run: npm run build
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist
+          path: ${{ env.BUILD_DIR }}
+          if-no-files-found: error
+          retention-days: 1
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: Development
+      url: ${{ steps.upload.outputs.static-site-url }}
+
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-dist
+          path: ${{ env.BUILD_DIR }}
+
+      - name: Upload to $web container (supports SAS or AAD)
+        id: upload
+        uses: azure/cli@v1
+        with:
+          inlineScript: |
+            # Detect auth mode: SAS URL/token preferred; fall back to AAD login
+            set -euo pipefail
+            token=""
+            account="${STORAGE_ACCOUNT_NAME:-}"
+
+            if [ -n "${SAS_URL:-}" ]; then
+              base="${SAS_URL%%\?*}"
+              token="${SAS_URL#*\?}"
+              # extract account name between https:// and .blob
+              account=$(echo "$base" | sed -n 's#https://\\([^./]*\\).blob.*#\\1#p')
+            elif [ -n "${SAS_TOKEN:-}" ]; then
+              token="${SAS_TOKEN}"
+            fi
+
+            if [ -z "$account" ]; then
+              echo "Storage account name missing. Provide AZURE_STORAGE_ACCOUNT_NAME or use SAS_URL with account hostname."
+              exit 1
+            fi
+
+            if [ -n "$token" ]; then
+              echo "Using SAS for auth"
+              az storage blob upload-batch \
+                --account-name "$account" \
+                --sas-token "$token" \
+                --destination '$web' \
+                --source "${BUILD_DIR}" \
+                --overwrite true
+              static_url="https://${account}.z13.web.core.windows.net"
+              echo "static-site-url=${static_url}" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+
+            echo "Using Azure AD login"
+            if [ -z "${{ secrets.AZURE_CREDENTIALS_FRONTEND }}" ]; then
+              echo "AZURE_CREDENTIALS_FRONTEND secret missing and no SAS provided."
+              exit 1
+            fi
+
+            az login --service-principal --username "$(echo '${{ secrets.AZURE_CREDENTIALS_FRONTEND }}' | jq -r .clientId)" \
+                     --password "$(echo '${{ secrets.AZURE_CREDENTIALS_FRONTEND }}' | jq -r .clientSecret)" \
+                     --tenant   "$(echo '${{ secrets.AZURE_CREDENTIALS_FRONTEND }}' | jq -r .tenantId)" >/dev/null
+
+            az storage blob upload-batch \
+              --auth-mode login \
+              --account-name "$account" \
+              --destination '$web' \
+              --source "${BUILD_DIR}" \
+              --overwrite true
+            static_url=$(az storage account show --name "$account" --query "primaryEndpoints.web" -o tsv)
+            echo "static-site-url=${static_url%/}" >> "$GITHUB_OUTPUT"
+
+      - name: Output site URL
+        run: |
+          echo "Static site: ${{ steps.upload.outputs.static-site-url }}"

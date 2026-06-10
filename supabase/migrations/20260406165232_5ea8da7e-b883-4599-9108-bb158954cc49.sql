@@ -1,0 +1,1 @@
+UPDATE annotations SET type = 'boundingBox' WHERE type = 'mcapFrame';

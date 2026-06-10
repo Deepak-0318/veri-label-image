@@ -1,0 +1,2 @@
+ALTER TABLE public.annotations DROP CONSTRAINT annotations_type_check;
+ALTER TABLE public.annotations ADD CONSTRAINT annotations_type_check CHECK (type = ANY (ARRAY['boundingBox'::text, 'polygon'::text, 'textHighlight'::text, 'rowAnnotation'::text]));

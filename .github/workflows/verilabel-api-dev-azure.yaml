@@ -1,0 +1,119 @@
+# This workflow will build and push a .NET Core app to an Azure Web App when a commit is pushed to your default branch.
+#
+# This workflow assumes you have already created the target Azure App Service web app.
+# For instructions see https://docs.microsoft.com/en-us/azure/app-service/quickstart-dotnetcore?tabs=net60&pivots=development-environment-vscode
+#
+# To configure this workflow:
+#
+# 1. Download the Publish Profile for your Azure Web App. You can download this file from the Overview page of your Web App in the Azure Portal.
+#    For more information: https://docs.microsoft.com/en-us/azure/app-service/deploy-github-actions?tabs=applevel#generate-deployment-credentials
+#
+# 2. Create a secret in your repository named AZURE_WEBAPP_PUBLISH_PROFILE, paste the publish profile contents as the value of the secret.
+#    For instructions on obtaining the publish profile see: https://docs.microsoft.com/azure/app-service/deploy-github-actions#configure-the-github-secret
+#
+# 3. Change the value for the AZURE_WEBAPP_NAME. Optionally, change the AZURE_WEBAPP_PACKAGE_PATH and DOTNET_VERSION environment variables below.
+#
+# For more information on GitHub Actions for Azure: https://github.com/Azure/Actions
+# For more information on the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# For more samples to get started with GitHub Action workflows to deploy to Azure: https://github.com/Azure/actions-workflow-samples
+
+name: Build and deploy VeriLabel api to azure dev
+
+env:
+  AZURE_WEBAPP_NAME: 'verilabel-dev'
+  AZURE_WEBAPP_PACKAGE_PATH: './publish'
+  DOTNET_VERSION: '10.0.x'
+  PROJECT_PATH: './backend/verilabelbackend.csproj'
+
+on:
+  push:
+    branches: [ "dev" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+          include-prerelease: true
+
+      - name: Show dotnet info
+        run: dotnet --info
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore dependencies
+        run: dotnet restore ${{ env.PROJECT_PATH }}
+
+      - name: Build
+        run: dotnet build ${{ env.PROJECT_PATH }} --configuration Release --no-restore --no-incremental
+
+      - name: Debug publish path
+        run: 'echo "Publish path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"'
+
+      - name: Publish
+        run: |
+          dotnet publish ${{ env.PROJECT_PATH }} -c Release -o ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+          echo "Publish directory contents:"
+          ls -la ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+
+      - name: Verify publish output
+        run: |
+          if [ ! -d "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}" ] || [ -z "$(ls -A ${{ env.AZURE_WEBAPP_PACKAGE_PATH }})" ]; then
+            echo "ERROR: Publish directory not found or empty at ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
+            ls -la ${{ env.PROJECT_PATH }}
+            exit 1
+          fi
+          echo "Publish directory contents:"
+          ls -la ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: .net-app
+          path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+          if-no-files-found: error
+          retention-days: 1
+
+  deploy:
+    if: ${{ github.actor != 'nektos/act' }}
+    runs-on: ubuntu-latest
+    needs: build
+
+    permissions:
+      contents: none
+
+    environment:
+      name: Development
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: .net-app
+          path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.VERILABEL_AZURE_API_DEV_PUBLISH_PROFILE }}
+          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
