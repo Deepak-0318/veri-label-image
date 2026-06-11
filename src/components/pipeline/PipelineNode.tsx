@@ -7,7 +7,13 @@ import { cn } from "@/lib/utils";
 export interface PipelineNodeData {
   blockType: "ai" | "function" | "logical" | "custom" | "io";
   label: string;
-  config: Record<string, any>;
+  config: {
+    model?: string;
+    confidence?: number;
+    maxDetections?: number;
+
+    [key: string]: any;
+  };
   selected?: boolean;
 }
 
@@ -64,11 +70,16 @@ function PipelineNode({ data, selected }: NodeProps) {
         </div>
       </div>
 
-      {blockType === "ai" && nodeData.config.model && (
-        <div className="mt-2.5 flex gap-1.5 flex-wrap">
-          <Badge variant="secondary" className="text-[10px] h-5">{nodeData.config.model}</Badge>
-          {nodeData.config.task && (
-            <Badge variant="outline" className="text-[10px] h-5">{nodeData.config.task}</Badge>
+      {blockType === "ai" && (
+        <div className="mt-2 text-[10px] space-y-0.5 text-muted-foreground">
+          {nodeData.config.model && (
+            <p><span className="font-semibold text-foreground">Model:</span> {nodeData.config.model}</p>
+          )}
+          {nodeData.config.confidence !== undefined && (
+            <p><span className="font-semibold text-foreground">Confidence:</span> {nodeData.config.confidence}</p>
+          )}
+          {nodeData.config.maxDetections !== undefined && (
+            <p><span className="font-semibold text-foreground">Max Detections:</span> {nodeData.config.maxDetections}</p>
           )}
         </div>
       )}

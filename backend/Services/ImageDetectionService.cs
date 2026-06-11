@@ -18,8 +18,11 @@ public class ImageDetectionService
 
     public async Task<List<AnnotationResult>> DetectAsync(
         Guid fileId,
-        string jwt)
+        string jwt,
+        List<string> labels)
     {
+        Console.WriteLine($"[ImageDetection] Labels: {string.Join(", ", labels)}");
+        
         Console.WriteLine("========== IMAGE DETECTOR V2 ==========");
         Console.WriteLine($"FILE={fileId}");
 
@@ -43,7 +46,8 @@ public class ImageDetectionService
 
         var detections =
             await _detector.DetectAsync(
-                new MemoryStream(imageBytes));
+                new MemoryStream(imageBytes),
+                labels);
 
         Console.WriteLine(
             $"[ImageDetection] GroundingDINO returned {detections.Count} detections");

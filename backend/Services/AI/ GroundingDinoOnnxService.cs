@@ -42,18 +42,26 @@ public sealed class GroundingDinoOnnxService : IDetectionService
 
         Console.WriteLine("[GroundingDINO ONNX] Inputs:");
 
-        foreach(var input in _session.InputMetadata)
+        Console.WriteLine("========== INPUTS ==========");
+        foreach (var input in _session.InputMetadata)
         {
-            Console.WriteLine($"INPUT: {input.Key}");
-            Console.WriteLine($"TYPE = {input.Value.ElementType}");
-            Console.WriteLine($"SHAPE = {string.Join(", ", input.Value.Dimensions.ToArray())}");  
+            Console.WriteLine(
+                $"{input.Key} | " +
+                $"{input.Value.ElementType} | " +
+                $"{string.Join(",", input.Value.Dimensions)}"
+            );
         }
 
-        foreach(var output in _session.OutputMetadata)
+        Console.WriteLine("\n========== OUTPUTS ==========");
+
+        foreach (var output in _session.OutputMetadata)
         {
-            Console.WriteLine($"OUTPUT: {output.Key}");
-            Console.WriteLine($"TYPE = {output.Value.ElementType}");
-            Console.WriteLine($"SHAPE = {string.Join(", ", output.Value.Dimensions.ToArray())}"); 
+            Console.WriteLine(
+                $"{output.Key} | " +
+                $"{output.Value.ElementType} | " +
+                $"{string.Join(",", output.Value.Dimensions)}"
+            );
+            
             if (output.Key == "pred_logits")
             {
                 Console.WriteLine("EXPLANATION: Classification logits for 900 queries across 256 text tokens/classes (shape: [batch, queries, classes])");
@@ -66,8 +74,24 @@ public sealed class GroundingDinoOnnxService : IDetectionService
     }
 
     public async Task<List<AnnotationResult>> DetectAsync(
-        Stream imageStream)
+        Stream imageStream,
+        List<string> labels)
     {
+        Console.WriteLine(
+            $"[GroundingDINO ONNX] Labels: {string.Join(", ", labels)}"
+        );
+
+        var uniqueLabels =
+            labels
+                .Where(x => !string.IsNullOrWhiteSpace(x))
+                .Distinct()
+                .ToList();
+        
+        var prompt =
+            string.Join(" . ", uniqueLabels);
+
+        Console.WriteLine($"[GroundingDINO OONX ]Prompt = {prompt}");
+
         Console.WriteLine(
             "[GroundingDINO ONNX] DetectAsync CALLED"
         );
@@ -150,6 +174,8 @@ public sealed class GroundingDinoOnnxService : IDetectionService
         var numClasses = logitsTensor.Dimensions[2];
 
         var annotations = new List<AnnotationResult>();
+        AnnotationResult? bestAnnotation = null;
+        float bestScore = 0;
 
         for (int i = 0; i < numQueries; i++)
         {
@@ -187,9 +213,15 @@ public sealed class GroundingDinoOnnxService : IDetectionService
                 var width = Math.Clamp((int)Math.Round(widthPixel), 0, originalWidth - x);
                 var height = Math.Clamp((int)Math.Round(heightPixel), 0, originalHeight - y);
 
-                var label = $"object";
+                var label = "AI Detection";
 
-                Console.WriteLine($"[GroundingDINO ONNX] Query {i} detected: Label={label} (token={maxTokenIdx}), Score={score:F4}, Box=[{x}, {y}, {width}, {height}]");
+                Console.WriteLine(
+                    $"[GroundingDINO ONNX] Query {i} detected: " +
+                    $"Label={label}, " +
+                    $"Token={maxTokenIdx}, " +
+                    $"Score={score:F4}, " +
+                    $"Box=[{x}, {y}, {width}, {height}]"
+                );
 
                 // Task 3: Save Annotations
                 var annotation = new AnnotationResult
@@ -208,9 +240,22 @@ public sealed class GroundingDinoOnnxService : IDetectionService
                     CreatedAt = DateTime.UtcNow
                 };
 
-                annotations.Add(annotation);
+                if (score > bestScore)
+                {
+                    bestScore = score;
+                    bestAnnotation = annotation;
+                }
             }
         }
+
+        if (bestAnnotation != null)
+        {
+            annotations.Add(bestAnnotation);
+        }
+
+        Console.WriteLine(
+            $"[GroundingDINO ONNX] Returning {annotations.Count} best detection(s)"
+        );
 
         return annotations;
     }

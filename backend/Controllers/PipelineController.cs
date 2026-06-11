@@ -25,6 +25,7 @@ public class PipelineController : ControllerBase
         Console.WriteLine($"TaskId:     {request.TaskId}");
         Console.WriteLine($"FileIds ({request.FileIds.Count}): {string.Join(", ", request.FileIds)}");
         Console.WriteLine($"Node Count: {request.Nodes.Count}");
+        Console.WriteLine($"Labels ({request.Labels.Count}): {string.Join(", ", request.Labels)}");
 
         var jwt = HttpContext.Request.Headers["Authorization"]
             .ToString()

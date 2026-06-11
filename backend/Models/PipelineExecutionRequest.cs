@@ -18,4 +18,6 @@ public class PipelineExecutionRequest
     public List<PipelineNodeDto> Nodes { get; set; } = new();
 
     public List<object> Edges { get; set; } = new();
+
+    public List<string> Labels { get; set; } = new();
 }

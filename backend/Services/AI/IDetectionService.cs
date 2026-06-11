@@ -4,5 +4,5 @@ namespace verilabelbackend.Services.AI;
 
 public interface IDetectionService
 {
-    Task<List<AnnotationResult>> DetectAsync(Stream imageStream);
+    Task<List<AnnotationResult>> DetectAsync(Stream imageStream, List<string> labels);
 }

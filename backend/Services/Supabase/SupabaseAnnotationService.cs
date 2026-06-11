@@ -36,7 +36,7 @@ public sealed class SupabaseAnnotationService
         if (annotations.Count == 0) return 0;
 
         var pipelineCommentFilter = Uri.EscapeDataString("Pipeline auto-annotation.%");
-        var query = $"file_id=eq.{fileId}&comment=like.{pipelineCommentFilter}";
+        var query = $"file_id=eq.{fileId}";
         var fetchUrl = $"{_supabaseUrl}/rest/v1/annotations?{query}&select=id";
 
         var client = BuildClient(jwt);
@@ -51,6 +51,9 @@ public sealed class SupabaseAnnotationService
             await fetchResponse.Content.ReadAsStreamAsync(), SnakeCase) ?? new List<Dictionary<string, JsonElement>>();
         var deletedCount = existingAnnotations.Count;
         Console.WriteLine($"[AnnotationService] Existing annotations deleted count: {deletedCount}");
+
+        Console.WriteLine($"DELETE QUERY = {query}");
+        Console.WriteLine($"FOUND {existingAnnotations.Count} ANNOTATIONS");
 
         if (deletedCount > 0)
         {
@@ -72,7 +75,7 @@ public sealed class SupabaseAnnotationService
             user_id = userId,
             type = "boundingBox",
             label = a.Label,
-            color = "#6366f1",
+            color = "#f59e0b",
             data = JsonSerializer.Serialize(new
             {
                 x = a.BoundingBox.X,
@@ -81,7 +84,7 @@ public sealed class SupabaseAnnotationService
                 height = a.BoundingBox.Height,
                 confidence = a.Confidence
             }),
-            comment = $"Pipeline auto-annotation. Confidence: {a.Confidence:P0}",
+            comment = $"AI Generated Annotation. Confidence: {a.Confidence:P0}",
             created_at = DateTime.UtcNow,
         }).ToList();
 

@@ -26,6 +26,24 @@ const getJwt = (): string | null => {
   try { return raw ? JSON.parse(raw)?.access_token ?? null : null; } catch { return null; }
 };
 
+async function getProjectLabels(projectId: string): Promise<string[]> {
+  try {
+    if (!projectId) return [];
+    const { data, error } = await supabase
+      .from("project_labels")
+      .select("name")
+      .eq("project_id", projectId);
+    if (error) {
+      console.error("Error fetching project labels:", error);
+      return [];
+    }
+    return data ? data.map((row: any) => row.name) : [];
+  } catch (err) {
+    console.error("Error in getProjectLabels:", err);
+    return [];
+  }
+}
+
 interface ProjectPipelineRunnerProps {
   projectId: string;
   userId: string;
@@ -118,6 +136,20 @@ export function ProjectPipelineRunner({ projectId, userId, files }: ProjectPipel
     setIsRunning(true);
     setRunResult(null);
 
+    // Fetch project labels before execution
+    let labels: string[] = [];
+    try {
+      labels = await getProjectLabels(selectedProject.id);
+    } catch (err) {
+      console.error("Failed to get project labels:", err);
+    }
+
+    console.log("Project Labels", labels);
+
+    if (labels.length === 0) {
+      toast.warning("No project labels found. Auto-annotation may not work correctly.");
+    }
+
     // ── PHASE 1: Create Task and PipelineRun records before backend execution ──
     let taskId: string | null = null;
     let runId: string | null = null;
@@ -185,9 +217,11 @@ export function ProjectPipelineRunner({ projectId, userId, files }: ProjectPipel
         FileIds: selectedFileIdArray,
         Nodes: nodes,
         Edges: edges,
+        Labels: labels,
       };
 
       console.log("FINAL PIPELINE EXECUTION PAYLOAD", payload);
+      console.log("Pipeline Execution Request", payload);
 
       const jwt = getJwt();
       console.log("JWT:", jwt);
@@ -269,7 +303,7 @@ export function ProjectPipelineRunner({ projectId, userId, files }: ProjectPipel
             </p>
           </div>
         </div>
-        <Button variant="ghost" size="sm" onClick={() => navigate("/pipelines")} className="text-xs">
+        <Button variant="ghost" size="sm" onClick={() => navigate(`/pipelines?projectId=${projectId}`)} className="text-xs">
           <ExternalLink className="h-3.5 w-3.5 mr-1" />
           Builder
         </Button>
@@ -329,7 +363,7 @@ export function ProjectPipelineRunner({ projectId, userId, files }: ProjectPipel
         {availablePipelines.length === 0 ? (
           <div className="text-center py-4 border border-dashed rounded-lg">
             <p className="text-sm text-muted-foreground mb-2">No pipelines available</p>
-            <Button variant="outline" size="sm" onClick={() => navigate("/pipelines")}>
+            <Button variant="outline" size="sm" onClick={() => navigate(`/pipelines?projectId=${projectId}`)}>
               Create Pipeline
             </Button>
           </div>

@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect, useMemo, useRef } from "react";
+import { useSearchParams } from "react-router-dom";
 import {
   ReactFlow,
   Background,
@@ -100,6 +101,8 @@ import { PipelineResult } from "@/types/pipelineResult";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
+
+
 const ICON_MAP: Record<string, React.ElementType> = {
   Brain, Code, GitBranch, Zap, Download, Upload, Database,
   FileOutput, FileText, Globe, Layers, Clock, Terminal, RefreshCw,
@@ -180,6 +183,8 @@ function flowToBlocks(nodes: Node[], edges: Edge[]): PipelineBlock[] {
 export default function PipelineBuilder() {
   const { user } = useAuth();
   const { theme } = useTheme();
+  const [searchParams] = useSearchParams();
+  const projectId = searchParams.get("projectId") || "";
   const { pipelines, isLoading, createPipeline, updatePipeline, deletePipeline } = usePipelines(user?.id);
   const { files } = useFiles(user?.id);
   const { createRun, updateRun } = usePipelineRuns(user?.id);
@@ -276,7 +281,7 @@ export default function PipelineBuilder() {
       );
     }, 1500);
   }, [selectedPipelineId, nodes, edges, pipelineName, pipelineDescription, updatePipeline, buildSnapshot]);
-
+   
   useEffect(() => {
     triggerAutoSave();
     return () => { if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current); };
@@ -422,7 +427,7 @@ export default function PipelineBuilder() {
       return;
     }
     createPipeline.mutate(
-      { name: newName, description: newDesc, pipeline_type: newType },
+      { name: newName, description: newDesc, pipeline_type: newType, project_id: projectId || undefined },
       {
         onSuccess: (data) => {
           setSelectedPipelineId(data.id);

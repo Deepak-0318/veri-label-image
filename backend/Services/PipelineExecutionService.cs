@@ -72,7 +72,18 @@ public class PipelineExecutionService
                         Console.WriteLine("========== IMAGE DETECTOR V2 ==========");
                         Console.WriteLine($"FILE={fileId}");
                         Console.WriteLine("BEFORE RESOLVER");
-                        var detections = await _imageDetection.DetectAsync(fileId, jwt!);
+                        
+                        Console.WriteLine("===== PROJECT LABELS =====");
+                        foreach(var label in request.Labels)
+                        {
+                            Console.WriteLine(label);
+                        }
+
+                        var detections =
+                            await _imageDetection.DetectAsync(
+                                fileId,
+                                jwt!,
+                                request.Labels);
                         Console.WriteLine("AFTER RESOLVER");
                         fileAnnotations.AddRange(detections);
                         nodeResults.Add(new { Node = node.Label, Annotations = detections });
@@ -102,6 +113,15 @@ public class PipelineExecutionService
                 }
                 try
                 {
+                    Console.WriteLine("===== FINAL SAVE =====");
+
+                    foreach(var annotation in fileAnnotations)
+                    {
+                        Console.WriteLine(
+                            $"LABEL={annotation.Label}"
+                        );
+                    }
+
                     var saved = await _annotationService.SaveAnnotationsAsync(
                         jwt, fileId, projectId, userId, fileAnnotations);
                     totalAnnotations += saved;

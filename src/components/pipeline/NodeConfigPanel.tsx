@@ -50,8 +50,13 @@ interface NodeConfigPanelProps {
   onDelete: () => void;
 }
 
-export function NodeConfigPanel({ nodeId, data, onUpdate, onDelete }: NodeConfigPanelProps) {
-  const updateConfig = (key: string, value: string) => {
+export function NodeConfigPanel({
+  nodeId,
+  data,
+  onUpdate,
+  onDelete,
+}: NodeConfigPanelProps) {
+  const updateConfig = (key: string, value: any) => {
     onUpdate({ config: { ...data.config, [key]: value } });
   };
 
@@ -83,111 +88,65 @@ export function NodeConfigPanel({ nodeId, data, onUpdate, onDelete }: NodeConfig
         </div>
 
       {data.blockType === "ai" && (
-          <>
-            <div>
-              <label className="text-xs text-muted-foreground mb-1 block">Model</label>
-              <Select
-                value={data.config.model || "whisper"}
-                onValueChange={(v) => updateConfig("model", v)}
-              >
-                <SelectTrigger className="bg-secondary/50"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="whisper">Whisper (Speech-to-Text)</SelectItem>
-                  <SelectItem value="pyannote">Pyannote (Speaker Diarization)</SelectItem>
-                  <SelectItem value="wav2vec">Wav2Vec (Speech Segmentation)</SelectItem>
-                  <SelectItem value="emotion-recognition">Emotion Recognition</SelectItem>
-                  <SelectItem value="custom-model">Custom Model</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <label className="text-xs text-muted-foreground mb-1 block">Task</label>
-              <Select
-                value={data.config.task || "transcription"}
-                onValueChange={(v) => updateConfig("task", v)}
-              >
-                <SelectTrigger className="bg-secondary/50"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="transcription">Transcript Generation</SelectItem>
-                  <SelectItem value="speaker-segmentation">Speaker Segmentation</SelectItem>
-                  <SelectItem value="speech-segmentation">Speech Segmentation</SelectItem>
-                  <SelectItem value="emotion-recognition">Emotion Recognition</SelectItem>
-                  <SelectItem value="classification">Classification</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+        <>
+          <div>
+            <label className="text-xs text-muted-foreground mb-1 block">
+              Model
+            </label>
+            <Select
+              value={data.config.model || "GroundingDINO"}
+              onValueChange={(v) => updateConfig("model", v)}
+            >
+              <SelectTrigger className="bg-secondary/50">
+                <SelectValue placeholder="Select Model" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="GroundingDINO">GroundingDINO</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
 
-            {/* LLM-specific config */}
-            {(data.config.provider !== undefined || data.label?.toLowerCase().includes("llm")) && (
-              <>
-                <div>
-                  <label className="text-xs text-muted-foreground mb-1 block">Provider</label>
-                  <Select
-                    value={data.config.provider || "openai"}
-                    onValueChange={(v) => updateConfig("provider", v)}
-                  >
-                    <SelectTrigger className="bg-secondary/50"><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="openai">OpenAI</SelectItem>
-                      <SelectItem value="anthropic">Anthropic</SelectItem>
-                      <SelectItem value="google">Google Gemini</SelectItem>
-                      <SelectItem value="huggingface">HuggingFace</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <label className="text-xs text-muted-foreground mb-1 block">Temperature</label>
-                  <Input
-                    type="number"
-                    min={0}
-                    max={2}
-                    step={0.1}
-                    value={data.config.temperature ?? 0.7}
-                    onChange={(e) => updateConfig("temperature", e.target.value)}
-                    className="bg-secondary/50"
-                  />
-                </div>
-                <div>
-                  <label className="text-xs text-muted-foreground mb-1 block">Prompt</label>
-                  <Textarea
-                    value={data.config.prompt || ""}
-                    onChange={(e) => updateConfig("prompt", e.target.value)}
-                    placeholder="System prompt or instructions..."
-                    className="bg-secondary/50 text-xs"
-                    rows={3}
-                  />
-                </div>
-              </>
-            )}
+          <div>
+            <label className="text-xs text-muted-foreground mb-1 block">
+              Confidence Threshold
+            </label>
+            <Input
+              type="number"
+              min="0"
+              max="1"
+              step="0.05"
+              value={data.config.confidence ?? 0.5}
+              onChange={(e) =>
+                updateConfig(
+                  "confidence",
+                  parseFloat(e.target.value) || 0
+                )
+              }
+              className="bg-secondary/50"
+            />
+          </div>
 
-            {/* Agentic AI-specific config */}
-            {(data.config.max_iterations !== undefined || data.label?.toLowerCase().includes("agentic")) && (
-              <>
-                <div>
-                  <label className="text-xs text-muted-foreground mb-1 block">Goal</label>
-                  <Textarea
-                    value={data.config.goal || ""}
-                    onChange={(e) => updateConfig("goal", e.target.value)}
-                    placeholder="Define the agent's objective..."
-                    className="bg-secondary/50 text-xs"
-                    rows={3}
-                  />
-                </div>
-                <div>
-                  <label className="text-xs text-muted-foreground mb-1 block">Max Iterations</label>
-                  <Input
-                    type="number"
-                    min={1}
-                    max={100}
-                    value={data.config.max_iterations ?? 10}
-                    onChange={(e) => updateConfig("max_iterations", e.target.value)}
-                    className="bg-secondary/50"
-                  />
-                </div>
-              </>
-            )}
-          </>
-        )}
+          <div>
+            <label className="text-xs text-muted-foreground mb-1 block">
+              Max Detections
+            </label>
+            <Input
+              type="number"
+              min="1"
+              max="100"
+              step="1"
+              value={data.config.maxDetections ?? 10}
+              onChange={(e) =>
+                updateConfig(
+                  "maxDetections",
+                  parseInt(e.target.value, 10) || 1
+                )
+              }
+              className="bg-secondary/50"
+            />
+          </div>
+        </>
+      )}
 
         {data.blockType === "function" && (
           <div>

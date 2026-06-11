@@ -9,4 +9,6 @@ public class PipelineNodeDto
     public string Label { get; set; } = string.Empty;
 
     public Dictionary<string, object> Config { get; set; } = new();
+
+    public int MaxDetections { get; set; } = 10;
 }
