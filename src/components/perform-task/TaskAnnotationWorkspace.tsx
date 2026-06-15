@@ -89,6 +89,18 @@ export function TaskAnnotationWorkspace({
   const [isFullscreen, setIsFullscreen] = useState(false);
   const fullscreenRef = useRef<HTMLDivElement>(null);
 
+  const [initializedProjectLabels, setInitializedProjectLabels] = useState(false);
+
+  useEffect(() => {
+    if (projectLabels.length > 0 && !initializedProjectLabels) {
+      setActiveLabel(projectLabels[0].name);
+      setActiveColor(projectLabels[0].color);
+      setActiveLabelId(projectLabels[0].id);
+      setActiveLabelTypeId(projectLabels[0].label_type_id);
+      setInitializedProjectLabels(true);
+    }
+  }, [projectLabels, initializedProjectLabels]);
+
   useEffect(() => {
     const handler = () => {
       setPortalContainer(document.fullscreenElement as HTMLElement | null);
@@ -98,6 +110,28 @@ export function TaskAnnotationWorkspace({
     setPortalContainer(document.fullscreenElement as HTMLElement | null);
     return () => document.removeEventListener("fullscreenchange", handler);
   }, []);
+
+  useEffect(() => {
+    if (!selectedAnnotation) return;
+
+    const ann =
+      annotations.find(
+        a => a.id === selectedAnnotation
+      );
+
+    if (!ann) return;
+
+    setActiveLabel(ann.label);
+
+    if (ann.labelTypeId) {
+      setActiveLabelTypeId(
+        ann.labelTypeId
+      );
+    }
+  }, [
+    selectedAnnotation,
+    annotations
+  ]);
 
   const toggleFullscreen = useCallback(() => {
     if (!isFullscreen) {
@@ -222,6 +256,12 @@ export function TaskAnnotationWorkspace({
   const textAnnotations = annotations.filter(
     (a): a is TextHighlightAnnotation => a.type === "textHighlight"
   );
+
+  useEffect(() => {
+    if (annotations.length === 1) {
+      setSelectedAnnotation(annotations[0].id);
+    }
+  }, [annotations]);
 
   if (!file) {
     return (

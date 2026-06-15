@@ -12,5 +12,15 @@ public class AnnotationResult
 
     public string AnnotationType { get; set; } = "bbox";
 
+    public string ModelUsed { get; set; } = "yolov8";
+
+    public string? LabelType { get; set; }
+
+    public string? GroupName { get; set; }
+
+    public Guid? LabelTypeId { get; set; }
+
+    public Guid? GroupTypeId { get; set; }
+
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }

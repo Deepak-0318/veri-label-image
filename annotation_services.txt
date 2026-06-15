@@ -1,0 +1,8 @@
+src/services/auditLogger.ts:export type AuditCategory = "auth" | "crud" | "annotation" | "task" | "qc" | "team" | "pipeline" | "ai" | "general";
+src/services/apiClient.ts:    const res = await fetch(`${getBaseUrl()}/api/annotations?fileId=${fileId}`, {
+src/services/apiClient.ts:    annotation: Omit<ApiAnnotation, "id" | "createdAt" | "updatedAt">,
+src/services/apiClient.ts:    const res = await fetch(`${getBaseUrl()}/api/annotations`, {
+src/services/apiClient.ts:      body: JSON.stringify(annotation),
+src/services/apiClient.ts:    const res = await fetch(`${getBaseUrl()}/api/annotations/${id}`, {
+src/services/apiClient.ts:    const res = await fetch(`${getBaseUrl()}/api/annotations/${id}`, {
+src/services/apiClient.ts:    const res = await fetch(`${getBaseUrl()}/api/annotations/batch-delete`, {

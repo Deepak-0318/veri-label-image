@@ -55,6 +55,9 @@ export default function Annotate() {
     deleteAllAnnotations,
   } = useAnnotations(isDemoFile ? undefined : fileId, projectId);
 
+  console.log("DB annotations", dbAnnotations);
+  console.log("Annotation count", dbAnnotations?.length);
+
   const { labels, createLabel } = useLabels(user?.id);
   const { labelTypes: projectLabelTypes } = useProjectLabelTypes(projectId);
   const { projectLabels, deleteLabel: deleteProjectLabel } = useProjectLabels(projectId);

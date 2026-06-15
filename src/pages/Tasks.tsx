@@ -240,6 +240,17 @@ export default function Tasks() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { tasks, isLoading, updateTask, deleteTask } = useTasks(user?.id);
+  console.log("TASKS FROM DB", tasks);
+  console.log(
+    "ALL TASKS",
+    tasks.map(t => ({
+      id: t.id,
+      name: t.name,
+      status: t.status,
+      project_id: t.project_id
+    }))
+  );
+  tasks.forEach((task) => console.log("TASK STATUS", task.status));
   const { isAdmin, isManager, isQC } = useUserRole(user?.id);
   const { projects } = useProjects(user?.id);
   const { organization } = useOrganization(user?.id);
@@ -263,9 +274,7 @@ export default function Tasks() {
 
   const annotationTasks = useMemo(() => {
     return tasks.filter((t) => {
-      if (t.status === "completed") return false;
-      // Review tasks with QA assigned OR pool QC tasks go to QC tab
-      if (t.status === "review" && (t.qa_assigned_to || t.qa_status)) return false;
+      if (t.status === "completed" || t.status === "review") return false;
       if (isAdmin || isManager) return true;
       return t.assigned_to === user?.id || !t.assigned_to;
     });
@@ -273,15 +282,10 @@ export default function Tasks() {
 
   const qcTasks = useMemo(() => {
     return tasks.filter((t) => {
-      // Show tasks in review status (both assigned QC and pool QC)
-      if (t.status !== "review") {
-        // Also show non-review tasks that have QA assigned
-        if (!t.qa_assigned_to) return false;
-      }
       // Completed QA tasks go to Completed tab
       if (t.status === "completed" && t.qa_status === "completed") return false;
-      // Must have qa_assigned_to OR be in review with qa_status set (pool QC)
-      if (!t.qa_assigned_to && t.status !== "review") return false;
+      // Must have qa_assigned_to OR be in review (pool QC)
+      if (t.status !== "review" && !t.qa_assigned_to) return false;
       if (isAdmin || isManager) return true;
       return t.qa_assigned_to === user?.id || (!t.qa_assigned_to && t.status === "review");
     });
@@ -295,7 +299,30 @@ export default function Tasks() {
     });
   }, [tasks, isAdmin, user?.id]);
 
+  console.log("ANNOTATION TASKS", annotationTasks);
+  console.log("QC TASKS",
+  qcTasks.map(t => ({
+    id: t.id,
+    name: t.name,
+    status: t.status,
+    assigned_to: t.assigned_to,
+    qa_assigned_to: t.qa_assigned_to,
+    project_id: t.project_id
+  }))
+);
+
   const currentTasks = activeTab === "qc" ? qcTasks : activeTab === "completed" ? completedTasks : annotationTasks;
+
+  console.log(
+    "TASK DETAILS",
+    currentTasks.map(t => ({
+      id: t.id,
+      status: t.status,
+      assigned_to: t.assigned_to,
+      qa_assigned_to: t.qa_assigned_to,
+      name: t.name
+    }))
+  );
 
   const filteredTasks = currentTasks.filter((t) => {
     const matchesSearch = t.name.toLowerCase().includes(searchQuery.toLowerCase());

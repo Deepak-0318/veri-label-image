@@ -8,6 +8,8 @@ public class PipelineExecutionRequest
 
     public string? TaskId { get; set; }
 
+    public string? SubtaskId { get; set; }
+
     public string? RunId { get; set; }
 
     public List<Guid> FileIds { get; set; } = new();
@@ -20,4 +22,6 @@ public class PipelineExecutionRequest
     public List<object> Edges { get; set; } = new();
 
     public List<string> Labels { get; set; } = new();
+
+    public string? SelectedLabel { get; set; }
 }

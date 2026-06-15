@@ -20,8 +20,11 @@ builder.Services.AddScoped<PipelineExecutionService>();
 builder.Services.AddScoped<ImageDetectionService>();
 builder.Services.AddScoped<SupabaseAnnotationService>();
 builder.Services.AddScoped<ImageFileResolverService>();
+builder.Services.Configure<verilabelbackend.Models.YoloDetectionOptions>(builder.Configuration.GetSection("Yolo"));
+builder.Services.AddSingleton<YoloV8OnnxService>();
+builder.Services.AddSingleton<GroundingDinoOnnxService>();
 builder.Services.AddSingleton<IDetectionService,
-    GroundingDinoOnnxService>();
+                              OpenVocabularyDetectionService>();
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -106,6 +109,14 @@ builder.Services.AddSingleton<verilabelbackend.Repositories.IDocumentRepository,
 
 var app = builder.Build();
 
+if (args.Contains("--run-yolo-test"))
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        await YoloTestRunner.RunTestsAsync(scope.ServiceProvider);
+    }
+    return;
+}
 
 if (app.Environment.IsDevelopment())
 {

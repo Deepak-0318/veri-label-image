@@ -1,0 +1,2790 @@
+Using launch settings from Properties/launchSettings.json...
+Building...
+/Users/deepak/Desktop/veri-label-dev/backend/verilabelbackend.csproj : warning NU1903: Package 'SixLabors.ImageSharp' 3.1.5 has a known high severity vulnerability, https://github.com/advisories/GHSA-2cmq-823j-5qj8
+/Users/deepak/Desktop/veri-label-dev/backend/verilabelbackend.csproj : warning NU1902: Package 'SixLabors.ImageSharp' 3.1.5 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-rxmq-m78w-7wmc
+/Users/deepak/Desktop/veri-label-dev/backend/verilabelbackend.csproj : warning NU1903: Package 'SixLabors.ImageSharp' 3.1.5 has a known high severity vulnerability, https://github.com/advisories/GHSA-2cmq-823j-5qj8
+/Users/deepak/Desktop/veri-label-dev/backend/verilabelbackend.csproj : warning NU1902: Package 'SixLabors.ImageSharp' 3.1.5 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-rxmq-m78w-7wmc
+
+========================================
+STARTING YOLOv8 ONNX INTEGRATION TESTS
+========================================
+
+[YOLOv8 ONNX] Loading model: /Users/deepak/Desktop/veri-label-dev/backend/Models/ONNX/yolov8s.onnx
+[YOLOv8 ONNX] Model loaded successfully
+[YOLOv8 ONNX] Configured Confidence Threshold = 0.5
+[YOLOv8 ONNX] Configured NMS IoU Threshold = 0.35
+[YOLOv8 ONNX] Configured Min Box = 40x40
+========== INPUTS ==========
+images | System.Single | 1,3,640,640
+========== OUTPUTS ==========
+output0 | System.Single | 1,84,8400
+
+----------------------------------------
+RUNNING TEST CASE: Task 3: human.jpeg person detection
+Image Path: /Users/deepak/Desktop/veri-label-dev/backend/test_images/human.jpeg
+----------------------------------------
+Tensor Shape = 1,3,640,640
+Output Shape = 1,84,8400
+ClassId: 0
+ClassName: person
+Confidence: 0.8004358
+Original Size: 255x198
+Scaled Box: x=16, y=8, w=230, h=189
+ClassId: 0
+ClassName: person
+Confidence: 0.88850313
+Original Size: 255x198
+Scaled Box: x=15, y=9, w=230, h=188
+ClassId: 0
+ClassName: person
+Confidence: 0.9438704
+Original Size: 255x198
+Scaled Box: x=16, y=7, w=228, h=189
+ClassId: 0
+ClassName: person
+Confidence: 0.9318497
+Original Size: 255x198
+Scaled Box: x=15, y=8, w=230, h=188
+ClassId: 0
+ClassName: person
+Confidence: 0.90975684
+Original Size: 255x198
+Scaled Box: x=17, y=8, w=229, h=189
+ClassId: 0
+ClassName: person
+Confidence: 0.93874395
+Original Size: 255x198
+Scaled Box: x=15, y=7, w=229, h=190
+ClassId: 0
+ClassName: person
+Confidence: 0.9294106
+Original Size: 255x198
+Scaled Box: x=16, y=8, w=229, h=189
+ClassId: 0
+ClassName: person
+Confidence: 0.9373883
+Original Size: 255x198
+Scaled Box: x=17, y=8, w=228, h=189
+ClassId: 0
+ClassName: person
+Confidence: 0.9091226
+Original Size: 255x198
+Scaled Box: x=15, y=9, w=228, h=187
+ClassId: 0
+ClassName: person
+Confidence: 0.929753
+Original Size: 255x198
+Scaled Box: x=17, y=9, w=228, h=187
+Candidate count: 10
+Detection 0: Class id=0, Confidence=0.8004, Box=[x=16, y=8, w=230, h=189]
+Detection 1: Class id=0, Confidence=0.8885, Box=[x=15, y=9, w=230, h=188]
+Detection 2: Class id=0, Confidence=0.9439, Box=[x=16, y=7, w=228, h=189]
+Detection 3: Class id=0, Confidence=0.9318, Box=[x=15, y=8, w=230, h=188]
+Detection 4: Class id=0, Confidence=0.9098, Box=[x=17, y=8, w=229, h=189]
+Detection 5: Class id=0, Confidence=0.9387, Box=[x=15, y=7, w=229, h=190]
+Detection 6: Class id=0, Confidence=0.9294, Box=[x=16, y=8, w=229, h=189]
+Detection 7: Class id=0, Confidence=0.9374, Box=[x=17, y=8, w=228, h=189]
+Detection 8: Class id=0, Confidence=0.9091, Box=[x=15, y=9, w=228, h=187]
+Detection 9: Class id=0, Confidence=0.9298, Box=[x=17, y=9, w=228, h=187]
+[DEBUG] All Person Detections Before NMS:
+  - Person candidate: confidence=0.8004, x=16, y=8, w=230, h=189
+  - Person candidate: confidence=0.8885, x=15, y=9, w=230, h=188
+  - Person candidate: confidence=0.9439, x=16, y=7, w=228, h=189
+  - Person candidate: confidence=0.9318, x=15, y=8, w=230, h=188
+  - Person candidate: confidence=0.9098, x=17, y=8, w=229, h=189
+  - Person candidate: confidence=0.9387, x=15, y=7, w=229, h=190
+  - Person candidate: confidence=0.9294, x=16, y=8, w=229, h=189
+  - Person candidate: confidence=0.9374, x=17, y=8, w=228, h=189
+  - Person candidate: confidence=0.9091, x=15, y=9, w=228, h=187
+  - Person candidate: confidence=0.9298, x=17, y=9, w=228, h=187
+[DEBUG] All Detections Before NMS:
+  - Candidate: label=person, confidence=0.8004, x=16, y=8, w=230, h=189
+  - Candidate: label=person, confidence=0.8885, x=15, y=9, w=230, h=188
+  - Candidate: label=person, confidence=0.9439, x=16, y=7, w=228, h=189
+  - Candidate: label=person, confidence=0.9318, x=15, y=8, w=230, h=188
+  - Candidate: label=person, confidence=0.9098, x=17, y=8, w=229, h=189
+  - Candidate: label=person, confidence=0.9387, x=15, y=7, w=229, h=190
+  - Candidate: label=person, confidence=0.9294, x=16, y=8, w=229, h=189
+  - Candidate: label=person, confidence=0.9374, x=17, y=8, w=228, h=189
+  - Candidate: label=person, confidence=0.9091, x=15, y=9, w=228, h=187
+  - Candidate: label=person, confidence=0.9298, x=17, y=9, w=228, h=187
+Before NMS: 10
+After NMS: 1
+[DEBUG] All Detections After NMS:
+  - Survived: label=person, confidence=0.9439, x=16, y=7, w=228, h=189
+[ONTOLOGY]
+Accepted detection: person
+[YOLO]
+Detected: person
+[YOLOv8 ONNX] Returning 1 detection(s)
+
+[TEST RESULTS SUMMARY]
+Total Annotations Generated: 1
+- Label: person, Confidence: 94.4%, BBox: [x=16, y=7, w=228, h=189]
+
+----------------------------------------
+RUNNING TEST CASE: Task 4: Human_testing.jpeg person detection
+Image Path: /Users/deepak/Desktop/veri-label-dev/backend/test_images/Human_testing.jpeg
+----------------------------------------
+Tensor Shape = 1,3,640,640
+Output Shape = 1,84,8400
+ClassId: 0
+ClassName: person
+Confidence: 0.5929244
+ClassId: 0
+ClassName: person
+Confidence: 0.54218185
+ClassId: 0
+ClassName: person
+Confidence: 0.65735424
+ClassId: 0
+ClassName: person
+Confidence: 0.6741519
+ClassId: 0
+ClassName: person
+Confidence: 0.67688465
+ClassId: 0
+ClassName: person
+Confidence: 0.4476876
+ClassId: 0
+ClassName: person
+Confidence: 0.4379477
+ClassId: 0
+ClassName: person
+Confidence: 0.40862
+ClassId: 0
+ClassName: person
+Confidence: 0.65951824
+ClassId: 0
+ClassName: person
+Confidence: 0.6814458
+ClassId: 0
+ClassName: person
+Confidence: 0.67020506
+ClassId: 0
+ClassName: person
+Confidence: 0.43973774
+ClassId: 0
+ClassName: person
+Confidence: 0.417465
+ClassId: 0
+ClassName: person
+Confidence: 0.62785804
+ClassId: 0
+ClassName: person
+Confidence: 0.6311586
+ClassId: 0
+ClassName: person
+Confidence: 0.46793717
+Original Size: 300x168
+Scaled Box: x=82, y=25, w=48, h=76
+ClassId: 0
+ClassName: person
+Confidence: 0.5111483
+Original Size: 300x168
+Scaled Box: x=83, y=25, w=46, h=75
+ClassId: 0
+ClassName: person
+Confidence: 0.49652582
+Original Size: 300x168
+Scaled Box: x=178, y=33, w=44, h=72
+ClassId: 0
+ClassName: person
+Confidence: 0.3661669
+Original Size: 300x168
+Scaled Box: x=178, y=33, w=44, h=71
+ClassId: 0
+ClassName: person
+Confidence: 0.4989922
+Original Size: 300x168
+Scaled Box: x=82, y=25, w=48, h=86
+ClassId: 0
+ClassName: person
+Confidence: 0.4891477
+Original Size: 300x168
+Scaled Box: x=83, y=25, w=47, h=86
+ClassId: 0
+ClassName: person
+Confidence: 0.46021807
+Original Size: 300x168
+Scaled Box: x=84, y=25, w=45, h=85
+ClassId: 0
+ClassName: person
+Confidence: 0.5547437
+Original Size: 300x168
+Scaled Box: x=83, y=25, w=47, h=91
+ClassId: 0
+ClassName: person
+Confidence: 0.6596861
+Original Size: 300x168
+Scaled Box: x=84, y=25, w=46, h=90
+ClassId: 0
+ClassName: person
+Confidence: 0.57270515
+Original Size: 300x168
+Scaled Box: x=84, y=25, w=46, h=90
+ClassId: 0
+ClassName: person
+Confidence: 0.62589306
+Original Size: 300x168
+Scaled Box: x=178, y=33, w=44, h=93
+ClassId: 0
+ClassName: person
+Confidence: 0.58341557
+Original Size: 300x168
+Scaled Box: x=178, y=33, w=44, h=94
+ClassId: 0
+ClassName: person
+Confidence: 0.4183994
+Original Size: 300x168
+Scaled Box: x=122, y=100, w=56, h=67
+ClassId: 0
+ClassName: person
+Confidence: 0.5895207
+Original Size: 300x168
+Scaled Box: x=122, y=101, w=55, h=66
+ClassId: 0
+ClassName: person
+Confidence: 0.5652836
+Original Size: 300x168
+Scaled Box: x=121, y=101, w=57, h=66
+ClassId: 0
+ClassName: person
+Confidence: 0.59063095
+Original Size: 300x168
+Scaled Box: x=121, y=101, w=57, h=66
+ClassId: 0
+ClassName: person
+Confidence: 0.6078763
+Original Size: 300x168
+Scaled Box: x=121, y=101, w=55, h=66
+ClassId: 0
+ClassName: person
+Confidence: 0.5389379
+Original Size: 300x168
+Scaled Box: x=121, y=101, w=56, h=66
+ClassId: 0
+ClassName: person
+Confidence: 0.5989382
+Original Size: 300x168
+Scaled Box: x=121, y=101, w=56, h=66
+ClassId: 0
+ClassName: person
+Confidence: 0.59638095
+Original Size: 300x168
+Scaled Box: x=122, y=104, w=54, h=63
+ClassId: 0
+ClassName: person
+Confidence: 0.546158
+Original Size: 300x168
+Scaled Box: x=121, y=103, w=55, h=64
+ClassId: 0
+ClassName: person
+Confidence: 0.50398535
+Original Size: 300x168
+Scaled Box: x=121, y=104, w=55, h=63
+ClassId: 0
+ClassName: person
+Confidence: 0.39520484
+Original Size: 300x168
+Scaled Box: x=63, y=0, w=59, h=60
+ClassId: 0
+ClassName: person
+Confidence: 0.4492711
+Original Size: 300x168
+Scaled Box: x=63, y=0, w=59, h=62
+ClassId: 0
+ClassName: person
+Confidence: 0.53724164
+Original Size: 300x168
+Scaled Box: x=63, y=0, w=59, h=60
+ClassId: 0
+ClassName: person
+Confidence: 0.5030336
+Original Size: 300x168
+Scaled Box: x=64, y=0, w=58, h=61
+ClassId: 0
+ClassName: person
+Confidence: 0.36455482
+Original Size: 300x168
+Scaled Box: x=63, y=0, w=59, h=95
+ClassId: 0
+ClassName: person
+Confidence: 0.42693454
+Original Size: 300x168
+Scaled Box: x=63, y=0, w=60, h=62
+ClassId: 0
+ClassName: person
+Confidence: 0.8162725
+Original Size: 300x168
+Scaled Box: x=0, y=8, w=44, h=156
+ClassId: 0
+ClassName: person
+Confidence: 0.8332319
+Original Size: 300x168
+Scaled Box: x=0, y=8, w=45, h=156
+ClassId: 0
+ClassName: person
+Confidence: 0.6599737
+Original Size: 300x168
+Scaled Box: x=84, y=26, w=46, h=88
+ClassId: 0
+ClassName: person
+Confidence: 0.39268658
+Original Size: 300x168
+Scaled Box: x=178, y=33, w=44, h=95
+ClassId: 0
+ClassName: person
+Confidence: 0.5500085
+Original Size: 300x168
+Scaled Box: x=178, y=33, w=44, h=96
+ClassId: 0
+ClassName: person
+Confidence: 0.40005678
+Original Size: 300x168
+Scaled Box: x=178, y=33, w=44, h=95
+ClassId: 0
+ClassName: person
+Confidence: 0.794674
+Original Size: 300x168
+Scaled Box: x=242, y=16, w=58, h=143
+ClassId: 0
+ClassName: person
+Confidence: 0.7423278
+Original Size: 300x168
+Scaled Box: x=242, y=16, w=58, h=143
+ClassId: 0
+ClassName: person
+Confidence: 0.86380076
+Original Size: 300x168
+Scaled Box: x=0, y=8, w=44, h=157
+ClassId: 0
+ClassName: person
+Confidence: 0.8578055
+Original Size: 300x168
+Scaled Box: x=0, y=8, w=44, h=157
+ClassId: 0
+ClassName: person
+Confidence: 0.83960855
+Original Size: 300x168
+Scaled Box: x=0, y=8, w=44, h=157
+ClassId: 0
+ClassName: person
+Confidence: 0.5168467
+Original Size: 300x168
+Scaled Box: x=81, y=25, w=49, h=89
+ClassId: 0
+ClassName: person
+Confidence: 0.6378455
+Original Size: 300x168
+Scaled Box: x=84, y=25, w=46, h=89
+ClassId: 0
+ClassName: person
+Confidence: 0.7370007
+Original Size: 300x168
+Scaled Box: x=115, y=48, w=81, h=118
+ClassId: 0
+ClassName: person
+Confidence: 0.4217922
+Original Size: 300x168
+Scaled Box: x=178, y=34, w=44, h=94
+ClassId: 0
+ClassName: person
+Confidence: 0.53376794
+Original Size: 300x168
+Scaled Box: x=178, y=33, w=44, h=96
+ClassId: 0
+ClassName: person
+Confidence: 0.36078095
+Original Size: 300x168
+Scaled Box: x=177, y=34, w=45, h=94
+ClassId: 0
+ClassName: person
+Confidence: 0.858098
+Original Size: 300x168
+Scaled Box: x=243, y=16, w=57, h=142
+ClassId: 0
+ClassName: person
+Confidence: 0.83839995
+Original Size: 300x168
+Scaled Box: x=242, y=16, w=58, h=140
+ClassId: 0
+ClassName: person
+Confidence: 0.8466941
+Original Size: 300x168
+Scaled Box: x=242, y=16, w=58, h=140
+ClassId: 0
+ClassName: person
+Confidence: 0.8814154
+Original Size: 300x168
+Scaled Box: x=0, y=8, w=44, h=157
+ClassId: 0
+ClassName: person
+Confidence: 0.8722861
+Original Size: 300x168
+Scaled Box: x=0, y=8, w=44, h=157
+ClassId: 0
+ClassName: person
+Confidence: 0.828686
+Original Size: 300x168
+Scaled Box: x=0, y=8, w=44, h=158
+ClassId: 0
+ClassName: person
+Confidence: 0.91786784
+Original Size: 300x168
+Scaled Box: x=12, y=53, w=109, h=113
+ClassId: 0
+ClassName: person
+Confidence: 0.8860802
+Original Size: 300x168
+Scaled Box: x=11, y=54, w=111, h=112
+ClassId: 0
+ClassName: person
+Confidence: 0.7047204
+Original Size: 300x168
+Scaled Box: x=114, y=48, w=82, h=118
+ClassId: 0
+ClassName: person
+Confidence: 0.75040185
+Original Size: 300x168
+Scaled Box: x=115, y=47, w=81, h=119
+ClassId: 0
+ClassName: person
+Confidence: 0.72911555
+Original Size: 300x168
+Scaled Box: x=115, y=47, w=82, h=119
+ClassId: 0
+ClassName: person
+Confidence: 0.8510467
+Original Size: 300x168
+Scaled Box: x=243, y=16, w=57, h=142
+ClassId: 0
+ClassName: person
+Confidence: 0.864195
+Original Size: 300x168
+Scaled Box: x=242, y=16, w=58, h=139
+ClassId: 0
+ClassName: person
+Confidence: 0.8767309
+Original Size: 300x168
+Scaled Box: x=243, y=16, w=57, h=139
+ClassId: 0
+ClassName: person
+Confidence: 0.90095353
+Original Size: 300x168
+Scaled Box: x=0, y=8, w=44, h=157
+ClassId: 0
+ClassName: person
+Confidence: 0.88374513
+Original Size: 300x168
+Scaled Box: x=0, y=8, w=44, h=158
+ClassId: 0
+ClassName: person
+Confidence: 0.8885704
+Original Size: 300x168
+Scaled Box: x=12, y=54, w=109, h=112
+ClassId: 0
+ClassName: person
+Confidence: 0.9226789
+Original Size: 300x168
+Scaled Box: x=12, y=54, w=109, h=112
+ClassId: 0
+ClassName: person
+Confidence: 0.9140567
+Original Size: 300x168
+Scaled Box: x=12, y=53, w=109, h=113
+ClassId: 0
+ClassName: person
+Confidence: 0.7441739
+Original Size: 300x168
+Scaled Box: x=114, y=48, w=82, h=118
+ClassId: 0
+ClassName: person
+Confidence: 0.7695209
+Original Size: 300x168
+Scaled Box: x=115, y=48, w=81, h=118
+ClassId: 0
+ClassName: person
+Confidence: 0.7581456
+Original Size: 300x168
+Scaled Box: x=115, y=48, w=82, h=118
+ClassId: 0
+ClassName: person
+Confidence: 0.9153067
+Original Size: 300x168
+Scaled Box: x=191, y=56, w=109, h=110
+ClassId: 0
+ClassName: person
+Confidence: 0.91791606
+Original Size: 300x168
+Scaled Box: x=191, y=55, w=109, h=111
+ClassId: 0
+ClassName: person
+Confidence: 0.86002207
+Original Size: 300x168
+Scaled Box: x=243, y=16, w=57, h=140
+ClassId: 0
+ClassName: person
+Confidence: 0.87303066
+Original Size: 300x168
+Scaled Box: x=242, y=16, w=58, h=140
+ClassId: 0
+ClassName: person
+Confidence: 0.9000955
+Original Size: 300x168
+Scaled Box: x=12, y=54, w=109, h=112
+ClassId: 0
+ClassName: person
+Confidence: 0.91724443
+Original Size: 300x168
+Scaled Box: x=12, y=54, w=109, h=112
+ClassId: 0
+ClassName: person
+Confidence: 0.91981477
+Original Size: 300x168
+Scaled Box: x=12, y=54, w=109, h=112
+ClassId: 0
+ClassName: person
+Confidence: 0.71284956
+Original Size: 300x168
+Scaled Box: x=114, y=48, w=82, h=117
+ClassId: 0
+ClassName: person
+Confidence: 0.7627399
+Original Size: 300x168
+Scaled Box: x=114, y=48, w=83, h=118
+ClassId: 0
+ClassName: person
+Confidence: 0.7518143
+Original Size: 300x168
+Scaled Box: x=115, y=48, w=82, h=118
+ClassId: 0
+ClassName: person
+Confidence: 0.9196936
+Original Size: 300x168
+Scaled Box: x=191, y=55, w=109, h=111
+ClassId: 0
+ClassName: person
+Confidence: 0.92319983
+Original Size: 300x168
+Scaled Box: x=191, y=55, w=109, h=111
+ClassId: 0
+ClassName: person
+Confidence: 0.9052198
+Original Size: 300x168
+Scaled Box: x=191, y=55, w=109, h=110
+ClassId: 0
+ClassName: person
+Confidence: 0.9145823
+Original Size: 300x168
+Scaled Box: x=12, y=54, w=109, h=112
+ClassId: 0
+ClassName: person
+Confidence: 0.91035914
+Original Size: 300x168
+Scaled Box: x=12, y=54, w=109, h=112
+ClassId: 0
+ClassName: person
+Confidence: 0.91069746
+Original Size: 300x168
+Scaled Box: x=191, y=55, w=109, h=111
+ClassId: 0
+ClassName: person
+Confidence: 0.9176779
+Original Size: 300x168
+Scaled Box: x=191, y=55, w=108, h=111
+ClassId: 0
+ClassName: person
+Confidence: 0.8903209
+Original Size: 300x168
+Scaled Box: x=191, y=56, w=108, h=110
+Original Size: 300x168
+Scaled Box: x=191, y=55, w=109, h=111
+Original Size: 300x168
+Scaled Box: x=191, y=55, w=109, h=111
+Candidate count: 87
+Detection 0: Class id=0, Confidence=0.4679, Box=[x=82, y=25, w=48, h=76]
+Detection 1: Class id=0, Confidence=0.5111, Box=[x=83, y=25, w=46, h=75]
+Detection 2: Class id=0, Confidence=0.4965, Box=[x=178, y=33, w=44, h=72]
+Detection 3: Class id=0, Confidence=0.3662, Box=[x=178, y=33, w=44, h=71]
+Detection 4: Class id=0, Confidence=0.4990, Box=[x=82, y=25, w=48, h=86]
+Detection 5: Class id=0, Confidence=0.4891, Box=[x=83, y=25, w=47, h=86]
+Detection 6: Class id=0, Confidence=0.4602, Box=[x=84, y=25, w=45, h=85]
+Detection 7: Class id=0, Confidence=0.5547, Box=[x=83, y=25, w=47, h=91]
+Detection 8: Class id=0, Confidence=0.6597, Box=[x=84, y=25, w=46, h=90]
+Detection 9: Class id=0, Confidence=0.5727, Box=[x=84, y=25, w=46, h=90]
+Detection 10: Class id=0, Confidence=0.6259, Box=[x=178, y=33, w=44, h=93]
+Detection 11: Class id=0, Confidence=0.5834, Box=[x=178, y=33, w=44, h=94]
+Detection 12: Class id=0, Confidence=0.4184, Box=[x=122, y=100, w=56, h=67]
+Detection 13: Class id=0, Confidence=0.5895, Box=[x=122, y=101, w=55, h=66]
+Detection 14: Class id=0, Confidence=0.5653, Box=[x=121, y=101, w=57, h=66]
+Detection 15: Class id=0, Confidence=0.5906, Box=[x=121, y=101, w=57, h=66]
+Detection 16: Class id=0, Confidence=0.6079, Box=[x=121, y=101, w=55, h=66]
+Detection 17: Class id=0, Confidence=0.5389, Box=[x=121, y=101, w=56, h=66]
+Detection 18: Class id=0, Confidence=0.5989, Box=[x=121, y=101, w=56, h=66]
+Detection 19: Class id=0, Confidence=0.5964, Box=[x=122, y=104, w=54, h=63]
+[DEBUG] All Person Detections Before NMS:
+  - Person candidate: confidence=0.4679, x=82, y=25, w=48, h=76
+  - Person candidate: confidence=0.5111, x=83, y=25, w=46, h=75
+  - Person candidate: confidence=0.4965, x=178, y=33, w=44, h=72
+  - Person candidate: confidence=0.3662, x=178, y=33, w=44, h=71
+  - Person candidate: confidence=0.4990, x=82, y=25, w=48, h=86
+  - Person candidate: confidence=0.4891, x=83, y=25, w=47, h=86
+  - Person candidate: confidence=0.4602, x=84, y=25, w=45, h=85
+  - Person candidate: confidence=0.5547, x=83, y=25, w=47, h=91
+  - Person candidate: confidence=0.6597, x=84, y=25, w=46, h=90
+  - Person candidate: confidence=0.5727, x=84, y=25, w=46, h=90
+  - Person candidate: confidence=0.6259, x=178, y=33, w=44, h=93
+  - Person candidate: confidence=0.5834, x=178, y=33, w=44, h=94
+  - Person candidate: confidence=0.4184, x=122, y=100, w=56, h=67
+  - Person candidate: confidence=0.5895, x=122, y=101, w=55, h=66
+  - Person candidate: confidence=0.5653, x=121, y=101, w=57, h=66
+  - Person candidate: confidence=0.5906, x=121, y=101, w=57, h=66
+  - Person candidate: confidence=0.6079, x=121, y=101, w=55, h=66
+  - Person candidate: confidence=0.5389, x=121, y=101, w=56, h=66
+  - Person candidate: confidence=0.5989, x=121, y=101, w=56, h=66
+  - Person candidate: confidence=0.5964, x=122, y=104, w=54, h=63
+  - Person candidate: confidence=0.5462, x=121, y=103, w=55, h=64
+  - Person candidate: confidence=0.5040, x=121, y=104, w=55, h=63
+  - Person candidate: confidence=0.3952, x=63, y=0, w=59, h=60
+  - Person candidate: confidence=0.4493, x=63, y=0, w=59, h=62
+  - Person candidate: confidence=0.5372, x=63, y=0, w=59, h=60
+  - Person candidate: confidence=0.5030, x=64, y=0, w=58, h=61
+  - Person candidate: confidence=0.3646, x=63, y=0, w=59, h=95
+  - Person candidate: confidence=0.4269, x=63, y=0, w=60, h=62
+  - Person candidate: confidence=0.8163, x=0, y=8, w=44, h=156
+  - Person candidate: confidence=0.8332, x=0, y=8, w=45, h=156
+  - Person candidate: confidence=0.6600, x=84, y=26, w=46, h=88
+  - Person candidate: confidence=0.3927, x=178, y=33, w=44, h=95
+  - Person candidate: confidence=0.5500, x=178, y=33, w=44, h=96
+  - Person candidate: confidence=0.4001, x=178, y=33, w=44, h=95
+  - Person candidate: confidence=0.7947, x=242, y=16, w=58, h=143
+  - Person candidate: confidence=0.7423, x=242, y=16, w=58, h=143
+  - Person candidate: confidence=0.8638, x=0, y=8, w=44, h=157
+  - Person candidate: confidence=0.8578, x=0, y=8, w=44, h=157
+  - Person candidate: confidence=0.8396, x=0, y=8, w=44, h=157
+  - Person candidate: confidence=0.5168, x=81, y=25, w=49, h=89
+  - Person candidate: confidence=0.6378, x=84, y=25, w=46, h=89
+  - Person candidate: confidence=0.7370, x=115, y=48, w=81, h=118
+  - Person candidate: confidence=0.4218, x=178, y=34, w=44, h=94
+  - Person candidate: confidence=0.5338, x=178, y=33, w=44, h=96
+  - Person candidate: confidence=0.3608, x=177, y=34, w=45, h=94
+  - Person candidate: confidence=0.8581, x=243, y=16, w=57, h=142
+  - Person candidate: confidence=0.8384, x=242, y=16, w=58, h=140
+  - Person candidate: confidence=0.8467, x=242, y=16, w=58, h=140
+  - Person candidate: confidence=0.8814, x=0, y=8, w=44, h=157
+  - Person candidate: confidence=0.8723, x=0, y=8, w=44, h=157
+  - Person candidate: confidence=0.8287, x=0, y=8, w=44, h=158
+  - Person candidate: confidence=0.9179, x=12, y=53, w=109, h=113
+  - Person candidate: confidence=0.8861, x=11, y=54, w=111, h=112
+  - Person candidate: confidence=0.7047, x=114, y=48, w=82, h=118
+  - Person candidate: confidence=0.7504, x=115, y=47, w=81, h=119
+  - Person candidate: confidence=0.7291, x=115, y=47, w=82, h=119
+  - Person candidate: confidence=0.8510, x=243, y=16, w=57, h=142
+  - Person candidate: confidence=0.8642, x=242, y=16, w=58, h=139
+  - Person candidate: confidence=0.8767, x=243, y=16, w=57, h=139
+  - Person candidate: confidence=0.9010, x=0, y=8, w=44, h=157
+  - Person candidate: confidence=0.8837, x=0, y=8, w=44, h=158
+  - Person candidate: confidence=0.8886, x=12, y=54, w=109, h=112
+  - Person candidate: confidence=0.9227, x=12, y=54, w=109, h=112
+  - Person candidate: confidence=0.9141, x=12, y=53, w=109, h=113
+  - Person candidate: confidence=0.7442, x=114, y=48, w=82, h=118
+  - Person candidate: confidence=0.7695, x=115, y=48, w=81, h=118
+  - Person candidate: confidence=0.7581, x=115, y=48, w=82, h=118
+  - Person candidate: confidence=0.9153, x=191, y=56, w=109, h=110
+  - Person candidate: confidence=0.9179, x=191, y=55, w=109, h=111
+  - Person candidate: confidence=0.8600, x=243, y=16, w=57, h=140
+  - Person candidate: confidence=0.8730, x=242, y=16, w=58, h=140
+  - Person candidate: confidence=0.9001, x=12, y=54, w=109, h=112
+  - Person candidate: confidence=0.9172, x=12, y=54, w=109, h=112
+  - Person candidate: confidence=0.9198, x=12, y=54, w=109, h=112
+  - Person candidate: confidence=0.7128, x=114, y=48, w=82, h=117
+  - Person candidate: confidence=0.7627, x=114, y=48, w=83, h=118
+  - Person candidate: confidence=0.7518, x=115, y=48, w=82, h=118
+  - Person candidate: confidence=0.9197, x=191, y=55, w=109, h=111
+  - Person candidate: confidence=0.9232, x=191, y=55, w=109, h=111
+  - Person candidate: confidence=0.9052, x=191, y=55, w=109, h=110
+  - Person candidate: confidence=0.9146, x=12, y=54, w=109, h=112
+  - Person candidate: confidence=0.9104, x=12, y=54, w=109, h=112
+  - Person candidate: confidence=0.9107, x=191, y=55, w=109, h=111
+  - Person candidate: confidence=0.9177, x=191, y=55, w=108, h=111
+  - Person candidate: confidence=0.8903, x=191, y=56, w=108, h=110
+  - Person candidate: confidence=0.9133, x=191, y=55, w=109, h=111
+  - Person candidate: confidence=0.9050, x=191, y=55, w=109, h=111
+[DEBUG] All Detections Before NMS:
+  - Candidate: label=person, confidence=0.4679, x=82, y=25, w=48, h=76
+  - Candidate: label=person, confidence=0.5111, x=83, y=25, w=46, h=75
+  - Candidate: label=person, confidence=0.4965, x=178, y=33, w=44, h=72
+  - Candidate: label=person, confidence=0.3662, x=178, y=33, w=44, h=71
+  - Candidate: label=person, confidence=0.4990, x=82, y=25, w=48, h=86
+  - Candidate: label=person, confidence=0.4891, x=83, y=25, w=47, h=86
+  - Candidate: label=person, confidence=0.4602, x=84, y=25, w=45, h=85
+  - Candidate: label=person, confidence=0.5547, x=83, y=25, w=47, h=91
+  - Candidate: label=person, confidence=0.6597, x=84, y=25, w=46, h=90
+  - Candidate: label=person, confidence=0.5727, x=84, y=25, w=46, h=90
+  - Candidate: label=person, confidence=0.6259, x=178, y=33, w=44, h=93
+  - Candidate: label=person, confidence=0.5834, x=178, y=33, w=44, h=94
+  - Candidate: label=person, confidence=0.4184, x=122, y=100, w=56, h=67
+  - Candidate: label=person, confidence=0.5895, x=122, y=101, w=55, h=66
+  - Candidate: label=person, confidence=0.5653, x=121, y=101, w=57, h=66
+  - Candidate: label=person, confidence=0.5906, x=121, y=101, w=57, h=66
+  - Candidate: label=person, confidence=0.6079, x=121, y=101, w=55, h=66
+  - Candidate: label=person, confidence=0.5389, x=121, y=101, w=56, h=66
+  - Candidate: label=person, confidence=0.5989, x=121, y=101, w=56, h=66
+  - Candidate: label=person, confidence=0.5964, x=122, y=104, w=54, h=63
+  - Candidate: label=person, confidence=0.5462, x=121, y=103, w=55, h=64
+  - Candidate: label=person, confidence=0.5040, x=121, y=104, w=55, h=63
+  - Candidate: label=person, confidence=0.3952, x=63, y=0, w=59, h=60
+  - Candidate: label=person, confidence=0.4493, x=63, y=0, w=59, h=62
+  - Candidate: label=person, confidence=0.5372, x=63, y=0, w=59, h=60
+  - Candidate: label=person, confidence=0.5030, x=64, y=0, w=58, h=61
+  - Candidate: label=person, confidence=0.3646, x=63, y=0, w=59, h=95
+  - Candidate: label=person, confidence=0.4269, x=63, y=0, w=60, h=62
+  - Candidate: label=person, confidence=0.8163, x=0, y=8, w=44, h=156
+  - Candidate: label=person, confidence=0.8332, x=0, y=8, w=45, h=156
+  - Candidate: label=person, confidence=0.6600, x=84, y=26, w=46, h=88
+  - Candidate: label=person, confidence=0.3927, x=178, y=33, w=44, h=95
+  - Candidate: label=person, confidence=0.5500, x=178, y=33, w=44, h=96
+  - Candidate: label=person, confidence=0.4001, x=178, y=33, w=44, h=95
+  - Candidate: label=person, confidence=0.7947, x=242, y=16, w=58, h=143
+  - Candidate: label=person, confidence=0.7423, x=242, y=16, w=58, h=143
+  - Candidate: label=person, confidence=0.8638, x=0, y=8, w=44, h=157
+  - Candidate: label=person, confidence=0.8578, x=0, y=8, w=44, h=157
+  - Candidate: label=person, confidence=0.8396, x=0, y=8, w=44, h=157
+  - Candidate: label=person, confidence=0.5168, x=81, y=25, w=49, h=89
+  - Candidate: label=person, confidence=0.6378, x=84, y=25, w=46, h=89
+  - Candidate: label=person, confidence=0.7370, x=115, y=48, w=81, h=118
+  - Candidate: label=person, confidence=0.4218, x=178, y=34, w=44, h=94
+  - Candidate: label=person, confidence=0.5338, x=178, y=33, w=44, h=96
+  - Candidate: label=person, confidence=0.3608, x=177, y=34, w=45, h=94
+  - Candidate: label=person, confidence=0.8581, x=243, y=16, w=57, h=142
+  - Candidate: label=person, confidence=0.8384, x=242, y=16, w=58, h=140
+  - Candidate: label=person, confidence=0.8467, x=242, y=16, w=58, h=140
+  - Candidate: label=person, confidence=0.8814, x=0, y=8, w=44, h=157
+  - Candidate: label=person, confidence=0.8723, x=0, y=8, w=44, h=157
+  - Candidate: label=person, confidence=0.8287, x=0, y=8, w=44, h=158
+  - Candidate: label=person, confidence=0.9179, x=12, y=53, w=109, h=113
+  - Candidate: label=person, confidence=0.8861, x=11, y=54, w=111, h=112
+  - Candidate: label=person, confidence=0.7047, x=114, y=48, w=82, h=118
+  - Candidate: label=person, confidence=0.7504, x=115, y=47, w=81, h=119
+  - Candidate: label=person, confidence=0.7291, x=115, y=47, w=82, h=119
+  - Candidate: label=person, confidence=0.8510, x=243, y=16, w=57, h=142
+  - Candidate: label=person, confidence=0.8642, x=242, y=16, w=58, h=139
+  - Candidate: label=person, confidence=0.8767, x=243, y=16, w=57, h=139
+  - Candidate: label=person, confidence=0.9010, x=0, y=8, w=44, h=157
+  - Candidate: label=person, confidence=0.8837, x=0, y=8, w=44, h=158
+  - Candidate: label=person, confidence=0.8886, x=12, y=54, w=109, h=112
+  - Candidate: label=person, confidence=0.9227, x=12, y=54, w=109, h=112
+  - Candidate: label=person, confidence=0.9141, x=12, y=53, w=109, h=113
+  - Candidate: label=person, confidence=0.7442, x=114, y=48, w=82, h=118
+  - Candidate: label=person, confidence=0.7695, x=115, y=48, w=81, h=118
+  - Candidate: label=person, confidence=0.7581, x=115, y=48, w=82, h=118
+  - Candidate: label=person, confidence=0.9153, x=191, y=56, w=109, h=110
+  - Candidate: label=person, confidence=0.9179, x=191, y=55, w=109, h=111
+  - Candidate: label=person, confidence=0.8600, x=243, y=16, w=57, h=140
+  - Candidate: label=person, confidence=0.8730, x=242, y=16, w=58, h=140
+  - Candidate: label=person, confidence=0.9001, x=12, y=54, w=109, h=112
+  - Candidate: label=person, confidence=0.9172, x=12, y=54, w=109, h=112
+  - Candidate: label=person, confidence=0.9198, x=12, y=54, w=109, h=112
+  - Candidate: label=person, confidence=0.7128, x=114, y=48, w=82, h=117
+  - Candidate: label=person, confidence=0.7627, x=114, y=48, w=83, h=118
+  - Candidate: label=person, confidence=0.7518, x=115, y=48, w=82, h=118
+  - Candidate: label=person, confidence=0.9197, x=191, y=55, w=109, h=111
+  - Candidate: label=person, confidence=0.9232, x=191, y=55, w=109, h=111
+  - Candidate: label=person, confidence=0.9052, x=191, y=55, w=109, h=110
+  - Candidate: label=person, confidence=0.9146, x=12, y=54, w=109, h=112
+  - Candidate: label=person, confidence=0.9104, x=12, y=54, w=109, h=112
+  - Candidate: label=person, confidence=0.9107, x=191, y=55, w=109, h=111
+  - Candidate: label=person, confidence=0.9177, x=191, y=55, w=108, h=111
+  - Candidate: label=person, confidence=0.8903, x=191, y=56, w=108, h=110
+  - Candidate: label=person, confidence=0.9133, x=191, y=55, w=109, h=111
+  - Candidate: label=person, confidence=0.9050, x=191, y=55, w=109, h=111
+Before NMS: 87
+After NMS: 9
+[DEBUG] All Detections After NMS:
+  - Survived: label=person, confidence=0.9232, x=191, y=55, w=109, h=111
+  - Survived: label=person, confidence=0.9227, x=12, y=54, w=109, h=112
+  - Survived: label=person, confidence=0.9010, x=0, y=8, w=44, h=157
+  - Survived: label=person, confidence=0.8767, x=243, y=16, w=57, h=139
+  - Survived: label=person, confidence=0.7695, x=115, y=48, w=81, h=118
+  - Survived: label=person, confidence=0.6600, x=84, y=26, w=46, h=88
+  - Survived: label=person, confidence=0.6259, x=178, y=33, w=44, h=93
+  - Survived: label=person, confidence=0.6079, x=121, y=101, w=55, h=66
+  - Survived: label=person, confidence=0.5372, x=63, y=0, w=59, h=60
+[ONTOLOGY]
+Accepted detection: person
+[YOLO]
+Detected: person
+[ONTOLOGY]
+Accepted detection: person
+[YOLO]
+Detected: person
+[ONTOLOGY]
+Accepted detection: person
+[YOLO]
+Detected: person
+[ONTOLOGY]
+Accepted detection: person
+[YOLO]
+Detected: person
+[ONTOLOGY]
+Accepted detection: person
+[YOLO]
+Detected: person
+[ONTOLOGY]
+Accepted detection: person
+[YOLO]
+Detected: person
+[ONTOLOGY]
+Accepted detection: person
+[YOLO]
+Detected: person
+[ONTOLOGY]
+Accepted detection: person
+[YOLO]
+Detected: person
+[ONTOLOGY]
+Accepted detection: person
+[YOLO]
+Detected: person
+[YOLOv8 ONNX] Returning 9 detection(s)
+
+[TEST RESULTS SUMMARY]
+Total Annotations Generated: 9
+- Label: person, Confidence: 92.3%, BBox: [x=191, y=55, w=109, h=111]
+- Label: person, Confidence: 92.3%, BBox: [x=12, y=54, w=109, h=112]
+- Label: person, Confidence: 90.1%, BBox: [x=0, y=8, w=44, h=157]
+- Label: person, Confidence: 87.7%, BBox: [x=243, y=16, w=57, h=139]
+- Label: person, Confidence: 77.0%, BBox: [x=115, y=48, w=81, h=118]
+- Label: person, Confidence: 66.0%, BBox: [x=84, y=26, w=46, h=88]
+- Label: person, Confidence: 62.6%, BBox: [x=178, y=33, w=44, h=93]
+- Label: person, Confidence: 60.8%, BBox: [x=121, y=101, w=55, h=66]
+- Label: person, Confidence: 53.7%, BBox: [x=63, y=0, w=59, h=60]
+
+----------------------------------------
+RUNNING TEST CASE: 1. Single & Multi Human Detection (Project labels: ['person'])
+Image Path: /Users/deepak/Desktop/veri-label-dev/backend/test_images/human.jpg
+----------------------------------------
+Tensor Shape = 1,3,640,640
+Output Shape = 1,84,8400
+ClassId: 0
+ClassName: person
+Confidence: 0.4172832
+Original Size: 810x1080
+Scaled Box: x=1, y=550, w=72, h=319
+ClassId: 0
+ClassName: person
+Confidence: 0.58202755
+Original Size: 810x1080
+Scaled Box: x=1, y=551, w=73, h=321
+ClassId: 0
+ClassName: person
+Confidence: 0.59274554
+Original Size: 810x1080
+Scaled Box: x=0, y=551, w=74, h=321
+ClassId: 0
+ClassName: person
+Confidence: 0.5705204
+Original Size: 810x1080
+Scaled Box: x=1, y=551, w=72, h=317
+ClassId: 0
+ClassName: person
+Confidence: 0.57281137
+Original Size: 810x1080
+Scaled Box: x=0, y=550, w=74, h=318
+ClassId: 0
+ClassName: person
+Confidence: 0.54626155
+Original Size: 810x1080
+Scaled Box: x=1, y=547, w=71, h=323
+ClassId: 0
+ClassName: person
+Confidence: 0.5608646
+Original Size: 810x1080
+Scaled Box: x=0, y=547, w=74, h=321
+ClassId: 0
+ClassName: person
+Confidence: 0.52655363
+Original Size: 810x1080
+Scaled Box: x=1, y=543, w=70, h=328
+ClassId: 0
+ClassName: person
+Confidence: 0.3723933
+Original Size: 810x1080
+Scaled Box: x=1, y=547, w=73, h=324
+ClassId: 5
+ClassName: bus
+Confidence: 0.9082079
+Original Size: 810x1080
+Scaled Box: x=34, y=230, w=773, h=512
+ClassId: 5
+ClassName: bus
+Confidence: 0.90147173
+Original Size: 810x1080
+Scaled Box: x=26, y=229, w=776, h=512
+ClassId: 5
+ClassName: bus
+Confidence: 0.88543296
+Original Size: 810x1080
+Scaled Box: x=20, y=227, w=782, h=515
+ClassId: 5
+ClassName: bus
+Confidence: 0.90301
+Original Size: 810x1080
+Scaled Box: x=34, y=230, w=771, h=511
+ClassId: 5
+ClassName: bus
+Confidence: 0.8914625
+Original Size: 810x1080
+Scaled Box: x=26, y=229, w=774, h=510
+ClassId: 5
+ClassName: bus
+Confidence: 0.8814266
+Original Size: 810x1080
+Scaled Box: x=20, y=228, w=782, h=512
+ClassId: 5
+ClassName: bus
+Confidence: 0.8943336
+Original Size: 810x1080
+Scaled Box: x=35, y=229, w=768, h=511
+ClassId: 5
+ClassName: bus
+Confidence: 0.8952316
+Original Size: 810x1080
+Scaled Box: x=24, y=228, w=773, h=513
+ClassId: 5
+ClassName: bus
+Confidence: 0.80990267
+Original Size: 810x1080
+Scaled Box: x=21, y=227, w=782, h=514
+ClassId: 0
+ClassName: person
+Confidence: 0.83382094
+Original Size: 810x1080
+Scaled Box: x=224, y=407, w=122, h=453
+ClassId: 0
+ClassName: person
+Confidence: 0.8289662
+Original Size: 810x1080
+Scaled Box: x=224, y=408, w=121, h=453
+ClassId: 5
+ClassName: bus
+Confidence: 0.90687245
+Original Size: 810x1080
+Scaled Box: x=29, y=230, w=765, h=511
+ClassId: 0
+ClassName: person
+Confidence: 0.7883171
+Original Size: 810x1080
+Scaled Box: x=667, y=392, w=142, h=487
+ClassId: 0
+ClassName: person
+Confidence: 0.87789416
+Original Size: 810x1080
+Scaled Box: x=52, y=399, w=195, h=504
+ClassId: 0
+ClassName: person
+Confidence: 0.8818776
+Original Size: 810x1080
+Scaled Box: x=51, y=399, w=197, h=505
+ClassId: 0
+ClassName: person
+Confidence: 0.8436184
+Original Size: 810x1080
+Scaled Box: x=223, y=407, w=123, h=453
+ClassId: 0
+ClassName: person
+Confidence: 0.8149588
+Original Size: 810x1080
+Scaled Box: x=223, y=407, w=123, h=453
+ClassId: 0
+ClassName: person
+Confidence: 0.8283581
+Original Size: 810x1080
+Scaled Box: x=667, y=393, w=143, h=486
+ClassId: 0
+ClassName: person
+Confidence: 0.8953715
+Original Size: 810x1080
+Scaled Box: x=667, y=393, w=142, h=487
+ClassId: 0
+ClassName: person
+Confidence: 0.9011758
+Original Size: 810x1080
+Scaled Box: x=51, y=399, w=193, h=505
+ClassId: 0
+ClassName: person
+Confidence: 0.9160591
+Original Size: 810x1080
+Scaled Box: x=50, y=399, w=195, h=504
+ClassId: 0
+ClassName: person
+Confidence: 0.38047186
+Original Size: 810x1080
+Scaled Box: x=48, y=401, w=197, h=491
+ClassId: 0
+ClassName: person
+Confidence: 0.85477823
+Original Size: 810x1080
+Scaled Box: x=223, y=406, w=124, h=454
+ClassId: 0
+ClassName: person
+Confidence: 0.82294726
+Original Size: 810x1080
+Scaled Box: x=223, y=405, w=123, h=455
+ClassId: 0
+ClassName: person
+Confidence: 0.87500846
+Original Size: 810x1080
+Scaled Box: x=667, y=393, w=142, h=485
+ClassId: 0
+ClassName: person
+Confidence: 0.89124376
+Original Size: 810x1080
+Scaled Box: x=666, y=394, w=143, h=486
+ClassId: 0
+ClassName: person
+Confidence: 0.89495265
+Original Size: 810x1080
+Scaled Box: x=51, y=400, w=195, h=503
+ClassId: 0
+ClassName: person
+Confidence: 0.91475856
+Original Size: 810x1080
+Scaled Box: x=49, y=400, w=197, h=503
+ClassId: 0
+ClassName: person
+Confidence: 0.76410514
+Original Size: 810x1080
+Scaled Box: x=49, y=404, w=194, h=491
+ClassId: 0
+ClassName: person
+Confidence: 0.8610139
+Original Size: 810x1080
+Scaled Box: x=224, y=407, w=124, h=452
+ClassId: 0
+ClassName: person
+Confidence: 0.8537303
+Original Size: 810x1080
+Scaled Box: x=223, y=407, w=124, h=452
+ClassId: 0
+ClassName: person
+Confidence: 0.8819053
+Original Size: 810x1080
+Scaled Box: x=668, y=395, w=141, h=485
+ClassId: 0
+ClassName: person
+Confidence: 0.8895296
+Original Size: 810x1080
+Scaled Box: x=667, y=395, w=142, h=486
+ClassId: 0
+ClassName: person
+Confidence: 0.8895103
+Original Size: 810x1080
+Scaled Box: x=50, y=398, w=195, h=504
+ClassId: 0
+ClassName: person
+Confidence: 0.8948695
+Original Size: 810x1080
+Scaled Box: x=49, y=400, w=197, h=502
+ClassId: 0
+ClassName: person
+Confidence: 0.7014337
+Original Size: 810x1080
+Scaled Box: x=223, y=407, w=126, h=453
+ClassId: 0
+ClassName: person
+Confidence: 0.8708936
+Original Size: 810x1080
+Scaled Box: x=667, y=387, w=142, h=493
+ClassId: 0
+ClassName: person
+Confidence: 0.8626786
+Original Size: 810x1080
+Scaled Box: x=667, y=391, w=142, h=489
+ClassId: 0
+ClassName: person
+Confidence: 0.42122385
+Original Size: 810x1080
+Scaled Box: x=668, y=398, w=140, h=481
+Candidate count: 48
+Detection 0: Class id=0, Confidence=0.4173, Box=[x=1, y=550, w=72, h=319]
+Detection 1: Class id=0, Confidence=0.5820, Box=[x=1, y=551, w=73, h=321]
+Detection 2: Class id=0, Confidence=0.5927, Box=[x=0, y=551, w=74, h=321]
+Detection 3: Class id=0, Confidence=0.5705, Box=[x=1, y=551, w=72, h=317]
+Detection 4: Class id=0, Confidence=0.5728, Box=[x=0, y=550, w=74, h=318]
+Detection 5: Class id=0, Confidence=0.5463, Box=[x=1, y=547, w=71, h=323]
+Detection 6: Class id=0, Confidence=0.5609, Box=[x=0, y=547, w=74, h=321]
+Detection 7: Class id=0, Confidence=0.5266, Box=[x=1, y=543, w=70, h=328]
+Detection 8: Class id=0, Confidence=0.3724, Box=[x=1, y=547, w=73, h=324]
+Detection 9: Class id=5, Confidence=0.9082, Box=[x=34, y=230, w=773, h=512]
+Detection 10: Class id=5, Confidence=0.9015, Box=[x=26, y=229, w=776, h=512]
+Detection 11: Class id=5, Confidence=0.8854, Box=[x=20, y=227, w=782, h=515]
+Detection 12: Class id=5, Confidence=0.9030, Box=[x=34, y=230, w=771, h=511]
+Detection 13: Class id=5, Confidence=0.8915, Box=[x=26, y=229, w=774, h=510]
+Detection 14: Class id=5, Confidence=0.8814, Box=[x=20, y=228, w=782, h=512]
+Detection 15: Class id=5, Confidence=0.8943, Box=[x=35, y=229, w=768, h=511]
+Detection 16: Class id=5, Confidence=0.8952, Box=[x=24, y=228, w=773, h=513]
+Detection 17: Class id=5, Confidence=0.8099, Box=[x=21, y=227, w=782, h=514]
+Detection 18: Class id=0, Confidence=0.8338, Box=[x=224, y=407, w=122, h=453]
+Detection 19: Class id=0, Confidence=0.8290, Box=[x=224, y=408, w=121, h=453]
+[DEBUG] All Person Detections Before NMS:
+  - Person candidate: confidence=0.4173, x=1, y=550, w=72, h=319
+  - Person candidate: confidence=0.5820, x=1, y=551, w=73, h=321
+  - Person candidate: confidence=0.5927, x=0, y=551, w=74, h=321
+  - Person candidate: confidence=0.5705, x=1, y=551, w=72, h=317
+  - Person candidate: confidence=0.5728, x=0, y=550, w=74, h=318
+  - Person candidate: confidence=0.5463, x=1, y=547, w=71, h=323
+  - Person candidate: confidence=0.5609, x=0, y=547, w=74, h=321
+  - Person candidate: confidence=0.5266, x=1, y=543, w=70, h=328
+  - Person candidate: confidence=0.3724, x=1, y=547, w=73, h=324
+  - Person candidate: confidence=0.8338, x=224, y=407, w=122, h=453
+  - Person candidate: confidence=0.8290, x=224, y=408, w=121, h=453
+  - Person candidate: confidence=0.7883, x=667, y=392, w=142, h=487
+  - Person candidate: confidence=0.8779, x=52, y=399, w=195, h=504
+  - Person candidate: confidence=0.8819, x=51, y=399, w=197, h=505
+  - Person candidate: confidence=0.8436, x=223, y=407, w=123, h=453
+  - Person candidate: confidence=0.8150, x=223, y=407, w=123, h=453
+  - Person candidate: confidence=0.8284, x=667, y=393, w=143, h=486
+  - Person candidate: confidence=0.8954, x=667, y=393, w=142, h=487
+  - Person candidate: confidence=0.9012, x=51, y=399, w=193, h=505
+  - Person candidate: confidence=0.9161, x=50, y=399, w=195, h=504
+  - Person candidate: confidence=0.3805, x=48, y=401, w=197, h=491
+  - Person candidate: confidence=0.8548, x=223, y=406, w=124, h=454
+  - Person candidate: confidence=0.8229, x=223, y=405, w=123, h=455
+  - Person candidate: confidence=0.8750, x=667, y=393, w=142, h=485
+  - Person candidate: confidence=0.8912, x=666, y=394, w=143, h=486
+  - Person candidate: confidence=0.8950, x=51, y=400, w=195, h=503
+  - Person candidate: confidence=0.9148, x=49, y=400, w=197, h=503
+  - Person candidate: confidence=0.7641, x=49, y=404, w=194, h=491
+  - Person candidate: confidence=0.8610, x=224, y=407, w=124, h=452
+  - Person candidate: confidence=0.8537, x=223, y=407, w=124, h=452
+  - Person candidate: confidence=0.8819, x=668, y=395, w=141, h=485
+  - Person candidate: confidence=0.8895, x=667, y=395, w=142, h=486
+  - Person candidate: confidence=0.8895, x=50, y=398, w=195, h=504
+  - Person candidate: confidence=0.8949, x=49, y=400, w=197, h=502
+  - Person candidate: confidence=0.7014, x=223, y=407, w=126, h=453
+  - Person candidate: confidence=0.8709, x=667, y=387, w=142, h=493
+  - Person candidate: confidence=0.8627, x=667, y=391, w=142, h=489
+  - Person candidate: confidence=0.4212, x=668, y=398, w=140, h=481
+[DEBUG] All Detections Before NMS:
+  - Candidate: label=person, confidence=0.4173, x=1, y=550, w=72, h=319
+  - Candidate: label=person, confidence=0.5820, x=1, y=551, w=73, h=321
+  - Candidate: label=person, confidence=0.5927, x=0, y=551, w=74, h=321
+  - Candidate: label=person, confidence=0.5705, x=1, y=551, w=72, h=317
+  - Candidate: label=person, confidence=0.5728, x=0, y=550, w=74, h=318
+  - Candidate: label=person, confidence=0.5463, x=1, y=547, w=71, h=323
+  - Candidate: label=person, confidence=0.5609, x=0, y=547, w=74, h=321
+  - Candidate: label=person, confidence=0.5266, x=1, y=543, w=70, h=328
+  - Candidate: label=person, confidence=0.3724, x=1, y=547, w=73, h=324
+  - Candidate: label=bus, confidence=0.9082, x=34, y=230, w=773, h=512
+  - Candidate: label=bus, confidence=0.9015, x=26, y=229, w=776, h=512
+  - Candidate: label=bus, confidence=0.8854, x=20, y=227, w=782, h=515
+  - Candidate: label=bus, confidence=0.9030, x=34, y=230, w=771, h=511
+  - Candidate: label=bus, confidence=0.8915, x=26, y=229, w=774, h=510
+  - Candidate: label=bus, confidence=0.8814, x=20, y=228, w=782, h=512
+  - Candidate: label=bus, confidence=0.8943, x=35, y=229, w=768, h=511
+  - Candidate: label=bus, confidence=0.8952, x=24, y=228, w=773, h=513
+  - Candidate: label=bus, confidence=0.8099, x=21, y=227, w=782, h=514
+  - Candidate: label=person, confidence=0.8338, x=224, y=407, w=122, h=453
+  - Candidate: label=person, confidence=0.8290, x=224, y=408, w=121, h=453
+  - Candidate: label=bus, confidence=0.9069, x=29, y=230, w=765, h=511
+  - Candidate: label=person, confidence=0.7883, x=667, y=392, w=142, h=487
+  - Candidate: label=person, confidence=0.8779, x=52, y=399, w=195, h=504
+  - Candidate: label=person, confidence=0.8819, x=51, y=399, w=197, h=505
+  - Candidate: label=person, confidence=0.8436, x=223, y=407, w=123, h=453
+  - Candidate: label=person, confidence=0.8150, x=223, y=407, w=123, h=453
+  - Candidate: label=person, confidence=0.8284, x=667, y=393, w=143, h=486
+  - Candidate: label=person, confidence=0.8954, x=667, y=393, w=142, h=487
+  - Candidate: label=person, confidence=0.9012, x=51, y=399, w=193, h=505
+  - Candidate: label=person, confidence=0.9161, x=50, y=399, w=195, h=504
+  - Candidate: label=person, confidence=0.3805, x=48, y=401, w=197, h=491
+  - Candidate: label=person, confidence=0.8548, x=223, y=406, w=124, h=454
+  - Candidate: label=person, confidence=0.8229, x=223, y=405, w=123, h=455
+  - Candidate: label=person, confidence=0.8750, x=667, y=393, w=142, h=485
+  - Candidate: label=person, confidence=0.8912, x=666, y=394, w=143, h=486
+  - Candidate: label=person, confidence=0.8950, x=51, y=400, w=195, h=503
+  - Candidate: label=person, confidence=0.9148, x=49, y=400, w=197, h=503
+  - Candidate: label=person, confidence=0.7641, x=49, y=404, w=194, h=491
+  - Candidate: label=person, confidence=0.8610, x=224, y=407, w=124, h=452
+  - Candidate: label=person, confidence=0.8537, x=223, y=407, w=124, h=452
+  - Candidate: label=person, confidence=0.8819, x=668, y=395, w=141, h=485
+  - Candidate: label=person, confidence=0.8895, x=667, y=395, w=142, h=486
+  - Candidate: label=person, confidence=0.8895, x=50, y=398, w=195, h=504
+  - Candidate: label=person, confidence=0.8949, x=49, y=400, w=197, h=502
+  - Candidate: label=person, confidence=0.7014, x=223, y=407, w=126, h=453
+  - Candidate: label=person, confidence=0.8709, x=667, y=387, w=142, h=493
+  - Candidate: label=person, confidence=0.8627, x=667, y=391, w=142, h=489
+  - Candidate: label=person, confidence=0.4212, x=668, y=398, w=140, h=481
+Before NMS: 48
+After NMS: 5
+[DEBUG] All Detections After NMS:
+  - Survived: label=person, confidence=0.9161, x=50, y=399, w=195, h=504
+  - Survived: label=person, confidence=0.8954, x=667, y=393, w=142, h=487
+  - Survived: label=person, confidence=0.8610, x=224, y=407, w=124, h=452
+  - Survived: label=person, confidence=0.5927, x=0, y=551, w=74, h=321
+  - Survived: label=bus, confidence=0.9082, x=34, y=230, w=773, h=512
+[ONTOLOGY]
+Accepted detection: person
+[YOLO]
+Detected: person
+[ONTOLOGY]
+Accepted detection: person
+[YOLO]
+Detected: person
+[ONTOLOGY]
+Accepted detection: person
+[YOLO]
+Detected: person
+[ONTOLOGY]
+Accepted detection: person
+[YOLO]
+Detected: person
+[ONTOLOGY]
+Rejected detection: bus
+[YOLOv8 ONNX] Returning 4 detection(s)
+
+[TEST RESULTS SUMMARY]
+Total Annotations Generated: 4
+- Label: person, Confidence: 91.6%, BBox: [x=50, y=399, w=195, h=504]
+- Label: person, Confidence: 89.5%, BBox: [x=667, y=393, w=142, h=487]
+- Label: person, Confidence: 86.1%, BBox: [x=224, y=407, w=124, h=452]
+- Label: person, Confidence: 59.3%, BBox: [x=0, y=551, w=74, h=321]
+
+----------------------------------------
+RUNNING TEST CASE: 2. Multi-Class Detection: Person & Bus (Project labels: ['person', 'bus'])
+Image Path: /Users/deepak/Desktop/veri-label-dev/backend/test_images/human.jpg
+----------------------------------------
+Tensor Shape = 1,3,640,640
+Output Shape = 1,84,8400
+ClassId: 0
+ClassName: person
+Confidence: 0.4172832
+Original Size: 810x1080
+Scaled Box: x=1, y=550, w=72, h=319
+ClassId: 0
+ClassName: person
+Confidence: 0.58202755
+Original Size: 810x1080
+Scaled Box: x=1, y=551, w=73, h=321
+ClassId: 0
+ClassName: person
+Confidence: 0.59274554
+Original Size: 810x1080
+Scaled Box: x=0, y=551, w=74, h=321
+ClassId: 0
+ClassName: person
+Confidence: 0.5705204
+Original Size: 810x1080
+Scaled Box: x=1, y=551, w=72, h=317
+ClassId: 0
+ClassName: person
+Confidence: 0.57281137
+Original Size: 810x1080
+Scaled Box: x=0, y=550, w=74, h=318
+ClassId: 0
+ClassName: person
+Confidence: 0.54626155
+Original Size: 810x1080
+Scaled Box: x=1, y=547, w=71, h=323
+ClassId: 0
+ClassName: person
+Confidence: 0.5608646
+Original Size: 810x1080
+Scaled Box: x=0, y=547, w=74, h=321
+ClassId: 0
+ClassName: person
+Confidence: 0.52655363
+Original Size: 810x1080
+Scaled Box: x=1, y=543, w=70, h=328
+ClassId: 0
+ClassName: person
+Confidence: 0.3723933
+Original Size: 810x1080
+Scaled Box: x=1, y=547, w=73, h=324
+ClassId: 5
+ClassName: bus
+Confidence: 0.9082079
+Original Size: 810x1080
+Scaled Box: x=34, y=230, w=773, h=512
+ClassId: 5
+ClassName: bus
+Confidence: 0.90147173
+Original Size: 810x1080
+Scaled Box: x=26, y=229, w=776, h=512
+ClassId: 5
+ClassName: bus
+Confidence: 0.88543296
+Original Size: 810x1080
+Scaled Box: x=20, y=227, w=782, h=515
+ClassId: 5
+ClassName: bus
+Confidence: 0.90301
+Original Size: 810x1080
+Scaled Box: x=34, y=230, w=771, h=511
+ClassId: 5
+ClassName: bus
+Confidence: 0.8914625
+Original Size: 810x1080
+Scaled Box: x=26, y=229, w=774, h=510
+ClassId: 5
+ClassName: bus
+Confidence: 0.8814266
+Original Size: 810x1080
+Scaled Box: x=20, y=228, w=782, h=512
+ClassId: 5
+ClassName: bus
+Confidence: 0.8943336
+Original Size: 810x1080
+Scaled Box: x=35, y=229, w=768, h=511
+ClassId: 5
+ClassName: bus
+Confidence: 0.8952316
+Original Size: 810x1080
+Scaled Box: x=24, y=228, w=773, h=513
+ClassId: 5
+ClassName: bus
+Confidence: 0.80990267
+Original Size: 810x1080
+Scaled Box: x=21, y=227, w=782, h=514
+ClassId: 0
+ClassName: person
+Confidence: 0.83382094
+Original Size: 810x1080
+Scaled Box: x=224, y=407, w=122, h=453
+ClassId: 0
+ClassName: person
+Confidence: 0.8289662
+Original Size: 810x1080
+Scaled Box: x=224, y=408, w=121, h=453
+ClassId: 5
+ClassName: bus
+Confidence: 0.90687245
+Original Size: 810x1080
+Scaled Box: x=29, y=230, w=765, h=511
+ClassId: 0
+ClassName: person
+Confidence: 0.7883171
+Original Size: 810x1080
+Scaled Box: x=667, y=392, w=142, h=487
+ClassId: 0
+ClassName: person
+Confidence: 0.87789416
+Original Size: 810x1080
+Scaled Box: x=52, y=399, w=195, h=504
+ClassId: 0
+ClassName: person
+Confidence: 0.8818776
+Original Size: 810x1080
+Scaled Box: x=51, y=399, w=197, h=505
+ClassId: 0
+ClassName: person
+Confidence: 0.8436184
+Original Size: 810x1080
+Scaled Box: x=223, y=407, w=123, h=453
+ClassId: 0
+ClassName: person
+Confidence: 0.8149588
+Original Size: 810x1080
+Scaled Box: x=223, y=407, w=123, h=453
+ClassId: 0
+ClassName: person
+Confidence: 0.8283581
+Original Size: 810x1080
+Scaled Box: x=667, y=393, w=143, h=486
+ClassId: 0
+ClassName: person
+Confidence: 0.8953715
+Original Size: 810x1080
+Scaled Box: x=667, y=393, w=142, h=487
+ClassId: 0
+ClassName: person
+Confidence: 0.9011758
+Original Size: 810x1080
+Scaled Box: x=51, y=399, w=193, h=505
+ClassId: 0
+ClassName: person
+Confidence: 0.9160591
+Original Size: 810x1080
+Scaled Box: x=50, y=399, w=195, h=504
+ClassId: 0
+ClassName: person
+Confidence: 0.38047186
+Original Size: 810x1080
+Scaled Box: x=48, y=401, w=197, h=491
+ClassId: 0
+ClassName: person
+Confidence: 0.85477823
+Original Size: 810x1080
+Scaled Box: x=223, y=406, w=124, h=454
+ClassId: 0
+ClassName: person
+Confidence: 0.82294726
+Original Size: 810x1080
+Scaled Box: x=223, y=405, w=123, h=455
+ClassId: 0
+ClassName: person
+Confidence: 0.87500846
+Original Size: 810x1080
+Scaled Box: x=667, y=393, w=142, h=485
+ClassId: 0
+ClassName: person
+Confidence: 0.89124376
+Original Size: 810x1080
+Scaled Box: x=666, y=394, w=143, h=486
+ClassId: 0
+ClassName: person
+Confidence: 0.89495265
+Original Size: 810x1080
+Scaled Box: x=51, y=400, w=195, h=503
+ClassId: 0
+ClassName: person
+Confidence: 0.91475856
+Original Size: 810x1080
+Scaled Box: x=49, y=400, w=197, h=503
+ClassId: 0
+ClassName: person
+Confidence: 0.76410514
+Original Size: 810x1080
+Scaled Box: x=49, y=404, w=194, h=491
+ClassId: 0
+ClassName: person
+Confidence: 0.8610139
+Original Size: 810x1080
+Scaled Box: x=224, y=407, w=124, h=452
+ClassId: 0
+ClassName: person
+Confidence: 0.8537303
+Original Size: 810x1080
+Scaled Box: x=223, y=407, w=124, h=452
+ClassId: 0
+ClassName: person
+Confidence: 0.8819053
+Original Size: 810x1080
+Scaled Box: x=668, y=395, w=141, h=485
+ClassId: 0
+ClassName: person
+Confidence: 0.8895296
+Original Size: 810x1080
+Scaled Box: x=667, y=395, w=142, h=486
+ClassId: 0
+ClassName: person
+Confidence: 0.8895103
+Original Size: 810x1080
+Scaled Box: x=50, y=398, w=195, h=504
+ClassId: 0
+ClassName: person
+Confidence: 0.8948695
+Original Size: 810x1080
+Scaled Box: x=49, y=400, w=197, h=502
+ClassId: 0
+ClassName: person
+Confidence: 0.7014337
+Original Size: 810x1080
+Scaled Box: x=223, y=407, w=126, h=453
+ClassId: 0
+ClassName: person
+Confidence: 0.8708936
+Original Size: 810x1080
+Scaled Box: x=667, y=387, w=142, h=493
+ClassId: 0
+ClassName: person
+Confidence: 0.8626786
+Original Size: 810x1080
+Scaled Box: x=667, y=391, w=142, h=489
+ClassId: 0
+ClassName: person
+Confidence: 0.42122385
+Original Size: 810x1080
+Scaled Box: x=668, y=398, w=140, h=481
+Candidate count: 48
+Detection 0: Class id=0, Confidence=0.4173, Box=[x=1, y=550, w=72, h=319]
+Detection 1: Class id=0, Confidence=0.5820, Box=[x=1, y=551, w=73, h=321]
+Detection 2: Class id=0, Confidence=0.5927, Box=[x=0, y=551, w=74, h=321]
+Detection 3: Class id=0, Confidence=0.5705, Box=[x=1, y=551, w=72, h=317]
+Detection 4: Class id=0, Confidence=0.5728, Box=[x=0, y=550, w=74, h=318]
+Detection 5: Class id=0, Confidence=0.5463, Box=[x=1, y=547, w=71, h=323]
+Detection 6: Class id=0, Confidence=0.5609, Box=[x=0, y=547, w=74, h=321]
+Detection 7: Class id=0, Confidence=0.5266, Box=[x=1, y=543, w=70, h=328]
+Detection 8: Class id=0, Confidence=0.3724, Box=[x=1, y=547, w=73, h=324]
+Detection 9: Class id=5, Confidence=0.9082, Box=[x=34, y=230, w=773, h=512]
+Detection 10: Class id=5, Confidence=0.9015, Box=[x=26, y=229, w=776, h=512]
+Detection 11: Class id=5, Confidence=0.8854, Box=[x=20, y=227, w=782, h=515]
+Detection 12: Class id=5, Confidence=0.9030, Box=[x=34, y=230, w=771, h=511]
+Detection 13: Class id=5, Confidence=0.8915, Box=[x=26, y=229, w=774, h=510]
+Detection 14: Class id=5, Confidence=0.8814, Box=[x=20, y=228, w=782, h=512]
+Detection 15: Class id=5, Confidence=0.8943, Box=[x=35, y=229, w=768, h=511]
+Detection 16: Class id=5, Confidence=0.8952, Box=[x=24, y=228, w=773, h=513]
+Detection 17: Class id=5, Confidence=0.8099, Box=[x=21, y=227, w=782, h=514]
+Detection 18: Class id=0, Confidence=0.8338, Box=[x=224, y=407, w=122, h=453]
+Detection 19: Class id=0, Confidence=0.8290, Box=[x=224, y=408, w=121, h=453]
+[DEBUG] All Person Detections Before NMS:
+  - Person candidate: confidence=0.4173, x=1, y=550, w=72, h=319
+  - Person candidate: confidence=0.5820, x=1, y=551, w=73, h=321
+  - Person candidate: confidence=0.5927, x=0, y=551, w=74, h=321
+  - Person candidate: confidence=0.5705, x=1, y=551, w=72, h=317
+  - Person candidate: confidence=0.5728, x=0, y=550, w=74, h=318
+  - Person candidate: confidence=0.5463, x=1, y=547, w=71, h=323
+  - Person candidate: confidence=0.5609, x=0, y=547, w=74, h=321
+  - Person candidate: confidence=0.5266, x=1, y=543, w=70, h=328
+  - Person candidate: confidence=0.3724, x=1, y=547, w=73, h=324
+  - Person candidate: confidence=0.8338, x=224, y=407, w=122, h=453
+  - Person candidate: confidence=0.8290, x=224, y=408, w=121, h=453
+  - Person candidate: confidence=0.7883, x=667, y=392, w=142, h=487
+  - Person candidate: confidence=0.8779, x=52, y=399, w=195, h=504
+  - Person candidate: confidence=0.8819, x=51, y=399, w=197, h=505
+  - Person candidate: confidence=0.8436, x=223, y=407, w=123, h=453
+  - Person candidate: confidence=0.8150, x=223, y=407, w=123, h=453
+  - Person candidate: confidence=0.8284, x=667, y=393, w=143, h=486
+  - Person candidate: confidence=0.8954, x=667, y=393, w=142, h=487
+  - Person candidate: confidence=0.9012, x=51, y=399, w=193, h=505
+  - Person candidate: confidence=0.9161, x=50, y=399, w=195, h=504
+  - Person candidate: confidence=0.3805, x=48, y=401, w=197, h=491
+  - Person candidate: confidence=0.8548, x=223, y=406, w=124, h=454
+  - Person candidate: confidence=0.8229, x=223, y=405, w=123, h=455
+  - Person candidate: confidence=0.8750, x=667, y=393, w=142, h=485
+  - Person candidate: confidence=0.8912, x=666, y=394, w=143, h=486
+  - Person candidate: confidence=0.8950, x=51, y=400, w=195, h=503
+  - Person candidate: confidence=0.9148, x=49, y=400, w=197, h=503
+  - Person candidate: confidence=0.7641, x=49, y=404, w=194, h=491
+  - Person candidate: confidence=0.8610, x=224, y=407, w=124, h=452
+  - Person candidate: confidence=0.8537, x=223, y=407, w=124, h=452
+  - Person candidate: confidence=0.8819, x=668, y=395, w=141, h=485
+  - Person candidate: confidence=0.8895, x=667, y=395, w=142, h=486
+  - Person candidate: confidence=0.8895, x=50, y=398, w=195, h=504
+  - Person candidate: confidence=0.8949, x=49, y=400, w=197, h=502
+  - Person candidate: confidence=0.7014, x=223, y=407, w=126, h=453
+  - Person candidate: confidence=0.8709, x=667, y=387, w=142, h=493
+  - Person candidate: confidence=0.8627, x=667, y=391, w=142, h=489
+  - Person candidate: confidence=0.4212, x=668, y=398, w=140, h=481
+[DEBUG] All Detections Before NMS:
+  - Candidate: label=person, confidence=0.4173, x=1, y=550, w=72, h=319
+  - Candidate: label=person, confidence=0.5820, x=1, y=551, w=73, h=321
+  - Candidate: label=person, confidence=0.5927, x=0, y=551, w=74, h=321
+  - Candidate: label=person, confidence=0.5705, x=1, y=551, w=72, h=317
+  - Candidate: label=person, confidence=0.5728, x=0, y=550, w=74, h=318
+  - Candidate: label=person, confidence=0.5463, x=1, y=547, w=71, h=323
+  - Candidate: label=person, confidence=0.5609, x=0, y=547, w=74, h=321
+  - Candidate: label=person, confidence=0.5266, x=1, y=543, w=70, h=328
+  - Candidate: label=person, confidence=0.3724, x=1, y=547, w=73, h=324
+  - Candidate: label=bus, confidence=0.9082, x=34, y=230, w=773, h=512
+  - Candidate: label=bus, confidence=0.9015, x=26, y=229, w=776, h=512
+  - Candidate: label=bus, confidence=0.8854, x=20, y=227, w=782, h=515
+  - Candidate: label=bus, confidence=0.9030, x=34, y=230, w=771, h=511
+  - Candidate: label=bus, confidence=0.8915, x=26, y=229, w=774, h=510
+  - Candidate: label=bus, confidence=0.8814, x=20, y=228, w=782, h=512
+  - Candidate: label=bus, confidence=0.8943, x=35, y=229, w=768, h=511
+  - Candidate: label=bus, confidence=0.8952, x=24, y=228, w=773, h=513
+  - Candidate: label=bus, confidence=0.8099, x=21, y=227, w=782, h=514
+  - Candidate: label=person, confidence=0.8338, x=224, y=407, w=122, h=453
+  - Candidate: label=person, confidence=0.8290, x=224, y=408, w=121, h=453
+  - Candidate: label=bus, confidence=0.9069, x=29, y=230, w=765, h=511
+  - Candidate: label=person, confidence=0.7883, x=667, y=392, w=142, h=487
+  - Candidate: label=person, confidence=0.8779, x=52, y=399, w=195, h=504
+  - Candidate: label=person, confidence=0.8819, x=51, y=399, w=197, h=505
+  - Candidate: label=person, confidence=0.8436, x=223, y=407, w=123, h=453
+  - Candidate: label=person, confidence=0.8150, x=223, y=407, w=123, h=453
+  - Candidate: label=person, confidence=0.8284, x=667, y=393, w=143, h=486
+  - Candidate: label=person, confidence=0.8954, x=667, y=393, w=142, h=487
+  - Candidate: label=person, confidence=0.9012, x=51, y=399, w=193, h=505
+  - Candidate: label=person, confidence=0.9161, x=50, y=399, w=195, h=504
+  - Candidate: label=person, confidence=0.3805, x=48, y=401, w=197, h=491
+  - Candidate: label=person, confidence=0.8548, x=223, y=406, w=124, h=454
+  - Candidate: label=person, confidence=0.8229, x=223, y=405, w=123, h=455
+  - Candidate: label=person, confidence=0.8750, x=667, y=393, w=142, h=485
+  - Candidate: label=person, confidence=0.8912, x=666, y=394, w=143, h=486
+  - Candidate: label=person, confidence=0.8950, x=51, y=400, w=195, h=503
+  - Candidate: label=person, confidence=0.9148, x=49, y=400, w=197, h=503
+  - Candidate: label=person, confidence=0.7641, x=49, y=404, w=194, h=491
+  - Candidate: label=person, confidence=0.8610, x=224, y=407, w=124, h=452
+  - Candidate: label=person, confidence=0.8537, x=223, y=407, w=124, h=452
+  - Candidate: label=person, confidence=0.8819, x=668, y=395, w=141, h=485
+  - Candidate: label=person, confidence=0.8895, x=667, y=395, w=142, h=486
+  - Candidate: label=person, confidence=0.8895, x=50, y=398, w=195, h=504
+  - Candidate: label=person, confidence=0.8949, x=49, y=400, w=197, h=502
+  - Candidate: label=person, confidence=0.7014, x=223, y=407, w=126, h=453
+  - Candidate: label=person, confidence=0.8709, x=667, y=387, w=142, h=493
+  - Candidate: label=person, confidence=0.8627, x=667, y=391, w=142, h=489
+  - Candidate: label=person, confidence=0.4212, x=668, y=398, w=140, h=481
+Before NMS: 48
+After NMS: 5
+[DEBUG] All Detections After NMS:
+  - Survived: label=person, confidence=0.9161, x=50, y=399, w=195, h=504
+  - Survived: label=person, confidence=0.8954, x=667, y=393, w=142, h=487
+  - Survived: label=person, confidence=0.8610, x=224, y=407, w=124, h=452
+  - Survived: label=person, confidence=0.5927, x=0, y=551, w=74, h=321
+  - Survived: label=bus, confidence=0.9082, x=34, y=230, w=773, h=512
+[ONTOLOGY]
+Accepted detection: person
+[YOLO]
+Detected: person
+[ONTOLOGY]
+Accepted detection: person
+[YOLO]
+Detected: person
+[ONTOLOGY]
+Accepted detection: person
+[YOLO]
+Detected: person
+[ONTOLOGY]
+Accepted detection: person
+[YOLO]
+Detected: person
+[ONTOLOGY]
+Accepted detection: bus
+[YOLO]
+Detected: bus
+[YOLOv8 ONNX] Returning 5 detection(s)
+
+[TEST RESULTS SUMMARY]
+Total Annotations Generated: 5
+- Label: person, Confidence: 91.6%, BBox: [x=50, y=399, w=195, h=504]
+- Label: person, Confidence: 89.5%, BBox: [x=667, y=393, w=142, h=487]
+- Label: person, Confidence: 86.1%, BBox: [x=224, y=407, w=124, h=452]
+- Label: person, Confidence: 59.3%, BBox: [x=0, y=551, w=74, h=321]
+- Label: bus, Confidence: 90.8%, BBox: [x=34, y=230, w=773, h=512]
+
+----------------------------------------
+RUNNING TEST CASE: 3. Strict Filtering / Ontology check (Project labels: ['cow'] on human image)
+Image Path: /Users/deepak/Desktop/veri-label-dev/backend/test_images/human.jpg
+----------------------------------------
+Tensor Shape = 1,3,640,640
+Output Shape = 1,84,8400
+ClassId: 0
+ClassName: person
+Confidence: 0.4172832
+Original Size: 810x1080
+Scaled Box: x=1, y=550, w=72, h=319
+ClassId: 0
+ClassName: person
+Confidence: 0.58202755
+Original Size: 810x1080
+Scaled Box: x=1, y=551, w=73, h=321
+ClassId: 0
+ClassName: person
+Confidence: 0.59274554
+Original Size: 810x1080
+Scaled Box: x=0, y=551, w=74, h=321
+ClassId: 0
+ClassName: person
+Confidence: 0.5705204
+Original Size: 810x1080
+Scaled Box: x=1, y=551, w=72, h=317
+ClassId: 0
+ClassName: person
+Confidence: 0.57281137
+Original Size: 810x1080
+Scaled Box: x=0, y=550, w=74, h=318
+ClassId: 0
+ClassName: person
+Confidence: 0.54626155
+Original Size: 810x1080
+Scaled Box: x=1, y=547, w=71, h=323
+ClassId: 0
+ClassName: person
+Confidence: 0.5608646
+Original Size: 810x1080
+Scaled Box: x=0, y=547, w=74, h=321
+ClassId: 0
+ClassName: person
+Confidence: 0.52655363
+Original Size: 810x1080
+Scaled Box: x=1, y=543, w=70, h=328
+ClassId: 0
+ClassName: person
+Confidence: 0.3723933
+Original Size: 810x1080
+Scaled Box: x=1, y=547, w=73, h=324
+ClassId: 5
+ClassName: bus
+Confidence: 0.9082079
+Original Size: 810x1080
+Scaled Box: x=34, y=230, w=773, h=512
+ClassId: 5
+ClassName: bus
+Confidence: 0.90147173
+Original Size: 810x1080
+Scaled Box: x=26, y=229, w=776, h=512
+ClassId: 5
+ClassName: bus
+Confidence: 0.88543296
+Original Size: 810x1080
+Scaled Box: x=20, y=227, w=782, h=515
+ClassId: 5
+ClassName: bus
+Confidence: 0.90301
+Original Size: 810x1080
+Scaled Box: x=34, y=230, w=771, h=511
+ClassId: 5
+ClassName: bus
+Confidence: 0.8914625
+Original Size: 810x1080
+Scaled Box: x=26, y=229, w=774, h=510
+ClassId: 5
+ClassName: bus
+Confidence: 0.8814266
+Original Size: 810x1080
+Scaled Box: x=20, y=228, w=782, h=512
+ClassId: 5
+ClassName: bus
+Confidence: 0.8943336
+Original Size: 810x1080
+Scaled Box: x=35, y=229, w=768, h=511
+ClassId: 5
+ClassName: bus
+Confidence: 0.8952316
+Original Size: 810x1080
+Scaled Box: x=24, y=228, w=773, h=513
+ClassId: 5
+ClassName: bus
+Confidence: 0.80990267
+Original Size: 810x1080
+Scaled Box: x=21, y=227, w=782, h=514
+ClassId: 0
+ClassName: person
+Confidence: 0.83382094
+Original Size: 810x1080
+Scaled Box: x=224, y=407, w=122, h=453
+ClassId: 0
+ClassName: person
+Confidence: 0.8289662
+Original Size: 810x1080
+Scaled Box: x=224, y=408, w=121, h=453
+ClassId: 5
+ClassName: bus
+Confidence: 0.90687245
+Original Size: 810x1080
+Scaled Box: x=29, y=230, w=765, h=511
+ClassId: 0
+ClassName: person
+Confidence: 0.7883171
+Original Size: 810x1080
+Scaled Box: x=667, y=392, w=142, h=487
+ClassId: 0
+ClassName: person
+Confidence: 0.87789416
+Original Size: 810x1080
+Scaled Box: x=52, y=399, w=195, h=504
+ClassId: 0
+ClassName: person
+Confidence: 0.8818776
+Original Size: 810x1080
+Scaled Box: x=51, y=399, w=197, h=505
+ClassId: 0
+ClassName: person
+Confidence: 0.8436184
+Original Size: 810x1080
+Scaled Box: x=223, y=407, w=123, h=453
+ClassId: 0
+ClassName: person
+Confidence: 0.8149588
+Original Size: 810x1080
+Scaled Box: x=223, y=407, w=123, h=453
+ClassId: 0
+ClassName: person
+Confidence: 0.8283581
+Original Size: 810x1080
+Scaled Box: x=667, y=393, w=143, h=486
+ClassId: 0
+ClassName: person
+Confidence: 0.8953715
+Original Size: 810x1080
+Scaled Box: x=667, y=393, w=142, h=487
+ClassId: 0
+ClassName: person
+Confidence: 0.9011758
+Original Size: 810x1080
+Scaled Box: x=51, y=399, w=193, h=505
+ClassId: 0
+ClassName: person
+Confidence: 0.9160591
+Original Size: 810x1080
+Scaled Box: x=50, y=399, w=195, h=504
+ClassId: 0
+ClassName: person
+Confidence: 0.38047186
+Original Size: 810x1080
+Scaled Box: x=48, y=401, w=197, h=491
+ClassId: 0
+ClassName: person
+Confidence: 0.85477823
+Original Size: 810x1080
+Scaled Box: x=223, y=406, w=124, h=454
+ClassId: 0
+ClassName: person
+Confidence: 0.82294726
+Original Size: 810x1080
+Scaled Box: x=223, y=405, w=123, h=455
+ClassId: 0
+ClassName: person
+Confidence: 0.87500846
+Original Size: 810x1080
+Scaled Box: x=667, y=393, w=142, h=485
+ClassId: 0
+ClassName: person
+Confidence: 0.89124376
+Original Size: 810x1080
+Scaled Box: x=666, y=394, w=143, h=486
+ClassId: 0
+ClassName: person
+Confidence: 0.89495265
+Original Size: 810x1080
+Scaled Box: x=51, y=400, w=195, h=503
+ClassId: 0
+ClassName: person
+Confidence: 0.91475856
+Original Size: 810x1080
+Scaled Box: x=49, y=400, w=197, h=503
+ClassId: 0
+ClassName: person
+Confidence: 0.76410514
+Original Size: 810x1080
+Scaled Box: x=49, y=404, w=194, h=491
+ClassId: 0
+ClassName: person
+Confidence: 0.8610139
+Original Size: 810x1080
+Scaled Box: x=224, y=407, w=124, h=452
+ClassId: 0
+ClassName: person
+Confidence: 0.8537303
+Original Size: 810x1080
+Scaled Box: x=223, y=407, w=124, h=452
+ClassId: 0
+ClassName: person
+Confidence: 0.8819053
+Original Size: 810x1080
+Scaled Box: x=668, y=395, w=141, h=485
+ClassId: 0
+ClassName: person
+Confidence: 0.8895296
+Original Size: 810x1080
+Scaled Box: x=667, y=395, w=142, h=486
+ClassId: 0
+ClassName: person
+Confidence: 0.8895103
+Original Size: 810x1080
+Scaled Box: x=50, y=398, w=195, h=504
+ClassId: 0
+ClassName: person
+Confidence: 0.8948695
+Original Size: 810x1080
+Scaled Box: x=49, y=400, w=197, h=502
+ClassId: 0
+ClassName: person
+Confidence: 0.7014337
+Original Size: 810x1080
+Scaled Box: x=223, y=407, w=126, h=453
+ClassId: 0
+ClassName: person
+Confidence: 0.8708936
+Original Size: 810x1080
+Scaled Box: x=667, y=387, w=142, h=493
+ClassId: 0
+ClassName: person
+Confidence: 0.8626786
+Original Size: 810x1080
+Scaled Box: x=667, y=391, w=142, h=489
+ClassId: 0
+ClassName: person
+Confidence: 0.42122385
+Original Size: 810x1080
+Scaled Box: x=668, y=398, w=140, h=481
+Candidate count: 48
+Detection 0: Class id=0, Confidence=0.4173, Box=[x=1, y=550, w=72, h=319]
+Detection 1: Class id=0, Confidence=0.5820, Box=[x=1, y=551, w=73, h=321]
+Detection 2: Class id=0, Confidence=0.5927, Box=[x=0, y=551, w=74, h=321]
+Detection 3: Class id=0, Confidence=0.5705, Box=[x=1, y=551, w=72, h=317]
+Detection 4: Class id=0, Confidence=0.5728, Box=[x=0, y=550, w=74, h=318]
+Detection 5: Class id=0, Confidence=0.5463, Box=[x=1, y=547, w=71, h=323]
+Detection 6: Class id=0, Confidence=0.5609, Box=[x=0, y=547, w=74, h=321]
+Detection 7: Class id=0, Confidence=0.5266, Box=[x=1, y=543, w=70, h=328]
+Detection 8: Class id=0, Confidence=0.3724, Box=[x=1, y=547, w=73, h=324]
+Detection 9: Class id=5, Confidence=0.9082, Box=[x=34, y=230, w=773, h=512]
+Detection 10: Class id=5, Confidence=0.9015, Box=[x=26, y=229, w=776, h=512]
+Detection 11: Class id=5, Confidence=0.8854, Box=[x=20, y=227, w=782, h=515]
+Detection 12: Class id=5, Confidence=0.9030, Box=[x=34, y=230, w=771, h=511]
+Detection 13: Class id=5, Confidence=0.8915, Box=[x=26, y=229, w=774, h=510]
+Detection 14: Class id=5, Confidence=0.8814, Box=[x=20, y=228, w=782, h=512]
+Detection 15: Class id=5, Confidence=0.8943, Box=[x=35, y=229, w=768, h=511]
+Detection 16: Class id=5, Confidence=0.8952, Box=[x=24, y=228, w=773, h=513]
+Detection 17: Class id=5, Confidence=0.8099, Box=[x=21, y=227, w=782, h=514]
+Detection 18: Class id=0, Confidence=0.8338, Box=[x=224, y=407, w=122, h=453]
+Detection 19: Class id=0, Confidence=0.8290, Box=[x=224, y=408, w=121, h=453]
+[DEBUG] All Person Detections Before NMS:
+  - Person candidate: confidence=0.4173, x=1, y=550, w=72, h=319
+  - Person candidate: confidence=0.5820, x=1, y=551, w=73, h=321
+  - Person candidate: confidence=0.5927, x=0, y=551, w=74, h=321
+  - Person candidate: confidence=0.5705, x=1, y=551, w=72, h=317
+  - Person candidate: confidence=0.5728, x=0, y=550, w=74, h=318
+  - Person candidate: confidence=0.5463, x=1, y=547, w=71, h=323
+  - Person candidate: confidence=0.5609, x=0, y=547, w=74, h=321
+  - Person candidate: confidence=0.5266, x=1, y=543, w=70, h=328
+  - Person candidate: confidence=0.3724, x=1, y=547, w=73, h=324
+  - Person candidate: confidence=0.8338, x=224, y=407, w=122, h=453
+  - Person candidate: confidence=0.8290, x=224, y=408, w=121, h=453
+  - Person candidate: confidence=0.7883, x=667, y=392, w=142, h=487
+  - Person candidate: confidence=0.8779, x=52, y=399, w=195, h=504
+  - Person candidate: confidence=0.8819, x=51, y=399, w=197, h=505
+  - Person candidate: confidence=0.8436, x=223, y=407, w=123, h=453
+  - Person candidate: confidence=0.8150, x=223, y=407, w=123, h=453
+  - Person candidate: confidence=0.8284, x=667, y=393, w=143, h=486
+  - Person candidate: confidence=0.8954, x=667, y=393, w=142, h=487
+  - Person candidate: confidence=0.9012, x=51, y=399, w=193, h=505
+  - Person candidate: confidence=0.9161, x=50, y=399, w=195, h=504
+  - Person candidate: confidence=0.3805, x=48, y=401, w=197, h=491
+  - Person candidate: confidence=0.8548, x=223, y=406, w=124, h=454
+  - Person candidate: confidence=0.8229, x=223, y=405, w=123, h=455
+  - Person candidate: confidence=0.8750, x=667, y=393, w=142, h=485
+  - Person candidate: confidence=0.8912, x=666, y=394, w=143, h=486
+  - Person candidate: confidence=0.8950, x=51, y=400, w=195, h=503
+  - Person candidate: confidence=0.9148, x=49, y=400, w=197, h=503
+  - Person candidate: confidence=0.7641, x=49, y=404, w=194, h=491
+  - Person candidate: confidence=0.8610, x=224, y=407, w=124, h=452
+  - Person candidate: confidence=0.8537, x=223, y=407, w=124, h=452
+  - Person candidate: confidence=0.8819, x=668, y=395, w=141, h=485
+  - Person candidate: confidence=0.8895, x=667, y=395, w=142, h=486
+  - Person candidate: confidence=0.8895, x=50, y=398, w=195, h=504
+  - Person candidate: confidence=0.8949, x=49, y=400, w=197, h=502
+  - Person candidate: confidence=0.7014, x=223, y=407, w=126, h=453
+  - Person candidate: confidence=0.8709, x=667, y=387, w=142, h=493
+  - Person candidate: confidence=0.8627, x=667, y=391, w=142, h=489
+  - Person candidate: confidence=0.4212, x=668, y=398, w=140, h=481
+[DEBUG] All Detections Before NMS:
+  - Candidate: label=person, confidence=0.4173, x=1, y=550, w=72, h=319
+  - Candidate: label=person, confidence=0.5820, x=1, y=551, w=73, h=321
+  - Candidate: label=person, confidence=0.5927, x=0, y=551, w=74, h=321
+  - Candidate: label=person, confidence=0.5705, x=1, y=551, w=72, h=317
+  - Candidate: label=person, confidence=0.5728, x=0, y=550, w=74, h=318
+  - Candidate: label=person, confidence=0.5463, x=1, y=547, w=71, h=323
+  - Candidate: label=person, confidence=0.5609, x=0, y=547, w=74, h=321
+  - Candidate: label=person, confidence=0.5266, x=1, y=543, w=70, h=328
+  - Candidate: label=person, confidence=0.3724, x=1, y=547, w=73, h=324
+  - Candidate: label=bus, confidence=0.9082, x=34, y=230, w=773, h=512
+  - Candidate: label=bus, confidence=0.9015, x=26, y=229, w=776, h=512
+  - Candidate: label=bus, confidence=0.8854, x=20, y=227, w=782, h=515
+  - Candidate: label=bus, confidence=0.9030, x=34, y=230, w=771, h=511
+  - Candidate: label=bus, confidence=0.8915, x=26, y=229, w=774, h=510
+  - Candidate: label=bus, confidence=0.8814, x=20, y=228, w=782, h=512
+  - Candidate: label=bus, confidence=0.8943, x=35, y=229, w=768, h=511
+  - Candidate: label=bus, confidence=0.8952, x=24, y=228, w=773, h=513
+  - Candidate: label=bus, confidence=0.8099, x=21, y=227, w=782, h=514
+  - Candidate: label=person, confidence=0.8338, x=224, y=407, w=122, h=453
+  - Candidate: label=person, confidence=0.8290, x=224, y=408, w=121, h=453
+  - Candidate: label=bus, confidence=0.9069, x=29, y=230, w=765, h=511
+  - Candidate: label=person, confidence=0.7883, x=667, y=392, w=142, h=487
+  - Candidate: label=person, confidence=0.8779, x=52, y=399, w=195, h=504
+  - Candidate: label=person, confidence=0.8819, x=51, y=399, w=197, h=505
+  - Candidate: label=person, confidence=0.8436, x=223, y=407, w=123, h=453
+  - Candidate: label=person, confidence=0.8150, x=223, y=407, w=123, h=453
+  - Candidate: label=person, confidence=0.8284, x=667, y=393, w=143, h=486
+  - Candidate: label=person, confidence=0.8954, x=667, y=393, w=142, h=487
+  - Candidate: label=person, confidence=0.9012, x=51, y=399, w=193, h=505
+  - Candidate: label=person, confidence=0.9161, x=50, y=399, w=195, h=504
+  - Candidate: label=person, confidence=0.3805, x=48, y=401, w=197, h=491
+  - Candidate: label=person, confidence=0.8548, x=223, y=406, w=124, h=454
+  - Candidate: label=person, confidence=0.8229, x=223, y=405, w=123, h=455
+  - Candidate: label=person, confidence=0.8750, x=667, y=393, w=142, h=485
+  - Candidate: label=person, confidence=0.8912, x=666, y=394, w=143, h=486
+  - Candidate: label=person, confidence=0.8950, x=51, y=400, w=195, h=503
+  - Candidate: label=person, confidence=0.9148, x=49, y=400, w=197, h=503
+  - Candidate: label=person, confidence=0.7641, x=49, y=404, w=194, h=491
+  - Candidate: label=person, confidence=0.8610, x=224, y=407, w=124, h=452
+  - Candidate: label=person, confidence=0.8537, x=223, y=407, w=124, h=452
+  - Candidate: label=person, confidence=0.8819, x=668, y=395, w=141, h=485
+  - Candidate: label=person, confidence=0.8895, x=667, y=395, w=142, h=486
+  - Candidate: label=person, confidence=0.8895, x=50, y=398, w=195, h=504
+  - Candidate: label=person, confidence=0.8949, x=49, y=400, w=197, h=502
+  - Candidate: label=person, confidence=0.7014, x=223, y=407, w=126, h=453
+  - Candidate: label=person, confidence=0.8709, x=667, y=387, w=142, h=493
+  - Candidate: label=person, confidence=0.8627, x=667, y=391, w=142, h=489
+  - Candidate: label=person, confidence=0.4212, x=668, y=398, w=140, h=481
+Before NMS: 48
+After NMS: 5
+[DEBUG] All Detections After NMS:
+  - Survived: label=person, confidence=0.9161, x=50, y=399, w=195, h=504
+  - Survived: label=person, confidence=0.8954, x=667, y=393, w=142, h=487
+  - Survived: label=person, confidence=0.8610, x=224, y=407, w=124, h=452
+  - Survived: label=person, confidence=0.5927, x=0, y=551, w=74, h=321
+  - Survived: label=bus, confidence=0.9082, x=34, y=230, w=773, h=512
+[ONTOLOGY]
+Rejected detection: person
+[ONTOLOGY]
+Rejected detection: person
+[ONTOLOGY]
+Rejected detection: person
+[ONTOLOGY]
+Rejected detection: person
+[ONTOLOGY]
+Rejected detection: bus
+[YOLOv8 ONNX] Returning 0 detection(s)
+
+[TEST RESULTS SUMMARY]
+Total Annotations Generated: 0
+
+----------------------------------------
+RUNNING TEST CASE: 4. Dog Detection (Project labels: ['dog'])
+Image Path: /Users/deepak/Desktop/veri-label-dev/backend/test_images/dog.jpg
+----------------------------------------
+Tensor Shape = 1,3,640,640
+Output Shape = 1,84,8400
+ClassId: 16
+ClassName: dog
+Confidence: 0.8551145
+Original Size: 640x480
+Scaled Box: x=120, y=62, w=366, h=414
+ClassId: 16
+ClassName: dog
+Confidence: 0.875792
+Original Size: 640x480
+Scaled Box: x=120, y=61, w=366, h=414
+ClassId: 16
+ClassName: dog
+Confidence: 0.9176033
+Original Size: 640x480
+Scaled Box: x=120, y=62, w=366, h=413
+ClassId: 16
+ClassName: dog
+Confidence: 0.91533864
+Original Size: 640x480
+Scaled Box: x=120, y=62, w=364, h=413
+ClassId: 16
+ClassName: dog
+Confidence: 0.78282654
+Original Size: 640x480
+Scaled Box: x=118, y=62, w=366, h=412
+ClassId: 16
+ClassName: dog
+Confidence: 0.9235842
+Original Size: 640x480
+Scaled Box: x=120, y=61, w=364, h=415
+ClassId: 16
+ClassName: dog
+Confidence: 0.93155503
+Original Size: 640x480
+Scaled Box: x=119, y=61, w=363, h=415
+ClassId: 16
+ClassName: dog
+Confidence: 0.85921884
+Original Size: 640x480
+Scaled Box: x=118, y=61, w=363, h=416
+ClassId: 16
+ClassName: dog
+Confidence: 0.86653364
+Original Size: 640x480
+Scaled Box: x=120, y=57, w=363, h=419
+ClassId: 16
+ClassName: dog
+Confidence: 0.8801279
+Original Size: 640x480
+Scaled Box: x=119, y=57, w=363, h=419
+Candidate count: 10
+Detection 0: Class id=16, Confidence=0.8551, Box=[x=120, y=62, w=366, h=414]
+Detection 1: Class id=16, Confidence=0.8758, Box=[x=120, y=61, w=366, h=414]
+Detection 2: Class id=16, Confidence=0.9176, Box=[x=120, y=62, w=366, h=413]
+Detection 3: Class id=16, Confidence=0.9153, Box=[x=120, y=62, w=364, h=413]
+Detection 4: Class id=16, Confidence=0.7828, Box=[x=118, y=62, w=366, h=412]
+Detection 5: Class id=16, Confidence=0.9236, Box=[x=120, y=61, w=364, h=415]
+Detection 6: Class id=16, Confidence=0.9316, Box=[x=119, y=61, w=363, h=415]
+Detection 7: Class id=16, Confidence=0.8592, Box=[x=118, y=61, w=363, h=416]
+Detection 8: Class id=16, Confidence=0.8665, Box=[x=120, y=57, w=363, h=419]
+Detection 9: Class id=16, Confidence=0.8801, Box=[x=119, y=57, w=363, h=419]
+[DEBUG] All Person Detections Before NMS:
+[DEBUG] All Detections Before NMS:
+  - Candidate: label=dog, confidence=0.8551, x=120, y=62, w=366, h=414
+  - Candidate: label=dog, confidence=0.8758, x=120, y=61, w=366, h=414
+  - Candidate: label=dog, confidence=0.9176, x=120, y=62, w=366, h=413
+  - Candidate: label=dog, confidence=0.9153, x=120, y=62, w=364, h=413
+  - Candidate: label=dog, confidence=0.7828, x=118, y=62, w=366, h=412
+  - Candidate: label=dog, confidence=0.9236, x=120, y=61, w=364, h=415
+  - Candidate: label=dog, confidence=0.9316, x=119, y=61, w=363, h=415
+  - Candidate: label=dog, confidence=0.8592, x=118, y=61, w=363, h=416
+  - Candidate: label=dog, confidence=0.8665, x=120, y=57, w=363, h=419
+  - Candidate: label=dog, confidence=0.8801, x=119, y=57, w=363, h=419
+Before NMS: 10
+After NMS: 1
+[DEBUG] All Detections After NMS:
+  - Survived: label=dog, confidence=0.9316, x=119, y=61, w=363, h=415
+[ONTOLOGY]
+Accepted detection: dog
+[YOLO]
+Detected: dog
+[YOLOv8 ONNX] Returning 1 detection(s)
+
+[TEST RESULTS SUMMARY]
+Total Annotations Generated: 1
+- Label: dog, Confidence: 93.2%, BBox: [x=119, y=61, w=363, h=415]
+
+----------------------------------------
+RUNNING TEST CASE: 5. Single Cow Detection (Project labels: ['cow'])
+Image Path: /Users/deepak/Desktop/veri-label-dev/backend/test_images/single_cow.jpg
+----------------------------------------
+Tensor Shape = 1,3,640,640
+Output Shape = 1,84,8400
+ClassId: 19
+ClassName: cow
+Confidence: 0.62330455
+ClassId: 19
+ClassName: cow
+Confidence: 0.626053
+ClassId: 19
+ClassName: cow
+Confidence: 0.63136256
+ClassId: 19
+ClassName: cow
+Confidence: 0.64546084
+ClassId: 19
+ClassName: cow
+Confidence: 0.6463965
+ClassId: 19
+ClassName: cow
+Confidence: 0.7089526
+ClassId: 19
+ClassName: cow
+Confidence: 0.5973411
+ClassId: 19
+ClassName: cow
+Confidence: 0.7029147
+ClassId: 19
+ClassName: cow
+Confidence: 0.7238163
+ClassId: 19
+ClassName: cow
+Confidence: 0.90728974
+Original Size: 640x427
+Scaled Box: x=52, y=60, w=495, h=341
+ClassId: 19
+ClassName: cow
+Confidence: 0.9125279
+Original Size: 640x427
+Scaled Box: x=52, y=60, w=498, h=341
+ClassId: 19
+ClassName: cow
+Confidence: 0.90643746
+Original Size: 640x427
+Scaled Box: x=50, y=60, w=496, h=341
+ClassId: 19
+ClassName: cow
+Confidence: 0.90832114
+Original Size: 640x427
+Scaled Box: x=53, y=60, w=498, h=342
+ClassId: 19
+ClassName: cow
+Confidence: 0.91615534
+Original Size: 640x427
+Scaled Box: x=49, y=60, w=497, h=343
+ClassId: 19
+ClassName: cow
+Confidence: 0.9269233
+Original Size: 640x427
+Scaled Box: x=52, y=59, w=499, h=343
+ClassId: 19
+ClassName: cow
+Confidence: 0.86756635
+Original Size: 640x427
+Scaled Box: x=50, y=60, w=496, h=342
+ClassId: 19
+ClassName: cow
+Confidence: 0.7639126
+Original Size: 640x427
+Scaled Box: x=52, y=62, w=499, h=340
+Candidate count: 8
+Detection 0: Class id=19, Confidence=0.9073, Box=[x=52, y=60, w=495, h=341]
+Detection 1: Class id=19, Confidence=0.9125, Box=[x=52, y=60, w=498, h=341]
+Detection 2: Class id=19, Confidence=0.9064, Box=[x=50, y=60, w=496, h=341]
+Detection 3: Class id=19, Confidence=0.9083, Box=[x=53, y=60, w=498, h=342]
+Detection 4: Class id=19, Confidence=0.9162, Box=[x=49, y=60, w=497, h=343]
+Detection 5: Class id=19, Confidence=0.9269, Box=[x=52, y=59, w=499, h=343]
+Detection 6: Class id=19, Confidence=0.8676, Box=[x=50, y=60, w=496, h=342]
+Detection 7: Class id=19, Confidence=0.7639, Box=[x=52, y=62, w=499, h=340]
+[DEBUG] All Person Detections Before NMS:
+[DEBUG] All Detections Before NMS:
+  - Candidate: label=cow, confidence=0.9073, x=52, y=60, w=495, h=341
+  - Candidate: label=cow, confidence=0.9125, x=52, y=60, w=498, h=341
+  - Candidate: label=cow, confidence=0.9064, x=50, y=60, w=496, h=341
+  - Candidate: label=cow, confidence=0.9083, x=53, y=60, w=498, h=342
+  - Candidate: label=cow, confidence=0.9162, x=49, y=60, w=497, h=343
+  - Candidate: label=cow, confidence=0.9269, x=52, y=59, w=499, h=343
+  - Candidate: label=cow, confidence=0.8676, x=50, y=60, w=496, h=342
+  - Candidate: label=cow, confidence=0.7639, x=52, y=62, w=499, h=340
+Before NMS: 8
+After NMS: 1
+[DEBUG] All Detections After NMS:
+  - Survived: label=cow, confidence=0.9269, x=52, y=59, w=499, h=343
+[ONTOLOGY]
+Accepted detection: cow
+[YOLO]
+Detected: cow
+[YOLOv8 ONNX] Returning 1 detection(s)
+
+[TEST RESULTS SUMMARY]
+Total Annotations Generated: 1
+- Label: cow, Confidence: 92.7%, BBox: [x=52, y=59, w=499, h=343]
+
+----------------------------------------
+RUNNING TEST CASE: 6. Multi-Cow Detection (Project labels: ['cow'])
+Image Path: /Users/deepak/Desktop/veri-label-dev/backend/test_images/multi_cow.jpg
+----------------------------------------
+Tensor Shape = 1,3,640,640
+Output Shape = 1,84,8400
+ClassId: 19
+ClassName: cow
+Confidence: 0.8871382
+Original Size: 640x425
+Scaled Box: x=335, y=264, w=114, h=99
+ClassId: 19
+ClassName: cow
+Confidence: 0.86034226
+Original Size: 640x425
+Scaled Box: x=335, y=263, w=113, h=100
+ClassId: 19
+ClassName: cow
+Confidence: 0.88050634
+Original Size: 640x425
+Scaled Box: x=335, y=264, w=113, h=99
+ClassId: 19
+ClassName: cow
+Confidence: 0.8603787
+Original Size: 640x425
+Scaled Box: x=334, y=264, w=114, h=100
+ClassId: 19
+ClassName: cow
+Confidence: 0.8649404
+Original Size: 640x425
+Scaled Box: x=335, y=264, w=113, h=99
+ClassId: 19
+ClassName: cow
+Confidence: 0.86324906
+Original Size: 640x425
+Scaled Box: x=335, y=264, w=113, h=99
+ClassId: 19
+ClassName: cow
+Confidence: 0.8538537
+Original Size: 640x425
+Scaled Box: x=335, y=265, w=113, h=98
+ClassId: 19
+ClassName: cow
+Confidence: 0.8847923
+Original Size: 640x425
+Scaled Box: x=335, y=265, w=112, h=97
+ClassId: 19
+ClassName: cow
+Confidence: 0.8217772
+Original Size: 640x425
+Scaled Box: x=335, y=266, w=113, h=97
+ClassId: 19
+ClassName: cow
+Confidence: 0.8814355
+Original Size: 640x425
+Scaled Box: x=334, y=266, w=114, h=97
+ClassId: 19
+ClassName: cow
+Confidence: 0.8317381
+Original Size: 640x425
+Scaled Box: x=0, y=1, w=328, h=416
+ClassId: 19
+ClassName: cow
+Confidence: 0.95859873
+Original Size: 640x425
+Scaled Box: x=0, y=2, w=332, h=415
+ClassId: 19
+ClassName: cow
+Confidence: 0.94446874
+Original Size: 640x425
+Scaled Box: x=0, y=2, w=331, h=416
+ClassId: 19
+ClassName: cow
+Confidence: 0.8910042
+Original Size: 640x425
+Scaled Box: x=0, y=1, w=329, h=418
+ClassId: 19
+ClassName: cow
+Confidence: 0.95411825
+Original Size: 640x425
+Scaled Box: x=1, y=1, w=330, h=418
+ClassId: 19
+ClassName: cow
+Confidence: 0.957189
+Original Size: 640x425
+Scaled Box: x=0, y=1, w=331, h=418
+ClassId: 19
+ClassName: cow
+Confidence: 0.91667354
+Original Size: 640x425
+Scaled Box: x=0, y=0, w=330, h=420
+ClassId: 19
+ClassName: cow
+Confidence: 0.96404445
+Original Size: 640x425
+Scaled Box: x=1, y=0, w=329, h=420
+ClassId: 19
+ClassName: cow
+Confidence: 0.95367086
+Original Size: 640x425
+Scaled Box: x=1, y=0, w=330, h=420
+ClassId: 19
+ClassName: cow
+Confidence: 0.9565636
+Original Size: 640x425
+Scaled Box: x=1, y=0, w=328, h=420
+ClassId: 19
+ClassName: cow
+Confidence: 0.8833716
+Original Size: 640x425
+Scaled Box: x=436, y=137, w=204, h=284
+ClassId: 19
+ClassName: cow
+Confidence: 0.92929834
+Original Size: 640x425
+Scaled Box: x=436, y=138, w=204, h=283
+ClassId: 19
+ClassName: cow
+Confidence: 0.93561745
+Original Size: 640x425
+Scaled Box: x=435, y=138, w=205, h=283
+ClassId: 19
+ClassName: cow
+Confidence: 0.94179237
+Original Size: 640x425
+Scaled Box: x=436, y=137, w=204, h=286
+ClassId: 19
+ClassName: cow
+Confidence: 0.9512798
+Original Size: 640x425
+Scaled Box: x=436, y=137, w=204, h=285
+ClassId: 19
+ClassName: cow
+Confidence: 0.93032056
+Original Size: 640x425
+Scaled Box: x=436, y=137, w=204, h=285
+ClassId: 19
+ClassName: cow
+Confidence: 0.89358807
+Original Size: 640x425
+Scaled Box: x=196, y=275, w=145, h=127
+ClassId: 19
+ClassName: cow
+Confidence: 0.9067414
+Original Size: 640x425
+Scaled Box: x=196, y=275, w=146, h=127
+ClassId: 19
+ClassName: cow
+Confidence: 0.90719366
+Original Size: 640x425
+Scaled Box: x=196, y=275, w=145, h=127
+ClassId: 19
+ClassName: cow
+Confidence: 0.94059587
+Original Size: 640x425
+Scaled Box: x=436, y=137, w=204, h=285
+ClassId: 19
+ClassName: cow
+Confidence: 0.94430983
+Original Size: 640x425
+Scaled Box: x=436, y=138, w=204, h=284
+ClassId: 19
+ClassName: cow
+Confidence: 0.93600535
+Original Size: 640x425
+Scaled Box: x=436, y=137, w=204, h=285
+ClassId: 19
+ClassName: cow
+Confidence: 0.8954214
+Original Size: 640x425
+Scaled Box: x=196, y=275, w=146, h=127
+ClassId: 19
+ClassName: cow
+Confidence: 0.9094939
+Original Size: 640x425
+Scaled Box: x=196, y=275, w=145, h=127
+ClassId: 19
+ClassName: cow
+Confidence: 0.9159932
+Original Size: 640x425
+Scaled Box: x=196, y=275, w=145, h=126
+ClassId: 19
+ClassName: cow
+Confidence: 0.9292575
+Original Size: 640x425
+Scaled Box: x=436, y=137, w=204, h=285
+ClassId: 19
+ClassName: cow
+Confidence: 0.89992756
+Original Size: 640x425
+Scaled Box: x=196, y=275, w=145, h=127
+ClassId: 19
+ClassName: cow
+Confidence: 0.89955455
+Original Size: 640x425
+Scaled Box: x=196, y=275, w=145, h=126
+ClassId: 19
+ClassName: cow
+Confidence: 0.90455925
+Original Size: 640x425
+Scaled Box: x=196, y=274, w=145, h=127
+ClassId: 19
+ClassName: cow
+Confidence: 0.89415085
+Original Size: 640x425
+Scaled Box: x=196, y=275, w=145, h=126
+Candidate count: 40
+Detection 0: Class id=19, Confidence=0.8871, Box=[x=335, y=264, w=114, h=99]
+Detection 1: Class id=19, Confidence=0.8603, Box=[x=335, y=263, w=113, h=100]
+Detection 2: Class id=19, Confidence=0.8805, Box=[x=335, y=264, w=113, h=99]
+Detection 3: Class id=19, Confidence=0.8604, Box=[x=334, y=264, w=114, h=100]
+Detection 4: Class id=19, Confidence=0.8649, Box=[x=335, y=264, w=113, h=99]
+Detection 5: Class id=19, Confidence=0.8632, Box=[x=335, y=264, w=113, h=99]
+Detection 6: Class id=19, Confidence=0.8539, Box=[x=335, y=265, w=113, h=98]
+Detection 7: Class id=19, Confidence=0.8848, Box=[x=335, y=265, w=112, h=97]
+Detection 8: Class id=19, Confidence=0.8218, Box=[x=335, y=266, w=113, h=97]
+Detection 9: Class id=19, Confidence=0.8814, Box=[x=334, y=266, w=114, h=97]
+Detection 10: Class id=19, Confidence=0.8317, Box=[x=0, y=1, w=328, h=416]
+Detection 11: Class id=19, Confidence=0.9586, Box=[x=0, y=2, w=332, h=415]
+Detection 12: Class id=19, Confidence=0.9445, Box=[x=0, y=2, w=331, h=416]
+Detection 13: Class id=19, Confidence=0.8910, Box=[x=0, y=1, w=329, h=418]
+Detection 14: Class id=19, Confidence=0.9541, Box=[x=1, y=1, w=330, h=418]
+Detection 15: Class id=19, Confidence=0.9572, Box=[x=0, y=1, w=331, h=418]
+Detection 16: Class id=19, Confidence=0.9167, Box=[x=0, y=0, w=330, h=420]
+Detection 17: Class id=19, Confidence=0.9640, Box=[x=1, y=0, w=329, h=420]
+Detection 18: Class id=19, Confidence=0.9537, Box=[x=1, y=0, w=330, h=420]
+Detection 19: Class id=19, Confidence=0.9566, Box=[x=1, y=0, w=328, h=420]
+[DEBUG] All Person Detections Before NMS:
+[DEBUG] All Detections Before NMS:
+  - Candidate: label=cow, confidence=0.8871, x=335, y=264, w=114, h=99
+  - Candidate: label=cow, confidence=0.8603, x=335, y=263, w=113, h=100
+  - Candidate: label=cow, confidence=0.8805, x=335, y=264, w=113, h=99
+  - Candidate: label=cow, confidence=0.8604, x=334, y=264, w=114, h=100
+  - Candidate: label=cow, confidence=0.8649, x=335, y=264, w=113, h=99
+  - Candidate: label=cow, confidence=0.8632, x=335, y=264, w=113, h=99
+  - Candidate: label=cow, confidence=0.8539, x=335, y=265, w=113, h=98
+  - Candidate: label=cow, confidence=0.8848, x=335, y=265, w=112, h=97
+  - Candidate: label=cow, confidence=0.8218, x=335, y=266, w=113, h=97
+  - Candidate: label=cow, confidence=0.8814, x=334, y=266, w=114, h=97
+  - Candidate: label=cow, confidence=0.8317, x=0, y=1, w=328, h=416
+  - Candidate: label=cow, confidence=0.9586, x=0, y=2, w=332, h=415
+  - Candidate: label=cow, confidence=0.9445, x=0, y=2, w=331, h=416
+  - Candidate: label=cow, confidence=0.8910, x=0, y=1, w=329, h=418
+  - Candidate: label=cow, confidence=0.9541, x=1, y=1, w=330, h=418
+  - Candidate: label=cow, confidence=0.9572, x=0, y=1, w=331, h=418
+  - Candidate: label=cow, confidence=0.9167, x=0, y=0, w=330, h=420
+  - Candidate: label=cow, confidence=0.9640, x=1, y=0, w=329, h=420
+  - Candidate: label=cow, confidence=0.9537, x=1, y=0, w=330, h=420
+  - Candidate: label=cow, confidence=0.9566, x=1, y=0, w=328, h=420
+  - Candidate: label=cow, confidence=0.8834, x=436, y=137, w=204, h=284
+  - Candidate: label=cow, confidence=0.9293, x=436, y=138, w=204, h=283
+  - Candidate: label=cow, confidence=0.9356, x=435, y=138, w=205, h=283
+  - Candidate: label=cow, confidence=0.9418, x=436, y=137, w=204, h=286
+  - Candidate: label=cow, confidence=0.9513, x=436, y=137, w=204, h=285
+  - Candidate: label=cow, confidence=0.9303, x=436, y=137, w=204, h=285
+  - Candidate: label=cow, confidence=0.8936, x=196, y=275, w=145, h=127
+  - Candidate: label=cow, confidence=0.9067, x=196, y=275, w=146, h=127
+  - Candidate: label=cow, confidence=0.9072, x=196, y=275, w=145, h=127
+  - Candidate: label=cow, confidence=0.9406, x=436, y=137, w=204, h=285
+  - Candidate: label=cow, confidence=0.9443, x=436, y=138, w=204, h=284
+  - Candidate: label=cow, confidence=0.9360, x=436, y=137, w=204, h=285
+  - Candidate: label=cow, confidence=0.8954, x=196, y=275, w=146, h=127
+  - Candidate: label=cow, confidence=0.9095, x=196, y=275, w=145, h=127
+  - Candidate: label=cow, confidence=0.9160, x=196, y=275, w=145, h=126
+  - Candidate: label=cow, confidence=0.9293, x=436, y=137, w=204, h=285
+  - Candidate: label=cow, confidence=0.8999, x=196, y=275, w=145, h=127
+  - Candidate: label=cow, confidence=0.8996, x=196, y=275, w=145, h=126
+  - Candidate: label=cow, confidence=0.9046, x=196, y=274, w=145, h=127
+  - Candidate: label=cow, confidence=0.8942, x=196, y=275, w=145, h=126
+Before NMS: 40
+After NMS: 4
+[DEBUG] All Detections After NMS:
+  - Survived: label=cow, confidence=0.9640, x=1, y=0, w=329, h=420
+  - Survived: label=cow, confidence=0.9513, x=436, y=137, w=204, h=285
+  - Survived: label=cow, confidence=0.9160, x=196, y=275, w=145, h=126
+  - Survived: label=cow, confidence=0.8871, x=335, y=264, w=114, h=99
+[ONTOLOGY]
+Accepted detection: cow
+[YOLO]
+Detected: cow
+[ONTOLOGY]
+Accepted detection: cow
+[YOLO]
+Detected: cow
+[ONTOLOGY]
+Accepted detection: cow
+[YOLO]
+Detected: cow
+[ONTOLOGY]
+Accepted detection: cow
+[YOLO]
+Detected: cow
+[YOLOv8 ONNX] Returning 4 detection(s)
+
+[TEST RESULTS SUMMARY]
+Total Annotations Generated: 4
+- Label: cow, Confidence: 96.4%, BBox: [x=1, y=0, w=329, h=420]
+- Label: cow, Confidence: 95.1%, BBox: [x=436, y=137, w=204, h=285]
+- Label: cow, Confidence: 91.6%, BBox: [x=196, y=275, w=145, h=126]
+- Label: cow, Confidence: 88.7%, BBox: [x=335, y=264, w=114, h=99]
+
+----------------------------------------
+RUNNING TEST CASE: 7. Single Car Detection (Project labels: ['car'])
+Image Path: /Users/deepak/Desktop/veri-label-dev/backend/test_images/single_car.jpg
+----------------------------------------
+Tensor Shape = 1,3,640,640
+Output Shape = 1,84,8400
+ClassId: 2
+ClassName: car
+Confidence: 0.8751297
+Original Size: 640x427
+Scaled Box: x=98, y=133, w=456, h=200
+ClassId: 2
+ClassName: car
+Confidence: 0.9044938
+Original Size: 640x427
+Scaled Box: x=99, y=132, w=450, h=201
+ClassId: 2
+ClassName: car
+Confidence: 0.9160061
+Original Size: 640x427
+Scaled Box: x=98, y=132, w=456, h=201
+ClassId: 2
+ClassName: car
+Confidence: 0.9036867
+Original Size: 640x427
+Scaled Box: x=94, y=132, w=456, h=201
+ClassId: 2
+ClassName: car
+Confidence: 0.9023607
+Original Size: 640x427
+Scaled Box: x=99, y=132, w=450, h=201
+ClassId: 2
+ClassName: car
+Confidence: 0.93291587
+Original Size: 640x427
+Scaled Box: x=99, y=132, w=454, h=201
+ClassId: 2
+ClassName: car
+Confidence: 0.9233521
+Original Size: 640x427
+Scaled Box: x=95, y=132, w=455, h=201
+ClassId: 2
+ClassName: car
+Confidence: 0.9044727
+Original Size: 640x427
+Scaled Box: x=98, y=131, w=452, h=202
+ClassId: 2
+ClassName: car
+Confidence: 0.9302251
+Original Size: 640x427
+Scaled Box: x=98, y=132, w=456, h=201
+ClassId: 2
+ClassName: car
+Confidence: 0.9285673
+Original Size: 640x427
+Scaled Box: x=96, y=132, w=453, h=201
+Candidate count: 10
+Detection 0: Class id=2, Confidence=0.8751, Box=[x=98, y=133, w=456, h=200]
+Detection 1: Class id=2, Confidence=0.9045, Box=[x=99, y=132, w=450, h=201]
+Detection 2: Class id=2, Confidence=0.9160, Box=[x=98, y=132, w=456, h=201]
+Detection 3: Class id=2, Confidence=0.9037, Box=[x=94, y=132, w=456, h=201]
+Detection 4: Class id=2, Confidence=0.9024, Box=[x=99, y=132, w=450, h=201]
+Detection 5: Class id=2, Confidence=0.9329, Box=[x=99, y=132, w=454, h=201]
+Detection 6: Class id=2, Confidence=0.9234, Box=[x=95, y=132, w=455, h=201]
+Detection 7: Class id=2, Confidence=0.9045, Box=[x=98, y=131, w=452, h=202]
+Detection 8: Class id=2, Confidence=0.9302, Box=[x=98, y=132, w=456, h=201]
+Detection 9: Class id=2, Confidence=0.9286, Box=[x=96, y=132, w=453, h=201]
+[DEBUG] All Person Detections Before NMS:
+[DEBUG] All Detections Before NMS:
+  - Candidate: label=car, confidence=0.8751, x=98, y=133, w=456, h=200
+  - Candidate: label=car, confidence=0.9045, x=99, y=132, w=450, h=201
+  - Candidate: label=car, confidence=0.9160, x=98, y=132, w=456, h=201
+  - Candidate: label=car, confidence=0.9037, x=94, y=132, w=456, h=201
+  - Candidate: label=car, confidence=0.9024, x=99, y=132, w=450, h=201
+  - Candidate: label=car, confidence=0.9329, x=99, y=132, w=454, h=201
+  - Candidate: label=car, confidence=0.9234, x=95, y=132, w=455, h=201
+  - Candidate: label=car, confidence=0.9045, x=98, y=131, w=452, h=202
+  - Candidate: label=car, confidence=0.9302, x=98, y=132, w=456, h=201
+  - Candidate: label=car, confidence=0.9286, x=96, y=132, w=453, h=201
+Before NMS: 10
+After NMS: 1
+[DEBUG] All Detections After NMS:
+  - Survived: label=car, confidence=0.9329, x=99, y=132, w=454, h=201
+[ONTOLOGY]
+Accepted detection: car
+[YOLO]
+Detected: car
+[YOLOv8 ONNX] Returning 1 detection(s)
+
+[TEST RESULTS SUMMARY]
+Total Annotations Generated: 1
+- Label: car, Confidence: 93.3%, BBox: [x=99, y=132, w=454, h=201]
+
+----------------------------------------
+RUNNING TEST CASE: 8. Multi-Car Detection (Project labels: ['car'])
+Image Path: /Users/deepak/Desktop/veri-label-dev/backend/test_images/multi_car.jpg
+----------------------------------------
+Tensor Shape = 1,3,640,640
+Output Shape = 1,84,8400
+ClassId: 7
+ClassName: truck
+Confidence: 0.8766962
+Original Size: 640x387
+Scaled Box: x=98, y=104, w=433, h=248
+ClassId: 7
+ClassName: truck
+Confidence: 0.87169456
+Original Size: 640x387
+Scaled Box: x=97, y=104, w=433, h=249
+ClassId: 7
+ClassName: truck
+Confidence: 0.5935246
+Original Size: 640x387
+Scaled Box: x=96, y=104, w=430, h=248
+ClassId: 7
+ClassName: truck
+Confidence: 0.8709444
+Original Size: 640x387
+Scaled Box: x=97, y=104, w=435, h=248
+ClassId: 7
+ClassName: truck
+Confidence: 0.8844929
+Original Size: 640x387
+Scaled Box: x=96, y=104, w=434, h=248
+ClassId: 7
+ClassName: truck
+Confidence: 0.8045162
+Original Size: 640x387
+Scaled Box: x=91, y=104, w=438, h=248
+ClassId: 7
+ClassName: truck
+Confidence: 0.8633051
+Original Size: 640x387
+Scaled Box: x=97, y=104, w=435, h=248
+ClassId: 7
+ClassName: truck
+Confidence: 0.87647885
+Original Size: 640x387
+Scaled Box: x=97, y=104, w=433, h=248
+ClassId: 7
+ClassName: truck
+Confidence: 0.68343085
+Original Size: 640x387
+Scaled Box: x=92, y=104, w=437, h=248
+Candidate count: 9
+Detection 0: Class id=7, Confidence=0.8767, Box=[x=98, y=104, w=433, h=248]
+Detection 1: Class id=7, Confidence=0.8717, Box=[x=97, y=104, w=433, h=249]
+Detection 2: Class id=7, Confidence=0.5935, Box=[x=96, y=104, w=430, h=248]
+Detection 3: Class id=7, Confidence=0.8709, Box=[x=97, y=104, w=435, h=248]
+Detection 4: Class id=7, Confidence=0.8845, Box=[x=96, y=104, w=434, h=248]
+Detection 5: Class id=7, Confidence=0.8045, Box=[x=91, y=104, w=438, h=248]
+Detection 6: Class id=7, Confidence=0.8633, Box=[x=97, y=104, w=435, h=248]
+Detection 7: Class id=7, Confidence=0.8765, Box=[x=97, y=104, w=433, h=248]
+Detection 8: Class id=7, Confidence=0.6834, Box=[x=92, y=104, w=437, h=248]
+[DEBUG] All Person Detections Before NMS:
+[DEBUG] All Detections Before NMS:
+  - Candidate: label=truck, confidence=0.8767, x=98, y=104, w=433, h=248
+  - Candidate: label=truck, confidence=0.8717, x=97, y=104, w=433, h=249
+  - Candidate: label=truck, confidence=0.5935, x=96, y=104, w=430, h=248
+  - Candidate: label=truck, confidence=0.8709, x=97, y=104, w=435, h=248
+  - Candidate: label=truck, confidence=0.8845, x=96, y=104, w=434, h=248
+  - Candidate: label=truck, confidence=0.8045, x=91, y=104, w=438, h=248
+  - Candidate: label=truck, confidence=0.8633, x=97, y=104, w=435, h=248
+  - Candidate: label=truck, confidence=0.8765, x=97, y=104, w=433, h=248
+  - Candidate: label=truck, confidence=0.6834, x=92, y=104, w=437, h=248
+Before NMS: 9
+After NMS: 1
+[DEBUG] All Detections After NMS:
+  - Survived: label=truck, confidence=0.8845, x=96, y=104, w=434, h=248
+[ONTOLOGY]
+Rejected detection: truck
+[YOLOv8 ONNX] Returning 0 detection(s)
+
+[TEST RESULTS SUMMARY]
+Total Annotations Generated: 0
+
+----------------------------------------
+RUNNING TEST CASE: 9. Alias mapping: 'car' to 'vehicle' (Project labels: ['vehicle'])
+Image Path: /Users/deepak/Desktop/veri-label-dev/backend/test_images/multi_car.jpg
+----------------------------------------
+Tensor Shape = 1,3,640,640
+Output Shape = 1,84,8400
+ClassId: 7
+ClassName: truck
+Confidence: 0.8766962
+Original Size: 640x387
+Scaled Box: x=98, y=104, w=433, h=248
+ClassId: 7
+ClassName: truck
+Confidence: 0.87169456
+Original Size: 640x387
+Scaled Box: x=97, y=104, w=433, h=249
+ClassId: 7
+ClassName: truck
+Confidence: 0.5935246
+Original Size: 640x387
+Scaled Box: x=96, y=104, w=430, h=248
+ClassId: 7
+ClassName: truck
+Confidence: 0.8709444
+Original Size: 640x387
+Scaled Box: x=97, y=104, w=435, h=248
+ClassId: 7
+ClassName: truck
+Confidence: 0.8844929
+Original Size: 640x387
+Scaled Box: x=96, y=104, w=434, h=248
+ClassId: 7
+ClassName: truck
+Confidence: 0.8045162
+Original Size: 640x387
+Scaled Box: x=91, y=104, w=438, h=248
+ClassId: 7
+ClassName: truck
+Confidence: 0.8633051
+Original Size: 640x387
+Scaled Box: x=97, y=104, w=435, h=248
+ClassId: 7
+ClassName: truck
+Confidence: 0.87647885
+Original Size: 640x387
+Scaled Box: x=97, y=104, w=433, h=248
+ClassId: 7
+ClassName: truck
+Confidence: 0.68343085
+Original Size: 640x387
+Scaled Box: x=92, y=104, w=437, h=248
+Candidate count: 9
+Detection 0: Class id=7, Confidence=0.8767, Box=[x=98, y=104, w=433, h=248]
+Detection 1: Class id=7, Confidence=0.8717, Box=[x=97, y=104, w=433, h=249]
+Detection 2: Class id=7, Confidence=0.5935, Box=[x=96, y=104, w=430, h=248]
+Detection 3: Class id=7, Confidence=0.8709, Box=[x=97, y=104, w=435, h=248]
+Detection 4: Class id=7, Confidence=0.8845, Box=[x=96, y=104, w=434, h=248]
+Detection 5: Class id=7, Confidence=0.8045, Box=[x=91, y=104, w=438, h=248]
+Detection 6: Class id=7, Confidence=0.8633, Box=[x=97, y=104, w=435, h=248]
+Detection 7: Class id=7, Confidence=0.8765, Box=[x=97, y=104, w=433, h=248]
+Detection 8: Class id=7, Confidence=0.6834, Box=[x=92, y=104, w=437, h=248]
+[DEBUG] All Person Detections Before NMS:
+[DEBUG] All Detections Before NMS:
+  - Candidate: label=truck, confidence=0.8767, x=98, y=104, w=433, h=248
+  - Candidate: label=truck, confidence=0.8717, x=97, y=104, w=433, h=249
+  - Candidate: label=truck, confidence=0.5935, x=96, y=104, w=430, h=248
+  - Candidate: label=truck, confidence=0.8709, x=97, y=104, w=435, h=248
+  - Candidate: label=truck, confidence=0.8845, x=96, y=104, w=434, h=248
+  - Candidate: label=truck, confidence=0.8045, x=91, y=104, w=438, h=248
+  - Candidate: label=truck, confidence=0.8633, x=97, y=104, w=435, h=248
+  - Candidate: label=truck, confidence=0.8765, x=97, y=104, w=433, h=248
+  - Candidate: label=truck, confidence=0.6834, x=92, y=104, w=437, h=248
+Before NMS: 9
+After NMS: 1
+[DEBUG] All Detections After NMS:
+  - Survived: label=truck, confidence=0.8845, x=96, y=104, w=434, h=248
+[ONTOLOGY]
+Accepted detection: vehicle
+[YOLO]
+Detected: vehicle
+[YOLOv8 ONNX] Returning 1 detection(s)
+
+[TEST RESULTS SUMMARY]
+Total Annotations Generated: 1
+- Label: vehicle, Confidence: 88.4%, BBox: [x=96, y=104, w=434, h=248]
+
+========================================
+YOLOv8 ONNX INTEGRATION TESTS COMPLETE
+========================================
+

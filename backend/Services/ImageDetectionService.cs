@@ -19,9 +19,13 @@ public class ImageDetectionService
     public async Task<List<AnnotationResult>> DetectAsync(
         Guid fileId,
         string jwt,
-        List<string> labels)
+        List<string> labels,
+        string? selectedLabel,
+        Dictionary<string, object>? config = null)
     {
         Console.WriteLine($"[ImageDetection] Labels: {string.Join(", ", labels)}");
+        Console.WriteLine("[Detection]");
+        Console.WriteLine($"SelectedLabel={selectedLabel ?? "null"}");
         
         Console.WriteLine("========== IMAGE DETECTOR V2 ==========");
         Console.WriteLine($"FILE={fileId}");
@@ -47,10 +51,16 @@ public class ImageDetectionService
         var detections =
             await _detector.DetectAsync(
                 new MemoryStream(imageBytes),
-                labels);
+                labels,
+                config);
+
+        foreach (var det in detections)
+        {
+            Console.WriteLine($"[TRACE] [ImageDetectionService] Label = {det.Label}");
+        }
 
         Console.WriteLine(
-            $"[ImageDetection] GroundingDINO returned {detections.Count} detections");
+            $"[ImageDetection] {_detector.GetType().Name} returned {detections.Count} detections");
 
         Console.WriteLine("AFTER RESOLVER");
 

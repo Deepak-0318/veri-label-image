@@ -43,6 +43,11 @@ export default function PerformTask() {
   const { tasks, isLoading: tasksLoading, updateTask } = useTasks(user?.id);
   const task = tasks.find(t => t.id === taskId);
 
+  const canAccessTask =
+    isAdmin ||
+    (!isQCMode && (task?.assigned_to === user?.id || task?.assigned_to === null)) ||
+    (isQCMode && (task?.qa_assigned_to === user?.id || task?.qa_assigned_to === null));
+
   const { subTasks, isLoading: subTasksLoading, updateStatus } = useSubTasks(taskId);
   const [activeSubTaskId, setActiveSubTaskId] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -63,7 +68,15 @@ export default function PerformTask() {
     return () => document.removeEventListener("fullscreenchange", handler);
   }, []);
 
+  // Shift task to in_progress if an annotator opens a pending task
+  useEffect(() => {
+    if (task && task.status === "pending" && !isQCMode && subTasks.length > 0) {
+      updateTask.mutate({ id: task.id, status: "in_progress" });
+    }
+  }, [task, isQCMode, subTasks.length, updateTask]);
+
   // Query which files have rework annotations
+
 
  const fileIdsKey = useMemo(() => {
   return subTasks
@@ -245,7 +258,7 @@ useEffect(() => {
     );
   }
 
-  if (!task) {
+  if (!task || !canAccessTask) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-4">
         <p className="text-lg text-muted-foreground">Task not found or not assigned to you</p>

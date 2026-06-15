@@ -30,6 +30,7 @@ public class PipelineExecutionService
 
         Guid.TryParse(request.ProjectId, out var projectId);
         Guid.TryParse(request.TaskId, out var taskId);
+        Guid.TryParse(request.SubtaskId, out var subtaskId);
         Guid.TryParse(request.RunId, out var runId);
 
         // Extract userId from JWT sub claim
@@ -40,7 +41,7 @@ public class PipelineExecutionService
             {
                 var handler = new JwtSecurityTokenHandler();
                 var token = handler.ReadJwtToken(jwt);
-                var sub = token.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+                var sub = token.Subject;
                 Guid.TryParse(sub, out userId);
             }
             catch { /* userId stays Empty */ }
@@ -83,7 +84,14 @@ public class PipelineExecutionService
                             await _imageDetection.DetectAsync(
                                 fileId,
                                 jwt!,
-                                request.Labels);
+                                request.Labels,
+                                request.SelectedLabel,
+                                node.Config);
+                        foreach (var det in detections)
+                        {
+                            Console.WriteLine("[PIPELINE]");
+                            Console.WriteLine($"Received: {det.Label}");
+                        }
                         Console.WriteLine("AFTER RESOLVER");
                         fileAnnotations.AddRange(detections);
                         nodeResults.Add(new { Node = node.Label, Annotations = detections });
@@ -102,6 +110,25 @@ public class PipelineExecutionService
             Console.WriteLine($"[Pipeline] ProjectId: {projectId}");
             Console.WriteLine($"[Pipeline] FileId: {fileId}");
             Console.WriteLine($"[Pipeline] Annotation Count: {fileAnnotations.Count}");
+
+            if (!string.IsNullOrWhiteSpace(request.SelectedLabel))
+            {
+                var filtered = new List<AnnotationResult>();
+                foreach (var ann in fileAnnotations)
+                {
+                    if (ann.Label.Equals(request.SelectedLabel, StringComparison.OrdinalIgnoreCase))
+                    {
+                        filtered.Add(ann);
+                    }
+                    else
+                    {
+                        Console.WriteLine($"[LabelFilter] Requested={request.SelectedLabel}");
+                        Console.WriteLine($"[LabelFilter] Detection={ann.Label}");
+                        Console.WriteLine("[LabelFilter] Rejected");
+                    }
+                }
+                fileAnnotations = filtered;
+            }
 
             if (jwt != null && fileAnnotations.Count > 0 && projectId != Guid.Empty)
             {
@@ -172,17 +199,32 @@ public class PipelineExecutionService
             }
         }
 
-        // ── Update Task → review (ready for QC) ───────────────────────────
-        if (jwt != null && taskId != Guid.Empty)
+        // ── Update Task & Subtask → review (ready for QC) ───────────────────────────
+        if (jwt != null)
         {
-            try
+            if (subtaskId != Guid.Empty)
             {
-                await _annotationService.UpdateTaskStatusAsync(jwt, taskId, "review");
-                Console.WriteLine($"[Pipeline] TASK STATUS → review: {taskId}");
+                try
+                {
+                    await _annotationService.UpdateSubtaskStatusAsync(jwt, subtaskId, "review");
+                    Console.WriteLine($"[Pipeline] SUBTASK STATUS → review: {subtaskId}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[Pipeline] ERROR updating subtask {subtaskId}: {ex.Message}");
+                }
             }
-            catch (Exception ex)
+            else if (taskId != Guid.Empty)
             {
-                Console.WriteLine($"[Pipeline] ERROR updating task {taskId}: {ex.Message}");
+                try
+                {
+                    await _annotationService.UpdateTaskStatusAsync(jwt, taskId, "in_progress");
+                    Console.WriteLine($"[Pipeline] TASK STATUS → in_progress: {taskId}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[Pipeline] ERROR updating task {taskId}: {ex.Message}");
+                }
             }
         }
 

@@ -97,9 +97,9 @@ export function AnnotationSidebar({
     ? projectLabels.filter(l => l.label_type_id === activeLabelTypeId)
     : projectLabels;
 
-  // When project has label types, always show project labels; otherwise show personal labels
-  const hasProjectLabelTypes = projectLabelTypes.length > 0;
-  const displayLabels = hasProjectLabelTypes
+  // When project has labels, always show project labels; otherwise show personal labels
+  const hasProjectLabels = projectLabels.length > 0;
+  const displayLabels = hasProjectLabels
     ? filteredProjectLabels.map(pl => {
         const typeName = projectLabelTypes.find(lt => lt.id === pl.label_type_id)?.name;
         return { id: pl.id, name: pl.name, color: pl.color, labelTypeName: typeName };

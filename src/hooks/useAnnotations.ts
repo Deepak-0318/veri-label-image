@@ -225,6 +225,7 @@ export function useAnnotations(fileId: string | undefined, projectId?: string | 
       console.log("SUPABASE ERROR", error);
       console.log("SUPABASE DATA", data);
       console.log("ANNOTATIONS RAW FROM DB", data);
+      console.log("ANNOTATIONS RAW", data?.length);
       console.log("FILE ID", fileId);
       console.log("PROJECT ID", projectId);
 
@@ -409,6 +410,16 @@ export function useAnnotations(fileId: string | undefined, projectId?: string | 
     onError: (error) => {
       toast.error(`Failed to clear annotations: ${error.message}`);
     },
+  });
+
+  console.log("CONVERTED COUNT", annotations.length);
+
+  annotations.forEach(a => {
+    console.log("BOX", {
+      id: a.id,
+      label: a.label,
+      type: a.type
+    });
   });
 
   return {

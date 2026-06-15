@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { logAuditEvent } from "@/services/auditLogger";
+import { useUserRole } from "./useUserRole";
 
 export interface Task {
   id: string;
@@ -21,15 +22,30 @@ export interface Task {
 
 export function useTasks(userId: string | undefined, projectId?: string) {
   const queryClient = useQueryClient();
+  const { isAdmin } = useUserRole(userId);
 
   const { data: tasks = [], isLoading } = useQuery({
-    queryKey: ['tasks', userId, projectId],
+    queryKey: ['tasks', userId, projectId, isAdmin],
     queryFn: async () => {
       if (!userId) return [];
       let query = supabase.from('tasks').select('*').order('created_at', { ascending: false });
       if (projectId) query = query.eq('project_id', projectId);
+      
+      if (!isAdmin) {
+        query = query.or(`assigned_to.eq.${userId},qa_assigned_to.eq.${userId},assigned_to.is.null,qa_assigned_to.is.null`);
+      }
+      
       const { data, error } = await query;
       if (error) throw error;
+      console.log(
+        "ALL TASKS",
+        (data as Task[]).map(t => ({
+          id: t.id,
+          name: t.name,
+          status: t.status,
+          project_id: t.project_id
+        }))
+      );
       return data as Task[];
     },
     enabled: !!userId,
