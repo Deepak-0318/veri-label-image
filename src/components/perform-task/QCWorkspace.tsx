@@ -20,10 +20,12 @@ import { useAuth } from "@/hooks/useAuth";
 import { useAnnotations } from "@/hooks/useAnnotations";
 import { useLabels, Label } from "@/hooks/useLabels";
 import { useProjectLabelTypes, useProjectLabels } from "@/hooks/useProjectLabels";
+import { useProjects } from "@/hooks/useProjects";
 import { Annotation, AnnotationTool, TagColor } from "@/types/annotation";
 import { useGroupTypes } from "@/hooks/useGroupTypes";
 import { useProjectFlags } from "@/hooks/useProjectFlags";
 import { useAnnotationFlags } from "@/hooks/useAnnotationFlags";
+import { GuidelinesSidebar } from "@/components/annotation/GuidelinesSidebar";
 import { SubTask } from "@/hooks/useSubTasks";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
@@ -52,6 +54,12 @@ export function QCWorkspace({
   onComplete: () => void;
 }) {
   const { user } = useAuth();
+  const { projects } = useProjects(user?.id);
+  const project = useMemo(
+    () => projects.find((p) => p.id === projectId),
+    [projects, projectId]
+  );
+
   const file = subTask.file;
   const queryClient = useQueryClient();
 
@@ -812,6 +820,11 @@ export function QCWorkspace({
 
         {/* QC Review sidebar — audio renders it inside its own fullscreen container */}
         {!isAudio && renderQCSidebar()}
+
+        <GuidelinesSidebar
+          guidelines={project?.guidelines ?? null}
+          projectName={project?.name}
+        />
       </div>
 
       {/* Edit dialog for rectification */}

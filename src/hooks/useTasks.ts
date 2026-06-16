@@ -60,6 +60,17 @@ export function useTasks(userId: string | undefined, projectId?: string) {
       total_items?: number;
     }) => {
       if (!userId) throw new Error("Not authenticated");
+
+      const { data: project, error: pError } = await supabase
+        .from('projects')
+        .select('is_archived')
+        .eq('id', project_id)
+        .single();
+      if (pError) throw pError;
+      if (project?.is_archived) {
+        throw new Error("Cannot create tasks for an archived project");
+      }
+
       const { data, error } = await supabase
         .from('tasks')
         .insert({

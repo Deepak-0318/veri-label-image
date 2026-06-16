@@ -364,6 +364,59 @@ export function AnnotationCanvas({
             }
           });
         }
+      } else if (annotation.type === 'point' || annotation.type === 'keypoint') {
+        const ptX = isSelected && interaction.mode !== 'none' && interaction.current ? interaction.current.x : annotation.x;
+        const ptY = isSelected && interaction.mode !== 'none' && interaction.current ? interaction.current.y : annotation.y;
+        const radius = isSelected ? 8 : 5;
+        ctx.beginPath();
+        ctx.arc(ptX, ptY, radius, 0, Math.PI * 2);
+        ctx.fillStyle = color;
+        ctx.fill();
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        if (annotation.type === 'keypoint') {
+          ctx.beginPath();
+          ctx.moveTo(ptX - radius - 2, ptY);
+          ctx.lineTo(ptX + radius + 2, ptY);
+          ctx.moveTo(ptX, ptY - radius - 2);
+          ctx.lineTo(ptX, ptY + radius + 2);
+          ctx.strokeStyle = color;
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        }
+      } else if (annotation.type === 'polyline') {
+        let pts = annotation.points;
+        if (isSelected && interaction.mode !== 'none' && interaction.currentPoints) {
+          pts = interaction.currentPoints;
+        }
+        if (pts.length > 0) {
+          ctx.beginPath();
+          ctx.moveTo(pts[0].x, pts[0].y);
+          pts.forEach((point, i) => {
+            if (i > 0) ctx.lineTo(point.x, point.y);
+          });
+          ctx.strokeStyle = color;
+          ctx.lineWidth = isSelected ? 4 : 2.5;
+          ctx.setLineDash(isSelected ? [5, 5] : []);
+          ctx.stroke();
+          ctx.setLineDash([]);
+          pts.forEach((point) => {
+            ctx.beginPath();
+            ctx.arc(point.x, point.y, isSelected ? 6 : 4, 0, Math.PI * 2);
+            if (isSelected) {
+              ctx.fillStyle = 'hsl(0, 0%, 100%)';
+              ctx.fill();
+              ctx.strokeStyle = color;
+              ctx.lineWidth = 2;
+              ctx.stroke();
+            } else {
+              ctx.fillStyle = color;
+              ctx.fill();
+            }
+          });
+        }
       }
     });
 
@@ -388,6 +441,25 @@ export function AnnotationCanvas({
     }
 
     if (polygonPoints.length > 0 && activeTool === 'polygon') {
+      const color = activeColor?.startsWith("#") ? activeColor : colorMap[activeColor as TagColor] || "hsl(160, 80%, 45%)";
+      ctx.beginPath();
+      ctx.moveTo(polygonPoints[0].x, polygonPoints[0].y);
+      polygonPoints.forEach((point, i) => {
+        if (i > 0) ctx.lineTo(point.x, point.y);
+      });
+      if (currentPoint) ctx.lineTo(currentPoint.x, currentPoint.y);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      polygonPoints.forEach((point) => {
+        ctx.beginPath();
+        ctx.arc(point.x, point.y, 4, 0, Math.PI * 2);
+        ctx.fillStyle = color;
+        ctx.fill();
+      });
+    }
+
+    if (polygonPoints.length > 0 && activeTool === 'polyline') {
       const color = activeColor?.startsWith("#") ? activeColor : colorMap[activeColor as TagColor] || "hsl(160, 80%, 45%)";
       ctx.beginPath();
       ctx.moveTo(polygonPoints[0].x, polygonPoints[0].y);
@@ -463,6 +535,44 @@ export function AnnotationCanvas({
             return;
           }
         }
+        if (selAnn && (selAnn.type === 'point' || selAnn.type === 'keypoint')) {
+          const dx = selAnn.x - point.x;
+          const dy = selAnn.y - point.y;
+          if (dx * dx + dy * dy <= 64) {
+            interactionRef.current = {
+              mode: 'moving', handle: null, dragStart: point,
+              original: { x: selAnn.x, y: selAnn.y, width: 0, height: 0 },
+              current: { x: selAnn.x, y: selAnn.y, width: 0, height: 0 },
+            };
+            return;
+          }
+        }
+        if (selAnn && selAnn.type === 'polyline') {
+          const vIdx = selAnn.points.findIndex(p => {
+            const dx = p.x - point.x; const dy = p.y - point.y;
+            return dx * dx + dy * dy <= 64;
+          });
+          if (vIdx >= 0) {
+            interactionRef.current = {
+              mode: 'resizingVertex', handle: null, dragStart: point,
+              original: null, current: null,
+              originalPoints: selAnn.points.map(p => ({ ...p })),
+              currentPoints: selAnn.points.map(p => ({ ...p })),
+              vertexIndex: vIdx,
+            };
+            return;
+          }
+          if (isPointNearPolyline(point, selAnn.points)) {
+            interactionRef.current = {
+              mode: 'movingPolygon', handle: null, dragStart: point,
+              original: null, current: null,
+              originalPoints: selAnn.points.map(p => ({ ...p })),
+              currentPoints: selAnn.points.map(p => ({ ...p })),
+              vertexIndex: null,
+            };
+            return;
+          }
+        }
         if (selAnn && selAnn.type === 'polygon') {
           // vertex hit-test
           const vIdx = selAnn.points.findIndex(p => {
@@ -498,6 +608,12 @@ export function AnnotationCanvas({
                  point.y >= ann.y && point.y <= ann.y + ann.height;
         } else if (ann.type === 'polygon') {
           return isPointInPolygon(point, ann.points);
+        } else if (ann.type === 'polyline') {
+          return isPointNearPolyline(point, ann.points);
+        } else if (ann.type === 'point' || ann.type === 'keypoint') {
+          const dx = ann.x - point.x;
+          const dy = ann.y - point.y;
+          return dx * dx + dy * dy <= 64;
         }
         return false;
       });
@@ -529,6 +645,31 @@ export function AnnotationCanvas({
             id: crypto.randomUUID(), type: 'polygon',
             points: [...polygonPoints], label: activeLabel, color: activeColor,
           } as PolygonAnnotation);
+          setPolygonPoints([]);
+          return;
+        }
+      }
+      setPolygonPoints([...polygonPoints, point]);
+    } else if (activeTool === 'point' || activeTool === 'keypoint') {
+      onAnnotationCreate({
+        id: crypto.randomUUID(),
+        type: activeTool,
+        x: point.x,
+        y: point.y,
+        label: activeLabel,
+        color: activeColor,
+      } as any);
+    } else if (activeTool === 'polyline') {
+      if (polygonPoints.length >= 2) {
+        const firstPoint = polygonPoints[0];
+        const distance = Math.sqrt(
+          Math.pow(point.x - firstPoint.x, 2) + Math.pow(point.y - firstPoint.y, 2)
+        );
+        if (distance < 15) {
+          onAnnotationCreate({
+            id: crypto.randomUUID(), type: 'polyline',
+            points: [...polygonPoints], label: activeLabel, color: activeColor,
+          } as PolylineAnnotation);
           setPolygonPoints([]);
           return;
         }
@@ -614,6 +755,18 @@ export function AnnotationCanvas({
           if (onVertex) setCursorStyle('nwse-resize');
           else if (isPointInPolygon(point, selAnn.points)) setCursorStyle('move');
           else setCursorStyle('');
+        } else if (selAnn && selAnn.type === 'polyline') {
+          const onVertex = selAnn.points.some(p => {
+            const dx = p.x - point.x; const dy = p.y - point.y;
+            return dx * dx + dy * dy <= 64;
+          });
+          if (onVertex) setCursorStyle('nwse-resize');
+          else if (isPointNearPolyline(point, selAnn.points)) setCursorStyle('move');
+          else setCursorStyle('');
+        } else if (selAnn && (selAnn.type === 'point' || selAnn.type === 'keypoint')) {
+          const dx = selAnn.x - point.x; const dy = selAnn.y - point.y;
+          if (dx * dx + dy * dy <= 64) setCursorStyle('move');
+          else setCursorStyle('');
         } else {
           setCursorStyle('');
         }
@@ -649,7 +802,12 @@ export function AnnotationCanvas({
           x: interaction.current.x, y: interaction.current.y,
           width: interaction.current.width, height: interaction.current.height,
         } as Annotation);
-      } else if (selAnn && selAnn.type === 'polygon' && interaction.currentPoints) {
+      } else if (selAnn && (selAnn.type === 'point' || selAnn.type === 'keypoint') && interaction.current) {
+        onAnnotationUpdate({
+          ...selAnn,
+          x: interaction.current.x, y: interaction.current.y,
+        } as Annotation);
+      } else if (selAnn && (selAnn.type === 'polygon' || selAnn.type === 'polyline') && interaction.currentPoints) {
         onAnnotationUpdate({
           ...selAnn,
           points: interaction.currentPoints,
@@ -684,11 +842,19 @@ export function AnnotationCanvas({
         points: [...polygonPoints], label: activeLabel, color: activeColor,
       } as PolygonAnnotation);
       setPolygonPoints([]);
+    } else if (activeTool === 'polyline' && polygonPoints.length >= 2) {
+      onAnnotationCreate({
+        id: crypto.randomUUID(), type: 'polyline',
+        points: [...polygonPoints], label: activeLabel, color: activeColor,
+      } as PolylineAnnotation);
+      setPolygonPoints([]);
     }
   };
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    if (e.key === 'Escape' && activeTool === 'polygon') setPolygonPoints([]);
+    if (e.key === 'Escape' && (activeTool === 'polygon' || activeTool === 'polyline')) {
+      setPolygonPoints([]);
+    }
   }, [activeTool]);
 
   useEffect(() => {
@@ -832,7 +998,7 @@ export function AnnotationCanvas({
   );
 }
 
-function isPointInPolygon(point: Point, polygon: Point[]): boolean {
+export function isPointInPolygon(point: Point, polygon: Point[]): boolean {
   let inside = false;
   for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
     const xi = polygon[i].x, yi = polygon[i].y;
@@ -843,4 +1009,34 @@ function isPointInPolygon(point: Point, polygon: Point[]): boolean {
     }
   }
   return inside;
+}
+
+export function isPointNearPolyline(p: Point, poly: Point[], threshold: number = 8): boolean {
+  for (let i = 0; i < poly.length - 1; i++) {
+    const p1 = poly[i];
+    const p2 = poly[i + 1];
+    const A = p.x - p1.x;
+    const B = p.y - p1.y;
+    const C = p2.x - p1.x;
+    const D = p2.y - p1.y;
+    const dot = A * C + B * D;
+    const lenSq = C * C + D * D;
+    let param = -1;
+    if (lenSq !== 0) param = dot / lenSq;
+    let xx, yy;
+    if (param < 0) {
+      xx = p1.x;
+      yy = p1.y;
+    } else if (param > 1) {
+      xx = p2.x;
+      yy = p2.y;
+    } else {
+      xx = p1.x + param * C;
+      yy = p1.y + param * D;
+    }
+    const dx = p.x - xx;
+    const dy = p.y - yy;
+    if (dx * dx + dy * dy <= threshold * threshold) return true;
+  }
+  return false;
 }

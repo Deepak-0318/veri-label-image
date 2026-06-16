@@ -28,11 +28,13 @@ import { useAuth } from "@/hooks/useAuth";
 import { useAnnotations } from "@/hooks/useAnnotations";
 import { useLabels, Label } from "@/hooks/useLabels";
 import { useProjectLabelTypes, useProjectLabels } from "@/hooks/useProjectLabels";
+import { useProjects } from "@/hooks/useProjects";
 import { useGroupTypes } from "@/hooks/useGroupTypes";
 import { useProjectFlags } from "@/hooks/useProjectFlags";
 import { useAnnotationFlags } from "@/hooks/useAnnotationFlags";
 import { useProjectVariables } from "@/hooks/useProjectVariables";
 import { useAnnotationVariableValues } from "@/hooks/useAnnotationVariables";
+import { GuidelinesSidebar } from "@/components/annotation/GuidelinesSidebar";
 import { Annotation, AnnotationTool, TagColor, TextHighlightAnnotation } from "@/types/annotation";
 import { SubTask } from "@/hooks/useSubTasks";
 
@@ -46,6 +48,11 @@ export function TaskAnnotationWorkspace({
   onComplete: () => void;
 }) {
   const { user } = useAuth();
+  const { projects } = useProjects(user?.id);
+  const project = useMemo(
+    () => projects.find((p) => p.id === projectId),
+    [projects, projectId]
+  );
   const file = subTask.file;
 
   const {
@@ -703,6 +710,11 @@ export function TaskAnnotationWorkspace({
               onAnnotationVariableValuesChange={(annId, values) => setAnnotationVariableValues.mutate({ annotationId: annId, values })}
           />
         )}
+
+        <GuidelinesSidebar
+          guidelines={project?.guidelines ?? null}
+          projectName={project?.name}
+        />
       </div>
 
       <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>

@@ -1,4 +1,4 @@
-export type AnnotationTool = 'select' | 'boundingBox' | 'polygon' | 'textHighlight' | 'frameLabel' | 'videoSegment' | 'boundingBox3d';
+export type AnnotationTool = 'select' | 'boundingBox' | 'polygon' | 'textHighlight' | 'frameLabel' | 'videoSegment' | 'boundingBox3d' | 'point' | 'polyline' | 'keypoint';
 
 export type TagColor = "blue" | "green" | "yellow" | "purple" | "pink" | "orange" | "cyan" | "red";
 
@@ -86,11 +86,9 @@ export interface VideoSegmentAnnotation {
 export interface BoundingBox3dAnnotation {
   id: string;
   type: 'boundingBox3d';
-  // Center of the cuboid in world coordinates
   cx: number;
   cy: number;
   cz: number;
-  // Full sizes along each axis
   sx: number;
   sy: number;
   sz: number;
@@ -98,7 +96,33 @@ export interface BoundingBox3dAnnotation {
   color: TagColor;
 }
 
-export type Annotation = (BoundingBoxAnnotation | PolygonAnnotation | TextHighlightAnnotation | RowAnnotation | AudioRegionAnnotation | FrameLabelAnnotation | VideoSegmentAnnotation | BoundingBox3dAnnotation) & {
+export interface PointAnnotation {
+  id: string;
+  type: 'point';
+  x: number;
+  y: number;
+  label: string;
+  color: TagColor;
+}
+
+export interface PolylineAnnotation {
+  id: string;
+  type: 'polyline';
+  points: Point[];
+  label: string;
+  color: TagColor;
+}
+
+export interface KeypointAnnotation {
+  id: string;
+  type: 'keypoint';
+  x: number;
+  y: number;
+  label: string;
+  color: TagColor;
+}
+
+export type Annotation = (BoundingBoxAnnotation | PolygonAnnotation | TextHighlightAnnotation | RowAnnotation | AudioRegionAnnotation | FrameLabelAnnotation | VideoSegmentAnnotation | BoundingBox3dAnnotation | PointAnnotation | PolylineAnnotation | KeypointAnnotation) & {
   labelTypeId?: string;
   labelTypeName?: string;
   comment?: string;

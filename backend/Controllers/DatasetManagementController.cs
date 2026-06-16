@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using verilabelbackend.Services.Supabase;
@@ -42,6 +42,7 @@ public sealed class DatasetManagementController : ControllerBase
 
     //Create Dataset
     [HttpPost]
+    [Authorize(Roles = "admin,manager")]
     public async Task<IActionResult> Create([FromBody] CreateDatasetRequest body)
     {
         var userId = GetUserId();
@@ -76,6 +77,7 @@ public sealed class DatasetManagementController : ControllerBase
 
     //Delete Dataset
     [HttpDelete("{id:guid}")]
+    [Authorize(Roles = "admin,manager")]
     public async Task<IActionResult> Delete(Guid id)
     {
         var userId = GetUserId();
@@ -94,6 +96,7 @@ public sealed class DatasetManagementController : ControllerBase
 
     //Assign Project
     [HttpPut("{id:guid}/assign-project")]
+    [Authorize(Roles = "admin,manager")]
     public async Task<IActionResult> AssignProject(Guid id, [FromBody] AssignProjectRequest body)
     {
         var userId = GetUserId();
@@ -112,6 +115,7 @@ public sealed class DatasetManagementController : ControllerBase
 
     //Add files to dataset
     [HttpPost("{id:guid}/files")]
+    [Authorize(Roles = "admin,manager")]
     public async Task<IActionResult> AddFiles(Guid id, [FromBody] AddFilesRequest body)
     {
         try
@@ -127,6 +131,7 @@ public sealed class DatasetManagementController : ControllerBase
 
     //Remove file from dataset
     [HttpDelete("{id:guid}/files/{fileId:guid}")]
+    [Authorize(Roles = "admin,manager")]
     public async Task<IActionResult> RemoveFile(Guid id, Guid fileId)
     {
         try

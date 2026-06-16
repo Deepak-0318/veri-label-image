@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
@@ -11,6 +11,7 @@ using verilabelbackend.Services.Supabase;
 
 [ApiController]
 [Route("api/team")]
+[Authorize(Roles = "admin,manager")]
 public class TeamController : ControllerBase
 {
     private readonly SupabaseTeamService _service;
@@ -48,6 +49,7 @@ public class TeamController : ControllerBase
     }
 
     [HttpPost("assign-role")]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> AssignRole(RoleRequest req)
     {
         var jwt = GetJwt();
@@ -56,6 +58,7 @@ public class TeamController : ControllerBase
     }
 
     [HttpPost("remove-role")]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> RemoveRole(RoleRequest req)
     {
         var jwt = GetJwt();

@@ -1,10 +1,11 @@
-﻿namespace verilabelbackend.Models.Supabase
+namespace verilabelbackend.Models.Supabase
 {
     public enum AppRole
     {
         admin,
         manager,
         annotator,
-        qc
+        qc,
+        reviewer
     }
 }

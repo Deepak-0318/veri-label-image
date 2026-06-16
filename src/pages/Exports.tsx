@@ -38,8 +38,11 @@ import {
   FolderOpen,
   ClipboardList,
   Code,
+  Upload,
 } from "lucide-react";
 import { TransformScriptDialog } from "@/components/export/TransformScriptDialog";
+import { ImportAnnotationsDialog } from "@/components/import/ImportAnnotationsDialog";
+import { ProjectApi } from "@/services/apiClient";
 import { toast } from "sonner";
 
 function PaginatedExportHistory({ exports, handleDownload, handleDelete, handleTransform, formatDate }: {
@@ -103,6 +106,7 @@ export default function Exports() {
   const [selectedTaskId, setSelectedTaskId] = useState<string>("all");
   const [isExporting, setIsExporting] = useState(false);
   const [transformExport, setTransformExport] = useState<any>(null);
+  const [importOpen, setImportOpen] = useState(false);
   const { tasks: projectTasks } = useTasks(user?.id, selectedProjectId || undefined);
 
   const handleNewExport = async () => {
@@ -117,6 +121,50 @@ export default function Exports() {
     }
 
     let realFiles = files.filter((f) => !f.id.startsWith("demo-") && f.project_id === selectedProjectId);
+
+    if (exportFormat === "coco" || exportFormat === "yolo") {
+      setIsExporting(true);
+      try {
+        const projectIdEnv = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+        const storageKey = `sb-${projectIdEnv}-auth-token`;
+        const raw = localStorage.getItem(storageKey);
+        if (!raw) {
+          toast.error("Authentication required");
+          return;
+        }
+        const token = JSON.parse(raw)?.access_token;
+        if (!token) {
+          toast.error("Authentication token not found");
+          return;
+        }
+        const downloadUrl = await ProjectApi.export(selectedProjectId, exportFormat, token);
+        const a = document.createElement("a");
+        a.href = downloadUrl;
+        a.download = `project_${selectedProjectId}_${exportFormat}.${exportFormat === "coco" ? "json" : "zip"}`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+
+        // Register in exports history
+        const selectedProject = projects.find((p) => p.id === selectedProjectId);
+        const projectLabel = selectedProject?.name || "all";
+        const name = `export_${projectLabel}_${new Date().toISOString().slice(0, 10)}`;
+        await createExport.mutateAsync({
+          name,
+          format: exportFormat,
+          fileCount: realFiles.length,
+          annotationCount: 0,
+          exportData: "Backend generated",
+        });
+
+        toast.success(`${exportFormat.toUpperCase()} export downloaded successfully`);
+      } catch (err: any) {
+        toast.error(`Export failed: ${err.message}`);
+      } finally {
+        setIsExporting(false);
+      }
+      return;
+    }
 
     // If a specific task is selected, filter to only that task's files
     if (selectedTaskId !== "all") {
@@ -301,6 +349,10 @@ export default function Exports() {
                 Download and manage your annotation exports
               </p>
             </div>
+            <Button onClick={() => setImportOpen(true)} variant="outline">
+              <Upload className="h-4 w-4 mr-2" />
+              Import Annotations
+            </Button>
           </div>
         </header>
 
@@ -368,6 +420,16 @@ export default function Exports() {
                         <FileSpreadsheet className="h-4 w-4" /> CSV
                       </span>
                     </SelectItem>
+                    <SelectItem value="coco">
+                      <span className="flex items-center gap-2">
+                        <FileJson className="h-4 w-4 text-primary" /> COCO JSON
+                      </span>
+                    </SelectItem>
+                    <SelectItem value="yolo">
+                      <span className="flex items-center gap-2">
+                        <Package className="h-4 w-4 text-primary" /> YOLO ZIP
+                      </span>
+                    </SelectItem>
                   </SelectContent>
                 </Select>
                 <Button
@@ -414,6 +476,12 @@ export default function Exports() {
           open={!!transformExport}
           onOpenChange={(open) => { if (!open) setTransformExport(null); }}
           exportItem={transformExport}
+        />
+
+        <ImportAnnotationsDialog
+          open={importOpen}
+          onOpenChange={setImportOpen}
+          projects={projects}
         />
       </main>
     </div>

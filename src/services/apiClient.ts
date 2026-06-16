@@ -224,6 +224,68 @@ export const AnnotationApi = {
       throw new Error(`API ${res.status}: ${body || res.statusText}`);
     }
   },
+
+  async getTaskAnnotations(taskId: string, token: string): Promise<ApiAnnotation[]> {
+    const res = await fetch(`${getBaseUrl()}/api/tasks/${taskId}/annotations`, {
+      headers: authHeaders(token),
+    });
+    return handleResponse<ApiAnnotation[]>(res);
+  },
+
+  async getHistory(id: string, token: string): Promise<any[]> {
+    const res = await fetch(`${getBaseUrl()}/api/annotations/${id}/history`, {
+      headers: authHeaders(token),
+    });
+    return handleResponse<any[]>(res);
+  },
+};
+
+// ─── Project API ──────────────────────────────────────────────────────────────
+
+export const ProjectApi = {
+  async archive(id: string, token: string): Promise<{ success: boolean; isArchived: boolean }> {
+    const res = await fetch(`${getBaseUrl()}/api/projects/${id}/archive`, {
+      method: "POST",
+      headers: authHeaders(token),
+    });
+    return handleResponse<{ success: boolean; isArchived: boolean }>(res);
+  },
+
+  async reopen(id: string, token: string): Promise<{ success: boolean; isArchived: boolean }> {
+    const res = await fetch(`${getBaseUrl()}/api/projects/${id}/reopen`, {
+      method: "POST",
+      headers: authHeaders(token),
+    });
+    return handleResponse<{ success: boolean; isArchived: boolean }>(res);
+  },
+
+  async export(id: string, format: "coco" | "yolo", token: string): Promise<string> {
+    const res = await fetch(`${getBaseUrl()}/api/projects/${id}/export?format=${format}`, {
+      headers: authHeaders(token),
+    });
+    if (!res.ok) {
+      const body = await res.text().catch(() => "");
+      throw new Error(`API ${res.status}: ${body || res.statusText}`);
+    }
+    const blob = await res.blob();
+    return URL.createObjectURL(blob);
+  },
+
+  async import(id: string, format: "coco" | "yolo", file: File, token: string): Promise<{ success: boolean; count: number }> {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const headers: HeadersInit = {
+      Authorization: `Bearer ${token}`,
+    };
+
+    const res = await fetch(`${getBaseUrl()}/api/projects/${id}/import?format=${format}`, {
+      method: "POST",
+      headers,
+      body: formData,
+    });
+    return handleResponse<{ success: boolean; count: number }>(res);
+  },
 };
 
 // ─── SignalR Hub ──────────────────────────────────────────────────────────────

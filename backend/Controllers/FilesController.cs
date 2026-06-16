@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using System.Text.Json;
@@ -59,6 +59,14 @@ public async Task<IActionResult> Upload(
         return Unauthorized();
 
     var jwt = GetJwt();
+
+    if (projectId.HasValue && projectId.Value != Guid.Empty)
+    {
+        if (await _supabaseFile.IsProjectArchivedAsync(jwt, projectId.Value))
+        {
+            return BadRequest(new { error = "Cannot upload files to an archived project." });
+        }
+    }
 
     //Upload to Azure
     await using var stream = file.OpenReadStream();

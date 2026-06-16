@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
 
@@ -28,6 +28,9 @@ namespace verilabelbackend.Models.Supabase
         public string AnnotationType { get; set; } = "classification";
 
         public string? Guidelines { get; set; }
+
+        [Column("is_archived")]
+        public bool IsArchived { get; set; } = false;
 
         [Column("created_at")]
         public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;

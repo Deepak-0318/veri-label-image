@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using verilabelbackend.Models;
@@ -7,6 +8,7 @@ namespace verilabelbackend.Controllers;
 
 [ApiController]
 [Route("api/pipeline")]
+[Authorize(Roles = "admin,manager")]
 public class PipelineController : ControllerBase
 {
     private readonly PipelineExecutionService _service;

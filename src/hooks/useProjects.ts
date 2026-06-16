@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { logActivityEvent } from "@/services/activityLogger";
 import { logAuditEvent } from "@/services/auditLogger";
 import { getActiveOrganizationId } from "@/hooks/useOrganizations";
+import { ProjectApi } from "@/services/apiClient";
 
 export interface Project {
   id: string;
@@ -12,6 +13,7 @@ export interface Project {
   data_type: string;
   annotation_type: string;
   guidelines: string | null;
+  is_archived?: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -331,6 +333,44 @@ export function useProjects(userId: string | undefined) {
     },
   });
 
+  const archiveProject = useMutation({
+    mutationFn: async (id: string) => {
+      const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+      const storageKey = `sb-${projectId}-auth-token`;
+      const raw = localStorage.getItem(storageKey);
+      if (!raw) throw new Error("Auth required");
+      const token = JSON.parse(raw)?.access_token;
+      if (!token) throw new Error("Token not found");
+      return ProjectApi.archive(id, token);
+    },
+    onSuccess: (data, id) => {
+      queryClient.invalidateQueries({ queryKey: ['projects', userId, activeOrgId] });
+      toast.success('Project archived');
+    },
+    onError: (error) => {
+      toast.error(`Failed to archive project: ${error.message}`);
+    },
+  });
+
+  const reopenProject = useMutation({
+    mutationFn: async (id: string) => {
+      const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+      const storageKey = `sb-${projectId}-auth-token`;
+      const raw = localStorage.getItem(storageKey);
+      if (!raw) throw new Error("Auth required");
+      const token = JSON.parse(raw)?.access_token;
+      if (!token) throw new Error("Token not found");
+      return ProjectApi.reopen(id, token);
+    },
+    onSuccess: (data, id) => {
+      queryClient.invalidateQueries({ queryKey: ['projects', userId, activeOrgId] });
+      toast.success('Project reopened');
+    },
+    onError: (error) => {
+      toast.error(`Failed to reopen project: ${error.message}`);
+    },
+  });
+
   return {
     projects,
     isLoading,
@@ -338,5 +378,7 @@ export function useProjects(userId: string | undefined) {
     updateProject,
     deleteProject,
     cloneProject,
+    archiveProject,
+    reopenProject,
   };
 }

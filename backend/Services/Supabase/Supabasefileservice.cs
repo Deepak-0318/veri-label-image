@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using System.Text.Json;
 using verilabelbackend.Models.Supabase;
 
@@ -201,6 +201,28 @@ namespace verilabelbackend.Services.Supabase
                 var err = await response.Content.ReadAsStringAsync();
                 throw new Exception($"RenameFolder failed: {err}");
             }
+        }
+
+        public async Task<bool> IsProjectArchivedAsync(string jwt, Guid projectId)
+        {
+            var client = _httpClientFactory.CreateClient();
+            var url = $"{_supabaseUrl}/rest/v1/projects?id=eq.{projectId}&select=is_archived";
+            using var request = new HttpRequestMessage(HttpMethod.Get, url);
+            request.Headers.Add("apikey", _anonKey);
+            request.Headers.Add("Authorization", $"Bearer {jwt}");
+            var response = await client.SendAsync(request);
+            if (!response.IsSuccessStatusCode) return false;
+            var json = await response.Content.ReadAsStringAsync();
+            using var doc = JsonDocument.Parse(json);
+            if (doc.RootElement.ValueKind == JsonValueKind.Array && doc.RootElement.GetArrayLength() > 0)
+            {
+                var proj = doc.RootElement[0];
+                if (proj.TryGetProperty("is_archived", out var isArchivedProp))
+                {
+                    return isArchivedProp.GetBoolean();
+                }
+            }
+            return false;
         }
     }
 }

@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { apiFetch } from "@/services/api";
 
 export interface GroupType {
   id: string;
@@ -18,13 +18,9 @@ export function useGroupTypes(projectId: string | undefined) {
     queryKey,
     queryFn: async () => {
       if (!projectId) return [];
-      const { data, error } = await supabase
-        .from("project_group_types" as any)
-        .select("*")
-        .eq("project_id", projectId)
-        .order("name");
-      if (error) throw error;
-      return (data || []) as unknown as GroupType[];
+      const res = await apiFetch(`/api/definitions?projectId=${projectId}&type=group_type`);
+      const data = await res.json();
+      return data as GroupType[];
     },
     enabled: !!projectId,
   });
@@ -32,13 +28,12 @@ export function useGroupTypes(projectId: string | undefined) {
   const createGroupType = useMutation({
     mutationFn: async ({ name, userId }: { name: string; userId: string }) => {
       if (!projectId) throw new Error("No project ID");
-      const { data, error } = await supabase
-        .from("project_group_types" as any)
-        .insert({ project_id: projectId, name, created_by: userId } as any)
-        .select()
-        .single();
-      if (error) throw error;
-      return data as unknown as GroupType;
+      const res = await apiFetch(`/api/definitions?type=group_type`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ project_id: projectId, name })
+      });
+      return await res.json() as GroupType;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey });
@@ -51,11 +46,9 @@ export function useGroupTypes(projectId: string | undefined) {
 
   const deleteGroupType = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase
-        .from("project_group_types" as any)
-        .delete()
-        .eq("id", id);
-      if (error) throw error;
+      await apiFetch(`/api/definitions/${id}?type=group_type`, {
+        method: "DELETE"
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey });
@@ -68,11 +61,11 @@ export function useGroupTypes(projectId: string | undefined) {
 
   const updateGroupType = useMutation({
     mutationFn: async ({ id, name }: { id: string; name: string }) => {
-      const { error } = await supabase
-        .from("project_group_types" as any)
-        .update({ name } as any)
-        .eq("id", id);
-      if (error) throw error;
+      await apiFetch(`/api/definitions/${id}?type=group_type`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name })
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey });
@@ -85,3 +78,4 @@ export function useGroupTypes(projectId: string | undefined) {
 
   return { groupTypes, isLoading, createGroupType, deleteGroupType, updateGroupType };
 }
+

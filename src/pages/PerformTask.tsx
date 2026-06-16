@@ -8,6 +8,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useTasks } from "@/hooks/useTasks";
 import { useSubTasks, SubTask } from "@/hooks/useSubTasks";
+import { useProjects } from "@/hooks/useProjects";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -42,6 +43,8 @@ export default function PerformTask() {
 
   const { tasks, isLoading: tasksLoading, updateTask } = useTasks(user?.id);
   const task = tasks.find(t => t.id === taskId);
+  const { projects } = useProjects(user?.id);
+  const project = useMemo(() => projects.find(p => p.id === task?.project_id) ?? null, [projects, task?.project_id]);
 
   const canAccessTask =
     isAdmin ||

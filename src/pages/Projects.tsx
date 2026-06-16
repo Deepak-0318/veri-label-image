@@ -48,13 +48,15 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { format } from "date-fns";
 import { toast } from "sonner";
 
-function ProjectGrid({ projects, navigate, openEditDialog, setDeleteConfirmId, onClone, canClone }: {
+function ProjectGrid({ projects, navigate, openEditDialog, setDeleteConfirmId, onClone, canClone, onArchive, onReopen }: {
   projects: Project[];
   navigate: (path: string) => void;
   openEditDialog: (p: Project) => void;
   setDeleteConfirmId: (id: string) => void;
   onClone: (id: string) => void;
   canClone: boolean;
+  onArchive: (id: string) => void;
+  onReopen: (id: string) => void;
 }) {
   const { paginatedItems, currentPage, totalPages, totalItems, setCurrentPage } = usePagination(projects, 12);
   return (
@@ -69,7 +71,12 @@ function ProjectGrid({ projects, navigate, openEditDialog, setDeleteConfirmId, o
             <CardHeader className="pb-2">
               <div className="flex items-start justify-between">
                 <div className="flex-1 min-w-0">
-                  <CardTitle className="text-lg truncate">{project.name}</CardTitle>
+                  <div className="flex items-center gap-2">
+                    <CardTitle className="text-lg truncate">{project.name}</CardTitle>
+                    {project.is_archived && (
+                      <Badge variant="destructive" className="text-[10px]">Archived</Badge>
+                    )}
+                  </div>
                   <CardDescription className="text-xs mt-1">
                     Created {format(new Date(project.created_at), "MMM d, yyyy")}
                   </CardDescription>
@@ -91,6 +98,17 @@ function ProjectGrid({ projects, navigate, openEditDialog, setDeleteConfirmId, o
                       <Pencil className="h-4 w-4 mr-2" />
                       Edit
                     </DropdownMenuItem>
+                    {project.is_archived ? (
+                      <DropdownMenuItem onClick={() => onReopen(project.id)}>
+                        <FolderOpen className="h-4 w-4 mr-2" />
+                        Reopen
+                      </DropdownMenuItem>
+                    ) : (
+                      <DropdownMenuItem onClick={() => onArchive(project.id)}>
+                        <FolderOpen className="h-4 w-4 mr-2" />
+                        Archive
+                      </DropdownMenuItem>
+                    )}
                     <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={() => setDeleteConfirmId(project.id)}>
                       <Trash2 className="h-4 w-4 mr-2" />
                       Delete
@@ -121,10 +139,17 @@ export default function Projects() {
   const location = useLocation();
   const { user, loading: authLoading } = useAuth();
   const { organization } = useOrganization(user?.id);
-  const { projects, isLoading, createProject, updateProject, deleteProject, cloneProject } = useProjects(user?.id);
+  const { projects, isLoading, createProject, updateProject, deleteProject, cloneProject, archiveProject, reopenProject } = useProjects(user?.id);
   const { isManager } = useUserRole(user?.id);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [archiveFilter, setArchiveFilter] = useState<"active" | "archived" | "all">("active");
+
+  const filteredProjects = projects.filter((p) => {
+    if (archiveFilter === "active") return !p.is_archived;
+    if (archiveFilter === "archived") return p.is_archived;
+    return true;
+  });
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -370,25 +395,69 @@ export default function Projects() {
           </div>
         </header>
 
-        <div className="p-8">
+        <div className="p-8 space-y-6">
+          <div className="flex items-center justify-between border-b border-border pb-4">
+            <div className="flex gap-2">
+              <Button
+                variant={archiveFilter === "active" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setArchiveFilter("active")}
+              >
+                Active Projects
+              </Button>
+              <Button
+                variant={archiveFilter === "archived" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setArchiveFilter("archived")}
+              >
+                Archived Projects
+              </Button>
+              <Button
+                variant={archiveFilter === "all" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setArchiveFilter("all")}
+              >
+                All Projects
+              </Button>
+            </div>
+          </div>
+
           {isLoading ? (
             <div className="flex items-center justify-center py-12">
               <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
             </div>
-          ) : projects.length === 0 ? (
+          ) : filteredProjects.length === 0 ? (
             <div className="text-center py-12">
               <FolderOpen className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-              <h2 className="text-xl font-semibold mb-2">No projects yet</h2>
+              <h2 className="text-xl font-semibold mb-2">No projects found</h2>
               <p className="text-muted-foreground mb-4">
-                Create your first project to start organizing your annotations.
+                {archiveFilter === "active"
+                  ? "You don't have any active projects."
+                  : archiveFilter === "archived"
+                  ? "You don't have any archived projects."
+                  : "Create your first project to start organizing your annotations."}
               </p>
-              <Button onClick={() => setIsCreateOpen(true)}>
-                <Plus className="h-4 w-4 mr-2" />
-                Create Project
-              </Button>
+              {archiveFilter === "all" && (
+                <Button onClick={() => setIsCreateOpen(true)}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Create Project
+                </Button>
+              )}
             </div>
           ) : (
-            <ProjectGrid projects={projects} navigate={navigate} openEditDialog={openEditDialog} setDeleteConfirmId={setDeleteConfirmId} onClone={(id) => { toast.loading("Cloning project...", { id: "clone-project" }); cloneProject.mutate(id); }} canClone={isManager} />
+            <ProjectGrid
+              projects={filteredProjects}
+              navigate={navigate}
+              openEditDialog={openEditDialog}
+              setDeleteConfirmId={setDeleteConfirmId}
+              onClone={(id) => {
+                toast.loading("Cloning project...", { id: "clone-project" });
+                cloneProject.mutate(id);
+              }}
+              canClone={isManager}
+              onArchive={(id) => archiveProject.mutate(id)}
+              onReopen={(id) => reopenProject.mutate(id)}
+            />
           )}
         </div>
       </main>

@@ -9,10 +9,11 @@ import { LabelSelector } from "./LabelSelector";
 import { AnnotationList } from "./AnnotationList";
 import { AnnotationEditDialog } from "./AnnotationEditDialog";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, History } from "lucide-react";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { AnnotationHistoryPanel } from "./AnnotationHistoryPanel";
 
 interface AnnotationSidebarProps {
   labels: Label[];
@@ -232,6 +233,24 @@ export function AnnotationSidebar({
           </div>
         </CollapsibleContent>
       </Collapsible>
+
+      {/* Annotation History - Collapsible */}
+      {selectedAnnotation && (
+        <Collapsible
+          className="shrink-0 overflow-hidden border-t border-border bg-card/30"
+          defaultOpen={true}
+        >
+          <CollapsibleTrigger className="w-full flex items-center justify-between p-4 border-b border-border hover:bg-muted/50 transition-colors">
+            <h3 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+              <History className="h-4 w-4 text-primary" /> Selected History
+            </h3>
+            <ChevronDown className="h-4 w-4 text-muted-foreground" />
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <AnnotationHistoryPanel annotationId={selectedAnnotation} />
+          </CollapsibleContent>
+        </Collapsible>
+      )}
 
       {/* Edit Dialog */}
       <AnnotationEditDialog

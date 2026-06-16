@@ -22,12 +22,16 @@ import { useProjectLabelTypes, useProjectLabels } from "@/hooks/useProjectLabels
 import { useGroupTypes } from "@/hooks/useGroupTypes";
 import { useProjectFlags } from "@/hooks/useProjectFlags";
 import { useAnnotationFlags } from "@/hooks/useAnnotationFlags";
+import { useProjects } from "@/hooks/useProjects";
+import { GuidelinesSidebar } from "@/components/annotation/GuidelinesSidebar";
 
 export default function Annotate() {
   const { fileId, projectId } = useParams();
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const { files } = useFiles(user?.id);
+  const { projects } = useProjects(user?.id);
+  const project = useMemo(() => projects.find((p) => p.id === projectId), [projects, projectId]);
   
   // Find current file
   const currentIndex = files.findIndex(f => f.id === fileId);
@@ -106,6 +110,10 @@ export default function Annotate() {
   }, [history, historyIndex]);
 
   const handleAnnotationCreate = useCallback((annotation: Annotation) => {
+    if (project?.is_archived) {
+      toast.error("This project is archived. Annotations cannot be modified.");
+      return;
+    }
     // Attach active label type and group type if set
     const enriched = {
       ...annotation,
@@ -126,6 +134,10 @@ export default function Annotate() {
   }, [user, isDemoFile, createAnnotation, localAnnotations, addToHistory]);
 
   const handleAnnotationUpdate = useCallback((annotation: Annotation) => {
+    if (project?.is_archived) {
+      toast.error("This project is archived. Annotations cannot be modified.");
+      return;
+    }
     if (user && !isDemoFile) {
       updateDbAnnotation.mutate({ annotation, userId: user.id });
     } else {
@@ -136,6 +148,10 @@ export default function Annotate() {
   }, [user, isDemoFile, updateDbAnnotation, localAnnotations, addToHistory]);
 
   const handleAnnotationDelete = useCallback((id: string) => {
+    if (project?.is_archived) {
+      toast.error("This project is archived. Annotations cannot be modified.");
+      return;
+    }
     if (user && !isDemoFile) {
       deleteAnnotation.mutate({ annotationId: id, userId: user.id });
     } else {
@@ -164,6 +180,10 @@ export default function Annotate() {
   }, [history, historyIndex]);
 
   const handleClear = useCallback(() => {
+    if (project?.is_archived) {
+      toast.error("This project is archived. Annotations cannot be modified.");
+      return;
+    }
     if (user && !isDemoFile) {
       deleteAllAnnotations.mutate();
     } else {
@@ -266,6 +286,12 @@ export default function Annotate() {
 
   return (
     <div className="h-screen overflow-hidden bg-background flex flex-col">
+      {project?.is_archived && (
+        <div className="bg-destructive/15 border-b border-destructive/20 text-destructive-foreground px-6 py-2 text-xs flex items-center gap-2 font-semibold bg-red-950/40">
+          <FolderOpen className="h-4 w-4 text-destructive" />
+          This project is archived. Annotations are in read-only mode and cannot be added, edited, or cleared.
+        </div>
+      )}
       {/* Header */}
       <header className="sticky top-0 z-20 glass border-b border-border px-6 py-3">
         <div className="flex items-center justify-between">
@@ -319,7 +345,7 @@ export default function Annotate() {
               <Download className="h-4 w-4 mr-2" />
               Export
             </Button>
-            <Button onClick={handleSave} disabled={!user || isDemoFile}>
+            <Button onClick={handleSave} disabled={!user || isDemoFile || project?.is_archived}>
               <Save className="h-4 w-4 mr-2" />
               Save
             </Button>
@@ -609,6 +635,10 @@ export default function Annotate() {
             onAnnotationFlagsChange={(annId, flagIds) => setAnnotationFlags.mutate({ annotationId: annId, flagIds })}
           />
         )}
+        <GuidelinesSidebar
+          guidelines={project?.guidelines ?? null}
+          projectName={project?.name}
+        />
       </div>
     </div>
   );

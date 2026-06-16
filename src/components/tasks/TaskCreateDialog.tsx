@@ -22,9 +22,8 @@ import {
 import { Search, FileText, Music, Image, File, Users } from "lucide-react";
 import { useTeam, TeamMember } from "@/hooks/useTeam";
 import { useProjectFiles } from "@/hooks/useProjectFiles";
-import { FileRecord } from "@/hooks/useFiles";
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { apiClient } from "@/services/api";
 
 interface Project {
   id: string;
@@ -110,38 +109,33 @@ export function TaskCreateDialog({ open, onOpenChange, projects, userId, onCreat
 
     setCreating(true);
     try {
-      // Create the task
-      const { data: task, error: taskErr } = await supabase
-        .from("tasks")
-        .insert({
-          name,
-          description: desc || null,
-          project_id: projectId,
-          assigned_to: assignedTo && assignedTo !== "__any__" ? assignedTo : null,
-          created_by: userId,
-          total_items: selectedFileIds.size,
-        })
-        .select()
-        .single();
-      if (taskErr) throw taskErr;
+      const response = await apiClient.post("/api/tasks", {
+        name,
+        description: desc || null,
+        projectId,
+        assignedTo:
+          assignedTo && assignedTo !== "__any__"
+            ? assignedTo
+            : null,
+        fileIds: Array.from(selectedFileIds),
+      });
 
-      // Create sub_tasks for each selected file
-      const subTaskRows = Array.from(selectedFileIds).map((fileId) => ({
-        task_id: task.id,
-        file_id: fileId,
-      }));
-      const { error: subErr } = await supabase
-        .from("sub_tasks")
-        .insert(subTaskRows);
-      if (subErr) throw subErr;
+      toast.success(
+        `Task created with ${selectedFileIds.size} items`
+      );
 
-      toast.success(`Task created with ${selectedFileIds.size} items`);
       resetForm();
       onOpenChange(false);
       onCreated();
-    } catch (e: any) {
-      toast.error(`Failed: ${e.message}`);
-    } finally {
+    }
+    catch (e: any) {
+      toast.error(
+        e?.response?.data?.error ||
+        e?.message ||
+        "Failed to create task"
+      );
+    }
+    finally {
       setCreating(false);
     }
   };

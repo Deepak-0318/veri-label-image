@@ -380,6 +380,121 @@ public sealed class SupabaseAnnotationService
         Console.WriteLine($"[AnnotationService] Response Body: {responseBody}");
     }
 
+    public async Task<List<Dictionary<string, object>>> GetAnnotationsByFileAsync(string jwt, Guid fileId)
+    {
+        var url = $"{_supabaseUrl}/rest/v1/annotations?file_id=eq.{fileId}&order=created_at.asc";
+        var client = BuildClient(jwt);
+        var response = await client.GetAsync(url);
+        if (!response.IsSuccessStatusCode)
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            throw new Exception($"Supabase fetch annotations failed: {error}");
+        }
+        return await JsonSerializer.DeserializeAsync<List<Dictionary<string, object>>>(
+            await response.Content.ReadAsStreamAsync(), SnakeCase) ?? new List<Dictionary<string, object>>();
+    }
+
+    public async Task<Dictionary<string, object>?> GetAnnotationByIdAsync(string jwt, Guid id)
+    {
+        var url = $"{_supabaseUrl}/rest/v1/annotations?id=eq.{id}";
+        var client = BuildClient(jwt);
+        var response = await client.GetAsync(url);
+        if (!response.IsSuccessStatusCode) return null;
+        var list = await JsonSerializer.DeserializeAsync<List<Dictionary<string, object>>>(
+            await response.Content.ReadAsStreamAsync(), SnakeCase) ?? new List<Dictionary<string, object>>();
+        return list.FirstOrDefault();
+    }
+
+    public async Task<Dictionary<string, object>> InsertAnnotationAsync(string jwt, object annotation)
+    {
+        var url = $"{_supabaseUrl}/rest/v1/annotations";
+        var client = BuildClient(jwt);
+        client.DefaultRequestHeaders.Add("Prefer", "return=representation");
+        var payload = JsonSerializer.Serialize(annotation, SnakeCase);
+        var content = new StringContent(payload, Encoding.UTF8, "application/json");
+        var response = await client.PostAsync(url, content);
+        if (!response.IsSuccessStatusCode)
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            throw new Exception($"Supabase insert annotation failed: {error}");
+        }
+        var list = await JsonSerializer.DeserializeAsync<List<Dictionary<string, object>>>(
+            await response.Content.ReadAsStreamAsync(), SnakeCase) ?? new List<Dictionary<string, object>>();
+        return list.First();
+    }
+
+    public async Task<Dictionary<string, object>> UpdateAnnotationAsync(string jwt, Guid id, object patch)
+    {
+        var url = $"{_supabaseUrl}/rest/v1/annotations?id=eq.{id}";
+        var client = BuildClient(jwt);
+        client.DefaultRequestHeaders.Add("Prefer", "return=representation");
+        var payload = JsonSerializer.Serialize(patch, SnakeCase);
+        var content = new StringContent(payload, Encoding.UTF8, "application/json");
+        var response = await client.PatchAsync(url, content);
+        if (!response.IsSuccessStatusCode)
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            throw new Exception($"Supabase update annotation failed: {error}");
+        }
+        var list = await JsonSerializer.DeserializeAsync<List<Dictionary<string, object>>>(
+            await response.Content.ReadAsStreamAsync(), SnakeCase) ?? new List<Dictionary<string, object>>();
+        return list.First();
+    }
+
+    public async Task DeleteAnnotationAsync(string jwt, Guid id)
+    {
+        var url = $"{_supabaseUrl}/rest/v1/annotations?id=eq.{id}";
+        var client = BuildClient(jwt);
+        var response = await client.DeleteAsync(url);
+        if (!response.IsSuccessStatusCode)
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            throw new Exception($"Supabase delete annotation failed: {error}");
+        }
+    }
+
+    public async Task BatchDeleteAnnotationsAsync(string jwt, List<Guid> ids)
+    {
+        if (ids == null || ids.Count == 0) return;
+        var idsQuery = string.Join(",", ids.Select(i => $"\"{i}\""));
+        var url = $"{_supabaseUrl}/rest/v1/annotations?id=in.({idsQuery})";
+        var client = BuildClient(jwt);
+        var response = await client.DeleteAsync(url);
+        if (!response.IsSuccessStatusCode)
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            throw new Exception($"Supabase batch delete annotations failed: {error}");
+        }
+    }
+
+    public async Task<List<Dictionary<string, object>>> GetAnnotationsByTaskAsync(string jwt, Guid taskId)
+    {
+        var subTasksUrl = $"{_supabaseUrl}/rest/v1/sub_tasks?task_id=eq.{taskId}&select=file_id";
+        var client = BuildClient(jwt);
+        var response = await client.GetAsync(subTasksUrl);
+        if (!response.IsSuccessStatusCode) return new List<Dictionary<string, object>>();
+        
+        using var doc = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+        var fileIds = new List<string>();
+        foreach (var item in doc.RootElement.EnumerateArray())
+        {
+            if (item.TryGetProperty("file_id", out var fileIdProp))
+            {
+                fileIds.Add(fileIdProp.GetString()!);
+            }
+        }
+        
+        if (fileIds.Count == 0) return new List<Dictionary<string, object>>();
+
+        var inQuery = string.Join(",", fileIds.Select(id => $"\"{id}\""));
+        var url = $"{_supabaseUrl}/rest/v1/annotations?file_id=in.({inQuery})&order=created_at.asc";
+        var annotationsResponse = await client.GetAsync(url);
+        if (!annotationsResponse.IsSuccessStatusCode) return new List<Dictionary<string, object>>();
+
+        return await JsonSerializer.DeserializeAsync<List<Dictionary<string, object>>>(
+            await annotationsResponse.Content.ReadAsStreamAsync(), SnakeCase) ?? new List<Dictionary<string, object>>();
+    }
+
     private HttpClient BuildClient(string jwt)
     {
         var client = _httpClientFactory.CreateClient();

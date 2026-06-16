@@ -1,10 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Annotation, BoundingBoxAnnotation, PolygonAnnotation, TextHighlightAnnotation, RowAnnotation, AudioRegionAnnotation, FrameLabelAnnotation, VideoSegmentAnnotation, BoundingBox3dAnnotation, TagColor } from "@/types/annotation";
+import { Annotation, BoundingBoxAnnotation, PolygonAnnotation, TextHighlightAnnotation, RowAnnotation, AudioRegionAnnotation, FrameLabelAnnotation, VideoSegmentAnnotation, BoundingBox3dAnnotation, TagColor, PointAnnotation, PolylineAnnotation, KeypointAnnotation } from "@/types/annotation";
 import { toast } from "sonner";
 import { logActivityEvent } from "@/services/activityLogger";
 import { logAuditEvent } from "@/services/auditLogger";
 import { Json } from "@/integrations/supabase/types";
+import { AnnotationApi } from "@/services/apiClient";
 
 interface DbAnnotation {
   id: string;
@@ -16,6 +17,7 @@ interface DbAnnotation {
   color: string;
   data: Record<string, unknown>;
   label_type_id: string | null;
+  group_type_id: string | null;
   comment: string | null;
   qc_status: string | null;
   qc_comment: string | null;
@@ -103,6 +105,29 @@ function dbToAnnotation(db: DbAnnotation): Annotation {
       endTime: data.endTime,
       topicName: data.topicName,
     } as VideoSegmentAnnotation;
+  } else if (db.type === 'point') {
+    const data = typeof db.data === 'string' ? JSON.parse(db.data) : db.data as { x: number; y: number };
+    return {
+      ...base,
+      type: 'point',
+      x: data.x,
+      y: data.y,
+    } as PointAnnotation;
+  } else if (db.type === 'polyline') {
+    const data = typeof db.data === 'string' ? JSON.parse(db.data) : db.data as { points: Point[] };
+    return {
+      ...base,
+      type: 'polyline',
+      points: data.points,
+    } as PolylineAnnotation;
+  } else if (db.type === 'keypoint') {
+    const data = typeof db.data === 'string' ? JSON.parse(db.data) : db.data as { x: number; y: number };
+    return {
+      ...base,
+      type: 'keypoint',
+      x: data.x,
+      y: data.y,
+    } as KeypointAnnotation;
   } else if (db.type === 'boundingBox3d') {
     const data = db.data as { cx: number; cy: number; cz: number; sx: number; sy: number; sz: number };
     return {
@@ -145,6 +170,20 @@ function annotationToDb(annotation: Annotation, fileId: string, userId: string, 
       ...(annotation.topicName && { topicName: annotation.topicName }),
       ...(annotation.frameIndex !== undefined && { frameIndex: annotation.frameIndex }),
       ...(annotation.timestamp !== undefined && { timestamp: annotation.timestamp }),
+    };
+  } else if (annotation.type === 'point') {
+    data = {
+      x: annotation.x,
+      y: annotation.y,
+    };
+  } else if (annotation.type === 'polyline') {
+    data = {
+      points: annotation.points,
+    };
+  } else if (annotation.type === 'keypoint') {
+    data = {
+      x: annotation.x,
+      y: annotation.y,
     };
   } else if (annotation.type === 'textHighlight') {
     data = {
@@ -201,6 +240,18 @@ function annotationToDb(annotation: Annotation, fileId: string, userId: string, 
   };
 }
 
+const getToken = () => {
+  const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+  const storageKey = `sb-${projectId}-auth-token`;
+  const raw = localStorage.getItem(storageKey);
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw)?.access_token;
+  } catch {
+    return null;
+  }
+};
+
 export function useAnnotations(fileId: string | undefined, projectId?: string | undefined) {
   const queryClient = useQueryClient();
 
@@ -208,35 +259,31 @@ export function useAnnotations(fileId: string | undefined, projectId?: string | 
     queryKey: ['annotations', fileId, projectId],
     queryFn: async () => {
       if (!fileId) return [];
+      const token = getToken();
+      if (!token) return [];
 
-      let query = supabase
-        .from('annotations')
-        .select('*')
-        .eq('file_id', fileId);
-
-      if (projectId) {
-        query = query.eq('project_id', projectId);
-      } else {
-        query = query.is('project_id', null);
-      }
-
-      const { data, error } = await query.order('created_at', { ascending: true }).range(0, 49999);
-      
-      console.log("SUPABASE ERROR", error);
-      console.log("SUPABASE DATA", data);
-      console.log("ANNOTATIONS RAW FROM DB", data);
-      console.log("ANNOTATIONS RAW", data?.length);
-      console.log("FILE ID", fileId);
-      console.log("PROJECT ID", projectId);
-
-      if (error) throw error;
-        const converted = (data as DbAnnotation[]).map(dbToAnnotation);
-
-        console.log("ANNOTATIONS CONVERTED", converted);
-        console.log("FIRST CONVERTED", converted[0]);
-
-        return converted;
-        return (data as DbAnnotation[]).map(dbToAnnotation);
+      const data = await AnnotationApi.getAnnotations(fileId, token);
+      const converted = (data as any[]).map((db: any) => {
+        const normalizedDb: DbAnnotation = {
+          id: db.id,
+          file_id: db.fileId || db.file_id,
+          user_id: db.userId || db.user_id,
+          project_id: db.projectId || db.project_id,
+          type: db.type,
+          label: db.label,
+          color: db.color,
+          label_type_id: db.labelTypeId || db.label_type_id,
+          group_type_id: db.groupTypeId || db.group_type_id,
+          comment: db.comment,
+          qc_status: db.qcStatus || db.qc_status,
+          qc_comment: db.qcComment || db.qc_comment,
+          data: db.data,
+          created_at: db.createdAt || db.created_at,
+          updated_at: db.updatedAt || db.updated_at,
+        };
+        return dbToAnnotation(normalizedDb);
+      });
+      return converted;
     },
     enabled: !!fileId,
   });
@@ -244,28 +291,44 @@ export function useAnnotations(fileId: string | undefined, projectId?: string | 
   const createAnnotation = useMutation({
     mutationFn: async ({ annotation, userId }: { annotation: Annotation; userId: string }) => {
       if (!fileId) throw new Error('No file ID');
+      const token = getToken();
+      if (!token) throw new Error('Not authenticated');
 
       const dbAnnotation = annotationToDb(annotation, fileId, userId, projectId);
-      const { data, error } = await supabase
-        .from('annotations')
-        .insert({
-          id: dbAnnotation.id,
-          file_id: dbAnnotation.file_id,
-          user_id: dbAnnotation.user_id,
-          project_id: dbAnnotation.project_id,
-          type: dbAnnotation.type,
-          label: dbAnnotation.label,
-          color: dbAnnotation.color,
-          label_type_id: dbAnnotation.label_type_id,
-          comment: dbAnnotation.comment,
-          group_type_id: dbAnnotation.group_type_id,
-          data: dbAnnotation.data as Json,
-        })
-        .select()
-        .single();
+      const payload = {
+        id: dbAnnotation.id,
+        fileId: dbAnnotation.file_id,
+        userId: dbAnnotation.user_id,
+        projectId: dbAnnotation.project_id,
+        type: dbAnnotation.type,
+        label: dbAnnotation.label,
+        color: dbAnnotation.color,
+        labelTypeId: dbAnnotation.label_type_id,
+        groupTypeId: dbAnnotation.group_type_id,
+        comment: dbAnnotation.comment,
+        data: dbAnnotation.data,
+      };
 
-      if (error) throw error;
-      return dbToAnnotation(data as DbAnnotation);
+      const res = await AnnotationApi.create(payload as any, token);
+      const apiRes = res as any;
+      const normalizedRes: DbAnnotation = {
+        id: apiRes.id,
+        file_id: apiRes.fileId || apiRes.file_id,
+        user_id: apiRes.userId || apiRes.user_id,
+        project_id: apiRes.projectId || apiRes.project_id,
+        type: apiRes.type,
+        label: apiRes.label,
+        color: apiRes.color,
+        label_type_id: apiRes.labelTypeId || apiRes.label_type_id,
+        group_type_id: apiRes.groupTypeId || apiRes.group_type_id,
+        comment: apiRes.comment,
+        qc_status: apiRes.qcStatus || apiRes.qc_status,
+        qc_comment: apiRes.qcComment || apiRes.qc_comment,
+        data: apiRes.data,
+        created_at: apiRes.createdAt || apiRes.created_at,
+        updated_at: apiRes.updatedAt || apiRes.updated_at,
+      };
+      return dbToAnnotation(normalizedRes);
     },
     onSuccess: (result, variables) => {
       queryClient.invalidateQueries({ queryKey: ['annotations', fileId, projectId] });
@@ -276,16 +339,6 @@ export function useAnnotations(fileId: string | undefined, projectId?: string | 
         entityId: result.id,
         description: `Added "${result.label}" annotation`,
       });
-      logAuditEvent({
-        userId: variables.userId,
-        action: "create_annotation",
-        category: "annotation",
-        entityType: "annotation",
-        entityId: result.id,
-        entityName: result.label,
-        description: `created "${result.label}" ${result.type} annotation`,
-        newValues: { label: result.label, type: result.type, color: result.color },
-      });
     },
     onError: (error) => {
       toast.error(`Failed to save annotation: ${error.message}`);
@@ -295,39 +348,42 @@ export function useAnnotations(fileId: string | undefined, projectId?: string | 
   const updateAnnotation = useMutation({
     mutationFn: async ({ annotation, userId }: { annotation: Annotation; userId: string }) => {
       if (!fileId) throw new Error('No file ID');
+      const token = getToken();
+      if (!token) throw new Error('Not authenticated');
 
       const dbAnnotation = annotationToDb(annotation, fileId, userId, projectId);
-      const { data, error } = await supabase
-        .from('annotations')
-        .update({
-          label: dbAnnotation.label,
-          color: dbAnnotation.color,
-          label_type_id: dbAnnotation.label_type_id,
-          comment: dbAnnotation.comment,
-          group_type_id: dbAnnotation.group_type_id,
-          data: dbAnnotation.data as Json,
-        })
-        .eq('id', annotation.id)
-        .select();
+      const patch = {
+        label: dbAnnotation.label,
+        color: dbAnnotation.color,
+        labelTypeId: dbAnnotation.label_type_id,
+        comment: dbAnnotation.comment,
+        groupTypeId: dbAnnotation.group_type_id,
+        data: dbAnnotation.data,
+      };
 
-      if (error) throw error;
-      if (!data || data.length === 0) {
-        throw new Error('Permission denied or annotation not found');
-      }
-      return dbToAnnotation(data[0] as DbAnnotation);
+      const res = await AnnotationApi.update(annotation.id, patch as any, token);
+      const apiRes = res as any;
+      const normalizedRes: DbAnnotation = {
+        id: apiRes.id,
+        file_id: apiRes.fileId || apiRes.file_id,
+        user_id: apiRes.userId || apiRes.user_id,
+        project_id: apiRes.projectId || apiRes.project_id,
+        type: apiRes.type,
+        label: apiRes.label,
+        color: apiRes.color,
+        label_type_id: apiRes.labelTypeId || apiRes.label_type_id,
+        group_type_id: apiRes.groupTypeId || apiRes.group_type_id,
+        comment: apiRes.comment,
+        qc_status: apiRes.qcStatus || apiRes.qc_status,
+        qc_comment: apiRes.qcComment || apiRes.qc_comment,
+        data: apiRes.data,
+        created_at: apiRes.createdAt || apiRes.created_at,
+        updated_at: apiRes.updatedAt || apiRes.updated_at,
+      };
+      return dbToAnnotation(normalizedRes);
     },
     onSuccess: (result, variables) => {
       queryClient.invalidateQueries({ queryKey: ['annotations', fileId, projectId] });
-      logAuditEvent({
-        userId: variables.userId,
-        action: "update_annotation",
-        category: "annotation",
-        entityType: "annotation",
-        entityId: result.id,
-        entityName: result.label,
-        description: `updated annotation "${result.label}"`,
-        newValues: { label: result.label, color: result.color, comment: result.comment },
-      });
     },
     onError: (error) => {
       toast.error(`Failed to update annotation: ${error.message}`);
@@ -337,46 +393,10 @@ export function useAnnotations(fileId: string | undefined, projectId?: string | 
   const deleteAnnotation = useMutation({
     mutationFn: async (params: string | { annotationId: string; userId: string }) => {
       const annotationId = typeof params === 'string' ? params : params.annotationId;
-      const userId = typeof params === 'string' ? undefined : params.userId;
+      const token = getToken();
+      if (!token) throw new Error('Not authenticated');
 
-      // Fetch annotation details before deletion for audit trail
-      let deletedAnnotation: DbAnnotation | null = null;
-      if (userId) {
-        const { data } = await supabase
-          .from('annotations')
-          .select('*')
-          .eq('id', annotationId)
-          .single();
-        deletedAnnotation = data as DbAnnotation | null;
-      }
-
-      const { error } = await supabase
-        .from('annotations')
-        .delete()
-        .eq('id', annotationId);
-
-      if (error) throw error;
-
-      // Log audit event with annotation details
-      if (userId && deletedAnnotation) {
-        logAuditEvent({
-          userId,
-          action: "delete_annotation",
-          category: "annotation",
-          description: `Deleted "${deletedAnnotation.label}" annotation`,
-          entityType: "annotation",
-          entityId: annotationId,
-          entityName: deletedAnnotation.label,
-          oldValues: {
-            label: deletedAnnotation.label,
-            type: deletedAnnotation.type,
-            color: deletedAnnotation.color,
-            file_id: deletedAnnotation.file_id,
-            project_id: deletedAnnotation.project_id,
-            data: deletedAnnotation.data,
-          },
-        });
-      }
+      await AnnotationApi.delete(annotationId, token);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['annotations', fileId, projectId] });
@@ -389,20 +409,14 @@ export function useAnnotations(fileId: string | undefined, projectId?: string | 
   const deleteAllAnnotations = useMutation({
     mutationFn: async () => {
       if (!fileId) throw new Error('No file ID');
+      const token = getToken();
+      if (!token) throw new Error('Not authenticated');
 
-      let query = supabase
-        .from('annotations')
-        .delete()
-        .eq('file_id', fileId);
-
-      if (projectId) {
-        query = query.eq('project_id', projectId);
-      } else {
-        query = query.is('project_id', null);
+      const data = await AnnotationApi.getAnnotations(fileId, token);
+      const ids = data.map((a) => a.id);
+      if (ids.length > 0) {
+        await AnnotationApi.batchDelete(ids, token);
       }
-
-      const { error } = await query;
-      if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['annotations', fileId, projectId] });
@@ -410,16 +424,6 @@ export function useAnnotations(fileId: string | undefined, projectId?: string | 
     onError: (error) => {
       toast.error(`Failed to clear annotations: ${error.message}`);
     },
-  });
-
-  console.log("CONVERTED COUNT", annotations.length);
-
-  annotations.forEach(a => {
-    console.log("BOX", {
-      id: a.id,
-      label: a.label,
-      type: a.type
-    });
   });
 
   return {

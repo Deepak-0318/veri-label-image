@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { apiFetch } from "@/services/api";
 
 export type VariableType = "number" | "text" | "single_select" | "multi_select";
 
@@ -50,16 +50,11 @@ export function useProjectVariables(projectId: string | undefined) {
     queryKey: ["project-variables", projectId],
     queryFn: async () => {
       if (!projectId) return [];
-      const { data, error } = await (supabase as any)
-        .from("project_variables")
-        .select("*")
-        .eq("project_id", projectId)
-        .order("display_order", { ascending: true })
-        .order("created_at", { ascending: true });
-      if (error) throw error;
+      const res = await apiFetch(`/api/definitions?projectId=${projectId}&type=variable`);
+      const data = await res.json();
       return (data as any[]).map((row) => ({
         ...row,
-        options: Array.isArray(row.options) ? row.options : [],
+        options: typeof row.options === 'string' ? JSON.parse(row.options) : (Array.isArray(row.options) ? row.options : []),
       })) as ProjectVariable[];
     },
     enabled: !!projectId,
@@ -73,19 +68,20 @@ export function useProjectVariables(projectId: string | undefined) {
         name: input.name,
         description: input.description ?? null,
         variable_type: input.variable_type,
-        options: input.options ?? [],
+        options: input.variable_type === "single_select" || input.variable_type === "multi_select"
+          ? JSON.stringify(input.options ?? [])
+          : "[]",
         is_required: input.is_required ?? false,
-        min_value: input.min_value ?? null,
-        max_value: input.max_value ?? null,
-        created_by: input.userId,
+        min_value: input.variable_type === "number" ? input.min_value : null,
+        max_value: input.variable_type === "number" ? input.max_value : null,
       };
-      const { data, error } = await (supabase as any)
-        .from("project_variables")
-        .insert(payload)
-        .select()
-        .single();
-      if (error) throw error;
-      return data;
+
+      const res = await apiFetch(`/api/definitions?type=variable`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      return await res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["project-variables", projectId] });
@@ -97,11 +93,15 @@ export function useProjectVariables(projectId: string | undefined) {
   const updateVariable = useMutation({
     mutationFn: async (input: UpdateProjectVariableInput) => {
       const { id, ...rest } = input;
-      const { error } = await (supabase as any)
-        .from("project_variables")
-        .update(rest)
-        .eq("id", id);
-      if (error) throw error;
+      const payload: any = { ...rest };
+      if (rest.options) {
+        payload.options = JSON.stringify(rest.options);
+      }
+      await apiFetch(`/api/definitions/${id}?type=variable`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["project-variables", projectId] });
@@ -112,11 +112,9 @@ export function useProjectVariables(projectId: string | undefined) {
 
   const deleteVariable = useMutation({
     mutationFn: async (variableId: string) => {
-      const { error } = await (supabase as any)
-        .from("project_variables")
-        .delete()
-        .eq("id", variableId);
-      if (error) throw error;
+      await apiFetch(`/api/definitions/${variableId}?type=variable`, {
+        method: "DELETE"
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["project-variables", projectId] });

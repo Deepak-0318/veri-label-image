@@ -24,6 +24,81 @@ export const apiFetch = async (
   return res;
 };
 
+export const apiClient = {
+  post: async (path: string, data: any) => {
+    try {
+      const res = await apiFetch(path, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      return await res.json().catch(() => ({}));
+    } catch (e: any) {
+      const error: any = new Error(e.message || "API request failed");
+      error.response = {
+        data: {
+          error: e.message || "API request failed",
+        },
+      };
+      throw error;
+    }
+  },
+  get: async (path: string) => {
+    try {
+      const res = await apiFetch(path, {
+        method: "GET",
+      });
+      return await res.json().catch(() => ({}));
+    } catch (e: any) {
+      const error: any = new Error(e.message || "API request failed");
+      error.response = {
+        data: {
+          error: e.message || "API request failed",
+        },
+      };
+      throw error;
+    }
+  },
+  put: async (path: string, data: any) => {
+    try {
+      const res = await apiFetch(path, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      return await res.json().catch(() => ({}));
+    } catch (e: any) {
+      const error: any = new Error(e.message || "API request failed");
+      error.response = {
+        data: {
+          error: e.message || "API request failed",
+        },
+      };
+      throw error;
+    }
+  },
+  delete: async (path: string) => {
+    try {
+      const res = await apiFetch(path, {
+        method: "DELETE",
+      });
+      return await res.json().catch(() => ({}));
+    } catch (e: any) {
+      const error: any = new Error(e.message || "API request failed");
+      error.response = {
+        data: {
+          error: e.message || "API request failed",
+        },
+      };
+      throw error;
+    }
+  },
+};
+
 const getToken = () => {
   const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
   const storageKey = `sb-${projectId}-auth-token`;

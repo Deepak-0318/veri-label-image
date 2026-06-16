@@ -16,9 +16,13 @@ builder.Services.AddControllers()
     });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHttpClient();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddMemoryCache();
+builder.Services.AddTransient<Microsoft.AspNetCore.Authentication.IClaimsTransformation, SupabaseClaimsTransformation>();
 builder.Services.AddScoped<PipelineExecutionService>();
 builder.Services.AddScoped<ImageDetectionService>();
 builder.Services.AddScoped<SupabaseAnnotationService>();
+builder.Services.AddScoped<SupabaseTaskService>();
 builder.Services.AddScoped<ImageFileResolverService>();
 builder.Services.Configure<verilabelbackend.Models.YoloDetectionOptions>(builder.Configuration.GetSection("Yolo"));
 builder.Services.AddSingleton<YoloV8OnnxService>();
@@ -100,6 +104,8 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddSingleton<AzureBlobStorageService>();
 builder.Services.AddScoped<SupabaseFileService>();
+builder.Services.AddScoped<ExportService>();
+builder.Services.AddScoped<ImportService>();
 builder.Services.AddScoped<SupabaseInvitationService>();
 builder.Services.AddScoped<SupabaseTeamService>();
 builder.Services.AddScoped<SupabaseDatasetService>();

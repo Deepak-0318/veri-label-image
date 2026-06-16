@@ -288,7 +288,7 @@ const handleDeleteFile = async (fileId: string) => {
                 Created {format(new Date(project.created_at), "MMMM d, yyyy")}
               </p>
             </div>
-            {canEdit && (
+            {canEdit && !project.is_archived && (
               <Button variant="outline" size="sm" onClick={openEditDialog}>
                 <Settings className="h-4 w-4 mr-1" />
                 Edit Project
@@ -299,6 +299,13 @@ const handleDeleteFile = async (fileId: string) => {
             <p className="text-muted-foreground ml-12">{project.description}</p>
           )}
         </header>
+
+        {project.is_archived && (
+          <div className="bg-destructive/15 border-b border-destructive/20 text-destructive-foreground px-8 py-3 text-sm flex items-center gap-2 font-semibold bg-red-950/40">
+            <FolderOpen className="h-4.5 w-4.5 text-destructive" />
+            This project is archived. Uploads, task creation, and metadata modifications are disabled.
+          </div>
+        )}
 
         <div className="p-8 space-y-8">
           {/* Stats */}
@@ -398,7 +405,7 @@ const handleDeleteFile = async (fileId: string) => {
                       <p className="text-sm text-muted-foreground">
                         No annotation guidelines have been provided for this project.
                       </p>
-                      {canEdit && (
+                      {canEdit && !project.is_archived && (
                         <Button variant="outline" size="sm" className="mt-3" onClick={openEditDialog}>
                           <Pencil className="h-3.5 w-3.5 mr-1.5" />
                           Add Guidelines
@@ -434,7 +441,13 @@ const handleDeleteFile = async (fileId: string) => {
 
             {/* Data Tab */}
             <TabsContent value="data" className="space-y-6">
-              <UploadZone onFilesSelected={handleFilesSelected} isUploading={isUploading} />
+              {project.is_archived ? (
+                <div className="text-center py-8 border border-dashed rounded-xl bg-card/50 text-muted-foreground text-sm">
+                  Uploads are disabled because this project is archived.
+                </div>
+              ) : (
+                <UploadZone onFilesSelected={handleFilesSelected} isUploading={isUploading} />
+              )}
 
               <div>
                 <h2 className="text-lg font-semibold mb-4">Files ({files.length})</h2>
@@ -450,7 +463,7 @@ const handleDeleteFile = async (fileId: string) => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                     {files.map((file) => (
                       <div key={file.id} className="relative group">
-                        <FileCard file={file} projectId={projectId} onDelete={() => handleDeleteFile(file.id)} />
+                        <FileCard file={file} projectId={projectId} onDelete={project.is_archived ? undefined : () => handleDeleteFile(file.id)} />
                         <div className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-background/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-b-xl flex items-center justify-between">
                           <div className="flex items-center gap-2">
                             {annotationCounts[file.id] > 0 && (
