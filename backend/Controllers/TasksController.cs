@@ -268,4 +268,103 @@ public sealed class TasksController : ControllerBase
                 });
         }
     }
+
+    [HttpGet]
+    public async Task<IActionResult> GetTasks()
+    {
+        try
+        {
+            var result =
+                await _taskService.GetTasksAsync(GetJwt());
+
+            return Content(
+                result,
+                "application/json");
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(
+                500,
+                new { error = ex.Message });
+        }
+    }
+
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetTask(Guid id)
+    {
+        try
+        {
+            var result =
+                await _taskService.GetTaskAsync(
+                    GetJwt(),
+                    id);
+
+            return Content(
+                result,
+                "application/json");
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(
+                500,
+                new { error = ex.Message });
+        }
+    }
+
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> UpdateTask(
+        Guid id,
+        [FromBody] UpdateTaskRequest request)
+    {
+        try
+        {
+            var payload = new
+            {
+                name = request.Name,
+                description = request.Description,
+                status = request.Status,
+                assigned_to = request.AssignedTo,
+                qa_assigned_to = request.QaAssignedTo,
+                updated_at = DateTimeOffset.UtcNow
+            };
+
+            var result =
+                await _taskService.UpdateTaskAsync(
+                    GetJwt(),
+                    id,
+                    payload);
+
+            return Content(
+                result,
+                "application/json");
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(
+                500,
+                new { error = ex.Message });
+        }
+    }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> DeleteTask(Guid id)
+    {
+        try
+        {
+            await _taskService.DeleteTaskAsync(
+                GetJwt(),
+                id);
+
+            return Ok(new
+            {
+                success = true
+            });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(
+                500,
+                new { error = ex.Message });
+        }
+    }
 }

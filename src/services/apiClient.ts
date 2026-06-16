@@ -336,3 +336,96 @@ export async function subscribeToJob(jobId: string): Promise<void> {
   }
   await _connection.invoke("SubscribeToJob", jobId);
 }
+
+export interface CreateTaskRequest {
+  name: string;
+  description?: string | null;
+  projectId: string;
+  assignedTo?: string | null;
+  fileIds: string[];
+}
+
+export interface UpdateTaskRequest {
+  name?: string;
+  description?: string | null;
+  status?: string;
+  assignedTo?: string | null;
+  qaAssignedTo?: string | null;
+}
+
+export const TaskApi = {
+  async getTasks(token: string) {
+    const res = await fetch(`${getBaseUrl()}/api/tasks`, {
+      headers: authHeaders(token),
+    });
+
+    return handleResponse<any[]>(res);
+  },
+
+  async getTask(id: string, token: string) {
+    const res = await fetch(`${getBaseUrl()}/api/tasks/${id}`, {
+      headers: authHeaders(token),
+    });
+
+    return handleResponse<any>(res);
+  },
+
+  async create(
+    request: CreateTaskRequest,
+    token: string
+  ) {
+    const res = await fetch(`${getBaseUrl()}/api/tasks`, {
+      method: "POST",
+      headers: authHeaders(token),
+      body: JSON.stringify(request),
+    });
+
+    return handleResponse<any>(res);
+  },
+
+  async update(
+    id: string,
+    request: UpdateTaskRequest,
+    token: string
+  ) {
+    const res = await fetch(`${getBaseUrl()}/api/tasks/${id}`, {
+      method: "PUT",
+      headers: authHeaders(token),
+      body: JSON.stringify(request),
+    });
+
+    return handleResponse<any>(res);
+  },
+
+  async delete(
+    id: string,
+    token: string
+  ) {
+    const res = await fetch(`${getBaseUrl()}/api/tasks/${id}`, {
+      method: "DELETE",
+      headers: authHeaders(token),
+    });
+
+    if (!res.ok) {
+      const body = await res.text().catch(() => "");
+      throw new Error(
+        `API ${res.status}: ${body || res.statusText}`
+      );
+    }
+  },
+
+  async claim(
+    id: string,
+    token: string
+  ) {
+    const res = await fetch(
+      `${getBaseUrl()}/api/tasks/${id}/claim`,
+      {
+        method: "POST",
+        headers: authHeaders(token),
+      }
+    );
+
+    return handleResponse<any>(res);
+  },
+};

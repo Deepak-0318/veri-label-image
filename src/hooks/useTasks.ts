@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { TaskApi } from "@/services/apiClient";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { logAuditEvent } from "@/services/auditLogger";
@@ -20,105 +21,89 @@ export interface Task {
   updated_at: string;
 }
 
-export function useTasks(userId: string | undefined, projectId?: string) {
+async function getAccessToken() {
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session?.access_token) {
+    throw new Error("Not authenticated");
+  }
+
+  return session.access_token;
+}
+
+export function useTasks(
+  userId: string | undefined,
+  projectId?: string
+) {
   const queryClient = useQueryClient();
   const { isAdmin } = useUserRole(userId);
 
   const { data: tasks = [], isLoading } = useQuery({
-    queryKey: ['tasks', userId, projectId, isAdmin],
+    queryKey: ["tasks", userId, projectId, isAdmin],
     queryFn: async () => {
       if (!userId) return [];
-      let query = supabase.from('tasks').select('*').order('created_at', { ascending: false });
-      if (projectId) query = query.eq('project_id', projectId);
-      
-      if (!isAdmin) {
-        query = query.or(`assigned_to.eq.${userId},qa_assigned_to.eq.${userId},assigned_to.is.null,qa_assigned_to.is.null`);
+
+      const token = await getAccessToken();
+
+      let tasks = await TaskApi.getTasks(token);
+
+      if (projectId) {
+        tasks = tasks.filter(
+          (t: Task) => t.project_id === projectId
+        );
       }
-      
-      const { data, error } = await query;
-      if (error) throw error;
-      console.log(
-        "ALL TASKS",
-        (data as Task[]).map(t => ({
-          id: t.id,
-          name: t.name,
-          status: t.status,
-          project_id: t.project_id
-        }))
-      );
-      return data as Task[];
+
+      if (!isAdmin) {
+        tasks = tasks.filter(
+          (t: Task) =>
+            t.assigned_to === userId ||
+            t.qa_assigned_to === userId ||
+            (!t.assigned_to && !t.qa_assigned_to)
+        );
+      }
+
+      return tasks as Task[];
     },
     enabled: !!userId,
   });
 
   const createTask = useMutation({
-    mutationFn: async ({ name, description, project_id, assigned_to, total_items }: {
-      name: string;
-      description?: string;
-      project_id: string;
-      assigned_to?: string;
-      total_items?: number;
-    }) => {
-      if (!userId) throw new Error("Not authenticated");
-
-      const { data: project, error: pError } = await supabase
-        .from('projects')
-        .select('is_archived')
-        .eq('id', project_id)
-        .single();
-      if (pError) throw pError;
-      if (project?.is_archived) {
-        throw new Error("Cannot create tasks for an archived project");
-      }
-
-      const { data, error } = await supabase
-        .from('tasks')
-        .insert({
-          name,
-          description: description || null,
-          project_id,
-          assigned_to: assigned_to || null,
-          created_by: userId,
-          total_items: total_items ?? 0,
-        })
-        .select()
-        .single();
-      if (error) throw error;
-      return data as Task;
+    mutationFn: async () => {
+      throw new Error(
+        "Task creation is handled through TaskCreateDialog and /api/tasks"
+      );
     },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['tasks'] });
-      toast.success('Task created');
-      if (userId) {
-        logAuditEvent({
-          userId,
-          action: "create_task",
-          category: "task",
-          entityType: "task",
-          entityId: data.id,
-          entityName: data.name,
-          description: `created task "${data.name}"`,
-          newValues: { name: data.name, assigned_to: data.assigned_to, project_id: data.project_id },
-        });
-      }
-    },
-    onError: (e) => toast.error(`Failed: ${e.message}`),
   });
 
   const updateTask = useMutation({
-    mutationFn: async ({ id, ...updates }: Partial<Task> & { id: string }) => {
-      const { data, error } = await supabase
-        .from('tasks')
-        .update(updates as any)
-        .eq('id', id)
-        .select()
-        .single();
-      if (error) throw error;
-      return data as Task;
+    mutationFn: async ({
+      id,
+      ...updates
+    }: Partial<Task> & { id: string }) => {
+      const token = await getAccessToken();
+
+      return await TaskApi.update(
+        id,
+        {
+          name: updates.name,
+          description: updates.description,
+          status: updates.status,
+          assignedTo: updates.assigned_to,
+          qaAssignedTo: updates.qa_assigned_to,
+        },
+        token
+      );
     },
+
     onSuccess: (data, variables) => {
-      queryClient.invalidateQueries({ queryKey: ['tasks'] });
-      toast.success('Task updated');
+      queryClient.invalidateQueries({
+        queryKey: ["tasks"],
+      });
+
+      toast.success("Task updated");
+
       if (userId) {
         logAuditEvent({
           userId,
@@ -127,22 +112,35 @@ export function useTasks(userId: string | undefined, projectId?: string) {
           entityType: "task",
           entityId: data.id,
           entityName: data.name,
-          description: `updated task "${data.name}"${variables.status ? ` → ${variables.status}` : ''}`,
-          newValues: variables as Record<string, unknown>,
+          description: `updated task "${data.name}"${
+            variables.status
+              ? ` → ${variables.status}`
+              : ""
+          }`,
+          newValues:
+            variables as Record<string, unknown>,
         });
       }
     },
-    onError: (e) => toast.error(`Failed: ${e.message}`),
+
+    onError: (e: Error) =>
+      toast.error(`Failed: ${e.message}`),
   });
 
   const deleteTask = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from('tasks').delete().eq('id', id);
-      if (error) throw error;
+      const token = await getAccessToken();
+
+      await TaskApi.delete(id, token);
     },
+
     onSuccess: (_, id) => {
-      queryClient.invalidateQueries({ queryKey: ['tasks'] });
-      toast.success('Task deleted');
+      queryClient.invalidateQueries({
+        queryKey: ["tasks"],
+      });
+
+      toast.success("Task deleted");
+
       if (userId) {
         logAuditEvent({
           userId,
@@ -150,12 +148,20 @@ export function useTasks(userId: string | undefined, projectId?: string) {
           category: "task",
           entityType: "task",
           entityId: id,
-          description: `deleted a task`,
+          description: "deleted a task",
         });
       }
     },
-    onError: (e) => toast.error(`Failed: ${e.message}`),
+
+    onError: (e: Error) =>
+      toast.error(`Failed: ${e.message}`),
   });
 
-  return { tasks, isLoading, createTask, updateTask, deleteTask };
+  return {
+    tasks,
+    isLoading,
+    createTask,
+    updateTask,
+    deleteTask,
+  };
 }
