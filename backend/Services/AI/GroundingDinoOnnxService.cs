@@ -17,11 +17,15 @@ namespace verilabelbackend.Services.AI;
 public sealed class GroundingDinoOnnxService
 {
     private readonly InferenceSession _session;
-
+    private readonly BertTokenizerService _tokenizer;
+    
     public GroundingDinoOnnxService(
         IWebHostEnvironment env,
-        IConfiguration config)
+        IConfiguration config,
+        BertTokenizerService tokenizer)
     {
+        _tokenizer = tokenizer;
+        
         var modelPath = Path.Combine(
             env.ContentRootPath,
             "Models",
@@ -30,10 +34,31 @@ public sealed class GroundingDinoOnnxService
         );
 
         Console.WriteLine($"[GroundingDINO] Loading model: {modelPath}");
-        _session = new InferenceSession(modelPath);
-        Console.WriteLine("[GroundingDINO] Model loaded");
-    }
 
+        _session = new InferenceSession(modelPath);
+
+        Console.WriteLine("[GroundingDINO] Model loaded");
+
+        Console.WriteLine("========== MODEL INPUTS ==========");
+
+        foreach (var input in _session.InputMetadata)
+        {
+            Console.WriteLine(
+            $"{input.Key} | " +
+            $"{input.Value.ElementType} | " +
+            $"{string.Join(",", input.Value.Dimensions)}");
+        }
+
+        Console.WriteLine("========== MODEL OUTPUTS ==========");
+
+        foreach (var output in _session.OutputMetadata)
+        {
+            Console.WriteLine(
+            $"{output.Key} | " +
+            $"{output.Value.ElementType} | " +
+            $"{string.Join(",", output.Value.Dimensions)}");
+        }
+    }
     
     public async Task<List<GroundingDinoDetection>> DetectAsync(
         string imagePath,
@@ -93,6 +118,12 @@ public sealed class GroundingDinoOnnxService
                 for (int x = 0; x < targetWidth; x++)
                 {
                     var pixel = row[x];
+                    if (y == 0 && x == 0)
+                    {
+                        Console.WriteLine($"Pixel[0] R={pixel.R}");
+                        Console.WriteLine($"Pixel[0] G={pixel.G}");
+                        Console.WriteLine($"Pixel[0] B={pixel.B}");
+                    }
                     inputTensor[0, 0, y, x] = ((pixel.R / 255.0f) - mean[0]) / std[0];
                     inputTensor[0, 1, y, x] = ((pixel.G / 255.0f) - mean[1]) / std[1];
                     inputTensor[0, 2, y, x] = ((pixel.B / 255.0f) - mean[2]) / std[2];
@@ -100,101 +131,154 @@ public sealed class GroundingDinoOnnxService
             }
         });
 
+        Console.WriteLine($"Normalized[0,0,0,0]={inputTensor[0, 0, 0, 0]}");
+        Console.WriteLine($"Normalized[0,1,0,0]={inputTensor[0, 1, 0, 0]}");
+        Console.WriteLine($"Normalized[0,2,0,0]={inputTensor[0, 2, 0, 0]}");
+
+        var tokenized = _tokenizer.Tokenize(prompt);
+
+        var inputIdsTensor =
+            new DenseTensor<long>(
+                new[] { 1, tokenized.InputIds.Length });
+
+        var attentionMaskTensor =
+            new DenseTensor<long>(
+                new[] { 1, tokenized.AttentionMask.Length });
+
+        var tokenTypeIdsTensor =
+            new DenseTensor<long>(
+                new[] { 1, tokenized.TokenTypeIds.Length });
+
+        for (int i = 0; i < tokenized.InputIds.Length; i++)
+        {
+            inputIdsTensor[0, i] =
+                tokenized.InputIds[i];
+
+            attentionMaskTensor[0, i] =
+                tokenized.AttentionMask[i];
+
+            tokenTypeIdsTensor[0, i] =
+                tokenized.TokenTypeIds[i];
+        }
+
         // Prepare ONNX Inputs
         var inputs = new List<NamedOnnxValue>
         {
-            NamedOnnxValue.CreateFromTensor("image", inputTensor)
+            NamedOnnxValue.CreateFromTensor(
+                "image",
+                inputTensor),
+
+            NamedOnnxValue.CreateFromTensor(
+                "input_ids",
+                inputIdsTensor),
+
+            NamedOnnxValue.CreateFromTensor(
+                "attention_mask",
+                attentionMaskTensor),
+
+            NamedOnnxValue.CreateFromTensor(
+                "token_type_ids",
+                tokenTypeIdsTensor)
         };
 
         // Run ONNX Inference
         Console.WriteLine("[GroundingDINO] Running inference...");
-using var results = _session.Run(inputs);
+        using var results = _session.Run(inputs);
 
-var logitsTensor = results
-    .First(x => x.Name == "pred_logits")
-    .AsTensor<float>();
+        var logitsTensor = results
+            .First(x => x.Name == "pred_logits")
+            .AsTensor<float>();
 
-var boxesTensor = results
-    .First(x => x.Name == "pred_boxes")
-    .AsTensor<float>();
+        var boxesTensor = results
+            .First(x => x.Name == "pred_boxes")
+            .AsTensor<float>();
 
-Console.WriteLine(
-    $"[GroundingDINO] Logits Shape = {string.Join(",", logitsTensor.Dimensions.ToArray())}");
+        Console.WriteLine(
+            $"[GroundingDINO] Logits Shape = {string.Join(",", logitsTensor.Dimensions.ToArray())}");
 
-Console.WriteLine(
-    $"[GroundingDINO] Boxes Shape = {string.Join(",", boxesTensor.Dimensions.ToArray())}");
+        Console.WriteLine(
+            $"[GroundingDINO] Boxes Shape = {string.Join(",", boxesTensor.Dimensions.ToArray())}");
 
-var detections = new List<GroundingDinoDetection>();
+        var detections = new List<GroundingDinoDetection>();
 
-int numQueries = logitsTensor.Dimensions[1];
-int numTokens = logitsTensor.Dimensions[2];
+        int numQueries = logitsTensor.Dimensions[1];
+        int numTokens = logitsTensor.Dimensions[2];
 
-Console.WriteLine($"[GroundingDINO] Queries = {numQueries}");
-Console.WriteLine($"[GroundingDINO] Tokens = {numTokens}");
+        Console.WriteLine($"[GroundingDINO] Queries = {numQueries}");
+        Console.WriteLine($"[GroundingDINO] Tokens = {numTokens}");
 
-for (int query = 0; query < numQueries; query++)
-{
-    float bestScore = float.MinValue;
-    int bestToken = -1;
+        float globalMaxScore = float.MinValue;
 
-    for (int token = 0; token < numTokens; token++)
-    {
-        float logit = logitsTensor[0, query, token];
-        float score = Sigmoid(logit);
-
-        if (score > bestScore)
+        for (int query = 0; query < numQueries; query++)
         {
-            bestScore = score;
-            bestToken = token;
+            float bestScore = float.MinValue;
+            int bestToken = -1;
+
+            for (int token = 0; token < numTokens; token++)
+            {
+                float logit = logitsTensor[0, query, token];
+                float score = Sigmoid(logit);
+
+                if (score > globalMaxScore)
+                {
+                    globalMaxScore = score;
+                }
+
+                if (score > bestScore)
+                {
+                    bestScore = score;
+                    bestToken = token;
+                }
+            }
+
+            if (bestScore < confidenceThreshold)
+                continue;
+
+            float cx = boxesTensor[0, query, 0];
+            float cy = boxesTensor[0, query, 1];
+            float w = boxesTensor[0, query, 2];
+            float h = boxesTensor[0, query, 3];
+
+            float boxWidth = w * imageWidth;
+            float boxHeight = h * imageHeight;
+
+            float x = (cx * imageWidth) - (boxWidth / 2f);
+            float y = (cy * imageHeight) - (boxHeight / 2f);
+
+            // Clamp to original image bounds
+            float x2 = x + boxWidth;
+            float y2 = y + boxHeight;
+
+            x = Math.Clamp(x, 0f, (float)imageWidth);
+            y = Math.Clamp(y, 0f, (float)imageHeight);
+            x2 = Math.Clamp(x2, 0f, (float)imageWidth);
+            y2 = Math.Clamp(y2, 0f, (float)imageHeight);
+
+            float finalWidth = Math.Max(0f, x2 - x);
+            float finalHeight = Math.Max(0f, y2 - y);
+
+            if (finalWidth <= 0 || finalHeight <= 0)
+                continue;
+
+            Console.WriteLine($"ORIGINAL={originalWidth}x{originalHeight} " + $"RESIZED={targetWidth}x{targetHeight}");
+            Console.WriteLine( $"cx={cx:F4} cy={cy:F4} w={w:F4} h={h:F4}");
+            
+            detections.Add(new GroundingDinoDetection
+            {
+                Confidence = bestScore,
+                TokenIndex = bestToken,
+
+                CenterX = x,
+                CenterY = y,
+                Width = finalWidth,
+                Height = finalHeight
+            });
         }
-    }
 
-        if (bestScore < confidenceThreshold)
-            continue;
+        Console.WriteLine($"GLOBAL MAX SCORE = {globalMaxScore}");
 
-        float cx = boxesTensor[0, query, 0];
-        float cy = boxesTensor[0, query, 1];
-        float w = boxesTensor[0, query, 2];
-        float h = boxesTensor[0, query, 3];
-
-        float boxWidth = w * imageWidth;
-        float boxHeight = h * imageHeight;
-
-        float x = (cx * imageWidth) - (boxWidth / 2f);
-        float y = (cy * imageHeight) - (boxHeight / 2f);
-
-        // Clamp to original image bounds
-        float x2 = x + boxWidth;
-        float y2 = y + boxHeight;
-
-        x = Math.Clamp(x, 0f, (float)imageWidth);
-        y = Math.Clamp(y, 0f, (float)imageHeight);
-        x2 = Math.Clamp(x2, 0f, (float)imageWidth);
-        y2 = Math.Clamp(y2, 0f, (float)imageHeight);
-
-        float finalWidth = Math.Max(0f, x2 - x);
-        float finalHeight = Math.Max(0f, y2 - y);
-
-        if (finalWidth <= 0 || finalHeight <= 0)
-            continue;
-
-        Console.WriteLine($"ORIGINAL={originalWidth}x{originalHeight} " + $"RESIZED={targetWidth}x{targetHeight}");
-        Console.WriteLine( $"cx={cx:F4} cy={cy:F4} w={w:F4} h={h:F4}");
-        
-        detections.Add(new GroundingDinoDetection
-        {
-            Confidence = bestScore,
-            TokenIndex = bestToken,
-
-            CenterX = x,
-            CenterY = y,
-            Width = finalWidth,
-            Height = finalHeight
-        });
-}
-
-Console.WriteLine(
-    $"[GroundingDINO] Decoded Detections = {detections.Count}");
+        Console.WriteLine(
+            $"[GroundingDINO] Decoded Detections = {detections.Count}");
 
 foreach (var detection in detections.Take(10))
 {

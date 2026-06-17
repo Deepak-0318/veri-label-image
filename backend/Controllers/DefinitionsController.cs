@@ -58,8 +58,7 @@ namespace verilabelbackend.Controllers
                 }
 
                 var content = await response.Content.ReadAsStringAsync();
-                using var doc = JsonDocument.Parse(content);
-                return Ok(doc.RootElement);
+                return Content(content, "application/json");
             }
             catch (Exception ex)
             {
@@ -94,7 +93,7 @@ namespace verilabelbackend.Controllers
                 if (doc.RootElement.GetArrayLength() == 0)
                     return NotFound("Definition not found");
 
-                return Ok(doc.RootElement[0]);
+                return Content(doc.RootElement[0].GetRawText(), "application/json");
             }
             catch (Exception ex)
             {
@@ -159,13 +158,22 @@ namespace verilabelbackend.Controllers
                 }
 
                 var content = await response.Content.ReadAsStringAsync();
+
                 using var doc = JsonDocument.Parse(content);
-                var createdObj = doc.RootElement[0];
+                var createdJson = doc.RootElement[0].GetRawText();
+                var createdObj = JsonSerializer.Deserialize<Dictionary<string, object>>(createdJson);
 
-                // Log audit log
-                _ = LogAuditAsync("create_definition", $"Created {type} definition: {name}", Guid.Parse(createdObj.GetProperty("id").GetString()!), name, type, null, createdObj);
+                _ = LogAuditAsync(
+                    "create_definition",
+                    $"Created {type} definition: {name}",
+                    Guid.Parse(createdObj!["id"]!.ToString()!),
+                    name,
+                    type,
+                    null,
+                    createdObj
+                );
 
-                return Ok(createdObj);
+                return Content(createdJson, "application/json");
             }
             catch (Exception ex)
             {
@@ -261,13 +269,25 @@ namespace verilabelbackend.Controllers
 
                 var patchContent = await patchResponse.Content.ReadAsStringAsync();
                 using var patchDoc = JsonDocument.Parse(patchContent);
-                var updatedObj = patchDoc.RootElement[0];
+                var updatedJson = patchDoc.RootElement[0].GetRawText();
 
-                // Log audit
-                var entityName = updatedObj.GetProperty("name").GetString()!;
-                _ = LogAuditAsync("update_definition", $"Updated {type} definition: {entityName}", id, entityName, type, oldRecord, updatedObj);
+                var updatedObj = JsonSerializer.Deserialize<Dictionary<string, object>>(updatedJson);
 
-                return Ok(updatedObj);
+                var oldJson = oldRecord.GetRawText();
+
+                var oldObj = JsonSerializer.Deserialize<Dictionary<string, object>>(oldJson);
+
+                _ = LogAuditAsync(
+                    "update_definition",
+                    $"Updated {type} definition",
+                    id,
+                    updatedObj!["name"]!.ToString()!,
+                    type,
+                    oldObj,
+                    updatedObj
+                );
+
+                return Content(updatedJson, "application/json");
             }
             catch (Exception ex)
             {
@@ -316,9 +336,18 @@ namespace verilabelbackend.Controllers
                     var error = await deleteResponse.Content.ReadAsStringAsync();
                     return StatusCode((int)deleteResponse.StatusCode, new { error });
                 }
+                var oldJson = oldRecord.GetRawText();
+                var oldObj = JsonSerializer.Deserialize<Dictionary<string, object>>(oldJson);
 
-                // Log audit
-                _ = LogAuditAsync("delete_definition", $"Deleted {type} definition: {name}", id, name, type, oldRecord, null);
+                _ = LogAuditAsync(
+                    "delete_definition",
+                    $"Deleted {type} definition: {name}",
+                    id,
+                    name,
+                    type,
+                    oldObj,
+                    null
+                );
 
                 return Ok(new { success = true });
             }

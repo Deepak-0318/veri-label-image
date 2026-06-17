@@ -124,12 +124,17 @@ public static class YoloTestRunner
             Console.WriteLine("----------------------------------------");
             var env = services.GetRequiredService<Microsoft.AspNetCore.Hosting.IWebHostEnvironment>();
             var config = services.GetRequiredService<Microsoft.Extensions.Configuration.IConfiguration>();
-            var dino = new GroundingDinoOnnxService(env, config);
+            var tokenizer = services.GetRequiredService<BertTokenizerService>();
+            var dino = new GroundingDinoOnnxService(
+                    env,
+                    config,
+                    tokenizer
+            );
 
             var testImgPath = Path.Combine(testDir, "human.jpeg");
             if (File.Exists(testImgPath))
             {
-                await dino.DetectAsync(testImgPath, "face");
+                await dino.DetectAsync(testImgPath, "person");
             }
             else
             {

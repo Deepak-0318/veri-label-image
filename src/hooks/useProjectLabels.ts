@@ -31,6 +31,11 @@ export function useProjectLabelTypes(projectId: string | undefined) {
       if (!projectId) return [];
       const res = await apiFetch(`/api/definitions?projectId=${projectId}&type=label_type`);
       const data = await res.json();
+
+      if (!Array.isArray(data)) {
+        console.error("Definitions API returned:", data);
+        return [];
+      }
       return data as ProjectLabelType[];
     },
     enabled: !!projectId,
@@ -94,6 +99,10 @@ export function useProjectLabels(projectId: string | undefined) {
       if (!projectId) return [];
       const res = await apiFetch(`/api/definitions?projectId=${projectId}&type=label`);
       const data = await res.json();
+      if (!Array.isArray(data)) {
+        console.error("Project labels API returned:", data);
+        return [];
+      }
       return (data as any[]).map(d => ({ ...d, color: d.color as TagColor })) as ProjectLabel[];
     },
     enabled: !!projectId,

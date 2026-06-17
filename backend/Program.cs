@@ -26,6 +26,7 @@ builder.Services.AddScoped<SupabaseTaskService>();
 builder.Services.AddScoped<ImageFileResolverService>();
 builder.Services.Configure<verilabelbackend.Models.YoloDetectionOptions>(builder.Configuration.GetSection("Yolo"));
 builder.Services.AddSingleton<YoloV8OnnxService>();
+builder.Services.AddSingleton<BertTokenizerService>();
 builder.Services.AddSingleton<GroundingDinoOnnxService>();
 builder.Services.AddSingleton<IDetectionService,
                               OpenVocabularyDetectionService>();

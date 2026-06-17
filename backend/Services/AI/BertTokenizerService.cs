@@ -59,6 +59,13 @@ public class BertTokenizerService
         int[] attentionMask = Enumerable.Repeat(1, inputIds.Length).ToArray();
         int[] tokenTypeIds = Enumerable.Repeat(0, inputIds.Length).ToArray();
 
+        Console.WriteLine("InputIds:");
+        Console.WriteLine(string.Join(",", inputIds.Take(20)));
+        Console.WriteLine("AttentionMask:");
+        Console.WriteLine(string.Join(",", attentionMask.Take(20)));
+        Console.WriteLine("TokenTypeIds:");
+        Console.WriteLine(string.Join(",", tokenTypeIds.Take(20)));
+
         return new TokenizedText
         {
             InputIds = inputIds,
