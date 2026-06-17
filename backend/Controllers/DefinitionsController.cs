@@ -46,8 +46,8 @@ namespace verilabelbackend.Controllers
                 var client = BuildClient();
                 // order by display_order if type is variable, else order by created_at.asc
                 var order = type.Equals("variable", StringComparison.OrdinalIgnoreCase)
-                    ? "display_order=asc,created_at=asc"
-                    : "created_at=asc";
+                    ? "display_order.asc,created_at.asc"
+                    : "created_at.asc";
                 var url = $"{_supabaseUrl}/rest/v1/{table}?project_id=eq.{projectId}&order={order}";
 
                 var response = await client.GetAsync(url);

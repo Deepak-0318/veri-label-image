@@ -70,12 +70,65 @@ export function useTasks(
   });
 
   const createTask = useMutation({
-    mutationFn: async () => {
-      throw new Error(
-        "Task creation is handled through TaskCreateDialog and /api/tasks"
+    mutationFn: async ({
+      name,
+      description,
+      project_id,
+      assigned_to,
+      qa_assigned_to,
+      file_ids = [],
+    }: {
+      name: string;
+      description?: string;
+      project_id: string;
+      assigned_to?: string;
+      qa_assigned_to?: string;
+      file_ids?: string[];
+    }) => {
+      const token = await getAccessToken();
+
+      const baseUrl =
+        import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, "") ?? "";
+
+      const response = await fetch(
+        `${baseUrl}/api/tasks`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            name,
+            description,
+            projectId: project_id,
+            assignedTo: assigned_to,
+            qaAssignedTo: qa_assigned_to,
+            fileIds: file_ids,
+          }),
+        }
       );
+
+      if (!response.ok) {
+        throw new Error(await response.text());
+      }
+
+      return await response.json();
+    },
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["tasks"],
+      });
+
+      toast.success("Task created");
+    },
+
+    onError: (e: Error) => {
+      toast.error(`Failed: ${e.message}`);
     },
   });
+
 
   const updateTask = useMutation({
     mutationFn: async ({
@@ -97,8 +150,12 @@ export function useTasks(
       );
     },
 
-    onSuccess: (data, variables) => {
-      queryClient.invalidateQueries({
+    onSuccess: async (data, variables) => {
+      await queryClient.invalidateQueries({
+        queryKey: ["tasks"],
+      });
+
+      await queryClient.refetchQueries({
         queryKey: ["tasks"],
       });
 
@@ -113,9 +170,7 @@ export function useTasks(
           entityId: data.id,
           entityName: data.name,
           description: `updated task "${data.name}"${
-            variables.status
-              ? ` → ${variables.status}`
-              : ""
+            variables.status ? ` → ${variables.status}` : ""
           }`,
           newValues:
             variables as Record<string, unknown>,

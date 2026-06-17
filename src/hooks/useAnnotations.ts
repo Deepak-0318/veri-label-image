@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Annotation, BoundingBoxAnnotation, PolygonAnnotation, TextHighlightAnnotation, RowAnnotation, AudioRegionAnnotation, FrameLabelAnnotation, VideoSegmentAnnotation, BoundingBox3dAnnotation, TagColor, PointAnnotation, PolylineAnnotation, KeypointAnnotation } from "@/types/annotation";
+import { Annotation, BoundingBoxAnnotation, PolygonAnnotation, TextHighlightAnnotation, RowAnnotation, AudioRegionAnnotation, FrameLabelAnnotation, VideoSegmentAnnotation, BoundingBox3dAnnotation, TagColor, PointAnnotation, PolylineAnnotation, KeypointAnnotation, Point } from "@/types/annotation";
 import { toast } from "sonner";
 import { logActivityEvent } from "@/services/activityLogger";
 import { logAuditEvent } from "@/services/auditLogger";

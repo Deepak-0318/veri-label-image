@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect, useMemo } from "react";
 import { inferFileType } from "@/lib/fileTypeUtils";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Save, Download, ChevronLeft, ChevronRight, LogIn, FileText } from "lucide-react";
+import { ArrowLeft, Save, Download, ChevronLeft, ChevronRight, LogIn, FileText, FolderOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AnnotationToolbar } from "@/components/annotation/AnnotationToolbar";
 import { AnnotationCanvas } from "@/components/annotation/AnnotationCanvas";

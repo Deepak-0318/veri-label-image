@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect ,useMemo} from "react";
+import { useState, useCallback, useEffect ,useMemo,  useRef} from "react";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { AlertTriangle, ArrowLeft, CheckCircle2, ChevronLeft, ChevronRight, Clock, Loader2, PanelLeftClose, PanelLeftOpen, Shield, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -26,6 +26,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
+
 const STATUS_CONFIG: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
   pending: { label: "Pending", variant: "outline" },
   in_progress: { label: "In Progress", variant: "secondary" },
@@ -43,6 +44,7 @@ export default function PerformTask() {
 
   const { tasks, isLoading: tasksLoading, updateTask } = useTasks(user?.id);
   const task = tasks.find(t => t.id === taskId);
+
   const { projects } = useProjects(user?.id);
   const project = useMemo(() => projects.find(p => p.id === task?.project_id) ?? null, [projects, task?.project_id]);
 
@@ -71,14 +73,38 @@ export default function PerformTask() {
     return () => document.removeEventListener("fullscreenchange", handler);
   }, []);
 
-  // Shift task to in_progress if an annotator opens a pending task
-  useEffect(() => {
-    if (task && task.status === "pending" && !isQCMode && subTasks.length > 0) {
-      updateTask.mutate({ id: task.id, status: "in_progress" });
-    }
-  }, [task, isQCMode, subTasks.length, updateTask]);
+  const autoStartedRef = useRef(false);
 
-  // Query which files have rework annotations
+  useEffect(() => {
+    if (
+      autoStartedRef.current ||
+      !task ||
+      isQCMode ||
+      subTasks.length === 0
+    ) {
+      return;
+    }
+
+    if (task.status === "pending") {
+      autoStartedRef.current = true;
+
+      console.log(
+        "AUTO START TASK",
+        task.id,
+        "pending -> in_progress"
+      );
+
+      updateTask.mutate({
+        id: task.id,
+        status: "in_progress",
+      });
+    }
+  }, [
+    task?.id,
+    task?.status,
+    isQCMode,
+    subTasks.length,
+  ]);
 
 
  const fileIdsKey = useMemo(() => {

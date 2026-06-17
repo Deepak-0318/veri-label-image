@@ -10,5 +10,7 @@ public sealed class CreateTaskRequest
 
     public Guid? AssignedTo { get; set; }
 
+    public Guid? QaAssignedTo { get; set; }
+
     public List<Guid> FileIds { get; set; } = new();
 }

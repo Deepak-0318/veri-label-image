@@ -55,6 +55,32 @@ export function TaskAnnotationWorkspace({
   );
   const file = subTask.file;
 
+  const effectiveType = useMemo(() => file ? inferFileType(file.name, file.type) : "", [file]);
+  const isAudio = effectiveType.startsWith("audio");
+  const isText = !!(effectiveType.startsWith("text") || file?.content);
+  const isSpreadsheet = effectiveType === "application/spreadsheet";
+  const isPdf = effectiveType === "application/pdf";
+  const isMcap = effectiveType === "application/mcap";
+  const isPointCloud =
+    effectiveType === "application/pcd" ||
+    effectiveType === "application/npz" ||
+    file?.name?.toLowerCase().endsWith(".pcd") ||
+    file?.name?.toLowerCase().endsWith(".npz");
+  const isVideo = effectiveType.startsWith("video");
+  const isImage = effectiveType.startsWith("image") && !!file?.thumbnail_url;
+
+  useEffect(() => {
+    console.log("SUBTASK", subTask);
+    console.log("FILE", file);
+
+    console.log("FILE ID", file?.id);
+    console.log("FILE NAME", file?.name);
+    console.log("FILE TYPE", file?.type);
+    console.log("THUMBNAIL URL", file?.thumbnail_url);
+    console.log("CONTENT", file?.content);
+    console.log("EFFECTIVE TYPE", effectiveType);
+  }, [subTask, file, effectiveType]);
+
   const {
     annotations,
     isLoading: annotationsLoading,
@@ -151,20 +177,6 @@ export function TaskAnnotationWorkspace({
   }, [isFullscreen]);
 
   const alreadyMarkedForQC = subTask.status === "completed";
-
-  const effectiveType = useMemo(() => file ? inferFileType(file.name, file.type) : "", [file]);
-  const isAudio = effectiveType.startsWith("audio");
-  const isText = !!(effectiveType.startsWith("text") || file?.content);
-  const isSpreadsheet = effectiveType === "application/spreadsheet";
-  const isPdf = effectiveType === "application/pdf";
-  const isMcap = effectiveType === "application/mcap";
-  const isPointCloud =
-    effectiveType === "application/pcd" ||
-    effectiveType === "application/npz" ||
-    file?.name?.toLowerCase().endsWith(".pcd") ||
-    file?.name?.toLowerCase().endsWith(".npz");
-  const isVideo = effectiveType.startsWith("video");
-  const isImage = effectiveType.startsWith("image") && !!file?.thumbnail_url;
 
   // Point cloud camera view controls (set by PointCloudView via callback)
   const pcdViewControlsRef = useRef<{
@@ -547,6 +559,7 @@ export function TaskAnnotationWorkspace({
     }
 
     if (isImage) {
+      console.log("IMAGE SRC", file.thumbnail_url);
       return (
         <AnnotationCanvas
           imageSrc={file.thumbnail_url!}

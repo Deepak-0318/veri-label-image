@@ -1,10 +1,13 @@
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using verilabelbackend.Models.Requests;
 using verilabelbackend.Services.Supabase;
+using verilabelbackend.Services.Azure;
+using System.Text.Json;
 
 namespace verilabelbackend.Controllers;
 
@@ -17,16 +20,153 @@ public sealed class TasksController : ControllerBase
     private readonly string _supabaseUrl;
     private readonly string _anonKey;
     private readonly SupabaseTaskService _taskService;
+    private readonly AzureBlobStorageService _storage;
 
     public TasksController(
-    IHttpClientFactory httpClientFactory,
-    IConfiguration configuration,
-    SupabaseTaskService taskService)
+        IHttpClientFactory httpClientFactory,
+        IConfiguration configuration,
+        SupabaseTaskService taskService,
+        AzureBlobStorageService storage)
     {
-    _httpClientFactory = httpClientFactory;
-    _supabaseUrl = configuration["Supabase:Url"]!;
-    _anonKey = configuration["Supabase:AnonKey"]!;
-    _taskService = taskService;
+        _httpClientFactory = httpClientFactory;
+        _supabaseUrl = configuration["Supabase:Url"]!;
+        _anonKey = configuration["Supabase:AnonKey"]!;
+        _taskService = taskService;
+        _storage = storage;
+    }
+
+    [HttpGet("{taskId:guid}/subtasks")]
+    public async Task<IActionResult> GetSubTasks(Guid taskId)
+    {
+        try
+        {
+            var result =
+                await _taskService.GetSubTasksAsync(
+                    GetJwt(),
+                    taskId);
+
+            using var doc = System.Text.Json.JsonDocument.Parse(result);
+            var subTasksArray = new System.Text.Json.Nodes.JsonArray();
+            
+            foreach (var element in doc.RootElement.EnumerateArray())
+            {
+                var obj = JsonObject.Create(element);
+                if (
+                    obj != null &&
+                    obj.TryGetPropertyValue("file", out var fileNode) &&
+                    fileNode != null
+                )
+                {
+                    JsonObject? fileObj = null;
+
+                    if (fileNode is JsonArray fileArr)
+                    {
+                        if (fileArr.Count > 0 && fileArr[0] != null)
+                        {
+                            fileObj = fileArr[0]!.DeepClone()!.AsObject();
+                        }
+                    }
+                    else if (fileNode is JsonObject fileJsonObj)
+                    {
+                        fileObj = fileJsonObj.DeepClone()!.AsObject();
+                    }
+
+                    if (fileObj != null)
+                    {
+                        var thumbPath =
+                            fileObj["thumbnail_url"]?.ToString();
+
+                        Console.WriteLine(
+                            $"THUMB PATH = {thumbPath}");
+
+                        if (!string.IsNullOrWhiteSpace(thumbPath))
+                        {
+                            var sasUrl =
+                                _storage.GenerateSasUrl(thumbPath);
+
+                            Console.WriteLine(
+                                $"SAS URL = {sasUrl}");
+
+                            fileObj["thumbnail_url"] = sasUrl;
+                        }
+
+                        obj["file"] = fileObj;
+                    }
+                    else
+                    {
+                        obj["file"] = null;
+                    }
+                }
+
+                if (obj != null)
+                {
+                    subTasksArray.Add(obj);
+                }
+            }
+
+            return Content(
+                subTasksArray.ToJsonString(),
+                "application/json");
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(
+                500,
+                new { error = ex.Message });
+        }
+    }
+
+    [HttpPut("/api/subtasks/{id:guid}")]
+    public async Task<IActionResult> UpdateSubTask(
+        Guid id,
+        [FromBody] UpdateSubTaskRequest request)
+    {
+        try
+        {
+            var payload = new
+            {
+                status = request.Status,
+                updated_at = DateTimeOffset.UtcNow
+            };
+
+            var result =
+                await _taskService.UpdateSubTaskAsync(
+                    GetJwt(),
+                    id,
+                    payload);
+
+            return Content(
+                result,
+                "application/json");
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(
+                500,
+                new { error = ex.Message });
+        }
+    }
+
+    [HttpDelete("/api/subtasks/{id:guid}")]
+    public async Task<IActionResult> DeleteSubTask(Guid id)
+    {
+        try
+        {
+            await _taskService.DeleteSubTaskAsync(
+                GetJwt(),
+                id);
+
+            return Ok(new
+            {
+                success = true
+            });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(
+                500,
+                new { error = ex.Message });
+        }
     }
 
     [HttpPost("{id:guid}/claim")]
@@ -211,6 +351,7 @@ public sealed class TasksController : ControllerBase
                 description = request.Description,
                 project_id = request.ProjectId,
                 assigned_to = request.AssignedTo,
+                qa_assigned_to = request.QaAssignedTo,
                 created_by = userId,
                 total_items = request.FileIds.Count
             };
@@ -234,7 +375,7 @@ public sealed class TasksController : ControllerBase
             }
 
             var createdTask =
-                 doc.RootElement[0];
+                 doc.RootElement[0].Clone();
 
             var taskId =
                 createdTask
@@ -314,19 +455,43 @@ public sealed class TasksController : ControllerBase
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> UpdateTask(
         Guid id,
-        [FromBody] UpdateTaskRequest request)
+        [FromBody] JsonElement requestBody)
     {
         try
         {
-            var payload = new
-            {
-                name = request.Name,
-                description = request.Description,
-                status = request.Status,
-                assigned_to = request.AssignedTo,
-                qa_assigned_to = request.QaAssignedTo,
-                updated_at = DateTimeOffset.UtcNow
-            };
+            var payload = new Dictionary<string, object?>();
+
+            if (requestBody.TryGetProperty("name", out var nameEl))
+                payload["name"] =
+                    nameEl.ValueKind == JsonValueKind.Null
+                    ? null
+                    : nameEl.GetString();
+
+            if (requestBody.TryGetProperty("description", out var descEl))
+                payload["description"] =
+                    descEl.ValueKind == JsonValueKind.Null
+                    ? null
+                    : descEl.GetString();
+
+            if (requestBody.TryGetProperty("status", out var statusEl))
+                payload["status"] =
+                    statusEl.ValueKind == JsonValueKind.Null
+                    ? null
+                    : statusEl.GetString();
+
+            if (requestBody.TryGetProperty("assignedTo", out var assignedEl))
+                payload["assigned_to"] =
+                    assignedEl.ValueKind == JsonValueKind.Null
+                    ? null
+                    : assignedEl.GetGuid();
+
+            if (requestBody.TryGetProperty("qaAssignedTo", out var qaAssignedEl))
+                payload["qa_assigned_to"] =
+                    qaAssignedEl.ValueKind == JsonValueKind.Null
+                    ? null
+                    : qaAssignedEl.GetGuid();
+
+            payload["updated_at"] = DateTimeOffset.UtcNow;
 
             var result =
                 await _taskService.UpdateTaskAsync(
